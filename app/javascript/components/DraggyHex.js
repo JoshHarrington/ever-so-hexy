@@ -31,291 +31,23 @@ const DraggyHex = forwardRef(({
 	style,
 	focusedHexId,
 	id,
-	currentColour
+	trixels,
+	currentColour,
+	csrfToken
 }, ref) => {
-	const [currentlyPressedId, updateCurrentlyPressedId] = useState(null)
+	const [currentPositionReference, updateCurrentPositionReference] = useState(null)
 
-	const paths = [{
-		colour: "white",
-		id: "a1",
-		d: "M0 75L0.00962452 45L26 59.9917L0 75Z"
-	},
-	{
-		colour: "white",
-		id: "a2",
-		d: "M26 30L25.9904 60L0 45.0083L26 30Z"
-	},
-	{
-		colour: "white",
-		id: "a3",
-		d: "M26 60L26.0096 30L52 44.9917L26 60Z"
-	},
-	{
-		colour: "white",
-		id: "a4",
-		d: "M52 15L51.9904 45L26 30.0083L52 15Z"
-	},
-	{
-		colour: "white",
-		id: "a5",
-		d: "M52 45L52.0096 15L78 29.9917L52 45Z"
-	},
-	{
-		colour: "white",
-		id: "a6",
-		d: "M78 0L77.9904 30L52 15.0083L78 0Z"
-	},
-	{
-		colour: "white",
-		id: "a7",
-		d: "M78 30L78.0096 0L104 14.9917L78 30Z"
-	},
-	{
-		colour: "white",
-		id: "b1",
-		d: "M0 105L0.00962452 75L26 89.9917L0 105Z"
-	},
-	{
-		colour: "white",
-		id: "b2",
-		d: "M26 60L25.9904 90L0 75.0083L26 60Z"
-	},
-	{
-		colour: "white",
-		id: "b3",
-		d: "M26 90L26.0096 60L52 74.9917L26 90Z"
-	},
-	{
-		colour: "white",
-		id: "b4",
-		d: "M52 45L51.9904 75L26 60.0083L52 45Z"
-	},
-	{
-		colour: "white",
-		id: "b5",
-		d: "M52 75L52.0096 45L78 59.9917L52 75Z"
-	},
-	{
-		colour: "white",
-		id: "b6",
-		d: "M78 30L77.9904 60L52 45.0083L78 30Z"
-	},
-	{
-		colour: "white",
-		id: "b7",
-		d: "M78 60L78.0096 30L104 44.9917L78 60Z"
-	},
-	{
-		colour: "white",
-		id: "b8",
-		d: "M104 15L103.99 45L78 30.0083L104 15Z"
-	},
-	{
-		colour: "white",
-		id: "b9",
-		d: "M104 45L104.01 15L130 29.9917L104 45Z"
-	},
-	{
-		colour: "white",
-		id: "c1",
-		d: "M0 135L0.00962452 105L26 119.992L0 135Z"
-	},
-	{
-		colour: "white",
-		id: "c2",
-		d: "M26 90L25.9904 120L0 105.008L26 90Z"
-	},
-	{
-		colour: "white",
-		id: "c3",
-		d: "M26 120L26.0096 90L52 104.992L26 120Z"
-	},
-	{
-		colour: "white",
-		id: "c4",
-		d: "M52 75L51.9904 105L26 90.0083L52 75Z"
-	},
-	{
-		colour: "white",
-		id: "c5",
-		d: "M52 105L52.0096 75L78 89.9917L52 105Z"
-	},
-	{
-		colour: "white",
-		id: "c6",
-		d: "M78 60L77.9904 90L52 75.0083L78 60Z"
-	},
-	{
-		colour: "white",
-		id: "c7",
-		d: "M78 90L78.0096 60L104 74.9917L78 90Z"
-	},
-	{
-		colour: "white",
-		id: "c8",
-		d: "M104 45L103.99 75L78 60.0083L104 45Z"
-	},
-	{
-		colour: "white",
-		id: "c9",
-		d: "M104 75L104.01 45L130 59.9917L104 75Z"
-	},
-	{
-		colour: "white",
-		id: "c10",
-		d: "M130 30L129.99 60L104 45.0083L130 30Z"
-	},
-	{
-		colour: "white",
-		id: "c11",
-		d: "M130 60L130.01 30L156 44.9917L130 60Z"
-	},
-	{
-		colour: "white",
-		id: "d1",
-		d: "M26 120L25.9904 150L0 135.008L26 120Z"
-	},
-	{
-		colour: "white",
-		id: "d2",
-		d: "M52 105L51.9904 135L26 120.008L52 105Z"
-	},
-	{
-		colour: "white",
-		id: "d3",
-		d: "M26 150L26.0096 120L52 134.992L26 150Z"
-	},
-	{
-		colour: "white",
-		id: "d4",
-		d: "M52 135L52.0096 105L78 119.992L52 135Z"
-	},
-	{
-		colour: "white",
-		id: "d5",
-		d: "M78 90L77.9904 120L52 105.008L78 90Z"
-	},
-	{
-		colour: "white",
-		id: "d6",
-		d: "M78 120L78.0096 90L104 104.992L78 120Z"
-	},
-	{
-		colour: "white",
-		id: "d7",
-		d: "M104 75L103.99 105L78 90.0083L104 75Z"
-	},
-	{
-		colour: "white",
-		id: "d8",
-		d: "M104 105L104.01 75L130 89.9917L104 105Z"
-	},
-	{
-		colour: "white",
-		id: "d9",
-		d: "M130 60L129.99 90L104 75.0083L130 60Z"
-	},
-	{
-		colour: "white",
-		id: "d10",
-		d: "M130 90L130.01 60L156 74.9917L130 90Z"
-	},
-	{
-		colour: "white",
-		id: "d11",
-		d: "M156 45L155.99 75L130 60.0083L156 45Z"
-	},
-	{
-		colour: "white",
-		id: "e1",
-		d: "M52 135L51.9904 165L26 150.008L52 135Z"
-	},
-	{
-		colour: "white",
-		id: "e2",
-		d: "M52 165L52.0096 135L78 149.992L52 165Z"
-	},
-	{
-		colour: "white",
-		id: "e3",
-		d: "M78 120L77.9904 150L52 135.008L78 120Z"
-	},
-	{
-		colour: "white",
-		id: "e4",
-		d: "M78 150L78.0096 120L104 134.992L78 150Z"
-	},
-	{
-		colour: "white",
-		id: "e5",
-		d: "M104 105L103.99 135L78 120.008L104 105Z"
-	},
-	{
-		colour: "white",
-		id: "e6",
-		d: "M104 135L104.01 105L130 119.992L104 135Z"
-	},
-	{
-		colour: "white",
-		id: "e7",
-		d: "M130 90L129.99 120L104 105.008L130 90Z"
-	},
-	{
-		colour: "white",
-		id: "e8",
-		d: "M130 120L130.01 90L156 104.992L130 120Z"
-	},
-	{
-		colour: "white",
-		id: "e9",
-		d: "M156 75L155.99 105L130 90.0083L156 75Z"
-	},
-	{
-		colour: "white",
-		id: "f1",
-		d: "M78 150L77.9904 180L52 165.008L78 150Z"
-	},
-	{
-		colour: "white",
-		id: "f2",
-		d: "M78 180L78.0096 150L104 164.992L78 180Z"
-	},
-	{
-		colour: "white",
-		id: "f3",
-		d: "M104 135L103.99 165L78 150.008L104 135Z"
-	},
-	{
-		colour: "white",
-		id: "f4",
-		d: "M104 165L104.01 135L130 149.992L104 165Z"
-	},
-	{
-		colour: "white",
-		id: "f5",
-		d: "M130 120L129.99 150L104 135.008L130 120Z"
-	},
-	{
-		colour: "white",
-		id: "f6",
-		d: "M130 150L130.01 120L156 134.992L130 150Z"
-	},
-	{
-		colour: "white",
-		id: "f7",
-		d: "M156 105L155.99 135L130 120.008L156 105Z"
-	}]
+	const [statefulPaths, updatePaths] = useState(trixels)
 
-	const [statefulPaths, updatePaths] = useState(paths)
-
-	const updatePathsFn = ({pathId}) => {
+	const updatePathsFn = ({pathPosition}) => {
 		const updatedPaths = statefulPaths.map(p => {
-			if (p.id !== pathId) {
+			if (p.position !== pathPosition) {
 				return p
 			} else {
 				return {
+					tile_id: id,
 					colour: currentColour,
-					id: p.id,
+					position: p.position,
 					d: p.d
 				}
 			}
@@ -333,24 +65,40 @@ const DraggyHex = forwardRef(({
 			ref={ref}
     >
 			{statefulPaths.map(p => <DraggyPath
-				id={p.id}
-				key={p.id}
+				id={p.position}
+				key={p.position}
 				colour={p.colour}
 				d={p.d}
 				onMouseDown={(e) => {
-					updateCurrentlyPressedId(p.id)
-					updatePathsFn({pathId: p.id})
+					updateCurrentPositionReference(p.position)
+					updatePathsFn({pathPosition: p.position})
 				}}
 				onMouseMove={(e) => {
-					if(currentlyPressedId !== null) {
-						if (currentlyPressedId !== p.id) {
-							updatePathsFn({pathId: p.id})
-							updateCurrentlyPressedId(p.id)
+					if(currentPositionReference !== null) {
+						if (currentPositionReference !== p.position) {
+							updatePathsFn({pathPosition: p.position})
+							updateCurrentPositionReference(p.position)
 						}
 					}
 				}}
 				onMouseUp={(e) => {
-					updateCurrentlyPressedId(null)
+					updateCurrentPositionReference(null)
+					fetch(`/tile/${id}`, {
+						method: 'POST', // or 'PUT'
+						headers: {
+							"X-CSRF-Token": csrfToken,
+							'Content-Type': 'application/json',
+						},
+						body: JSON.stringify(statefulPaths)
+					})
+					.then(response => response.json())
+					.then(data => {
+						console.log('Success', data)
+						updatePaths(data)
+					})
+					.catch((error) => {
+						console.log('Error', error)
+					})
 				}}
 			/>)}
     </svg>

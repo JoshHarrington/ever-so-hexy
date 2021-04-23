@@ -9,7 +9,7 @@ import Hex from './Hex'
 
 const classNames = require('classnames')
 
-const HexGrid = ({tiles, newHexId, currentColour, setPageReady}) => {
+const HexGrid = ({tiles, newHexId, currentColour, setPageReady, csrfToken}) => {
 
 	useEffect(()=>  {
 		if ("scrollRestoration" in window.history) {
@@ -140,9 +140,11 @@ const HexGrid = ({tiles, newHexId, currentColour, setPageReady}) => {
 					} else if (t[0].tile_id === newHexId) {
 						return <DraggyHex
 							key={`${li}-${ti}`}
-							ref={t.id === focusedHexId ? focusedHex : undefined}
+							ref={t[0].tile_id === focusedHexId ? focusedHex : undefined}
 							focusedHexId={focusedHexId}
-							id={t.id}
+							id={t[0].tile_id}
+							trixels={t}
+							csrfToken={csrfToken}
 							className={classNames(
 								`absolute transform`
 							)}

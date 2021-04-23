@@ -4,11 +4,11 @@ import { splitIntoLayers } from "../utils"
 import HexGrid from "./HexGrid"
 import HexWrapper from "./HexWapper"
 
-const New = ({allHexes}) => {
+const New = ({allHexes, newDraftTile, csrfToken}) => {
 
 	const [currentColour, updateCurrentColor] = useState('red')
-	const newTileId = allHexes[allHexes.length - 1].id + 1
-	const tiles = splitIntoLayers([...allHexes, {id: newTileId}])
+	const newTileId = newDraftTile[0].tile_id
+	const tiles = splitIntoLayers([...allHexes, newDraftTile])
 
 	const [pageReady, setPageReady] = useState(false)
 
@@ -29,6 +29,7 @@ const New = ({allHexes}) => {
 			minHeight={`${(LayerWithMostTiles.length - 1) * 6 + 14}rem`}
 		>
 			<HexGrid
+				csrfToken={csrfToken}
 				tiles={tiles}
 				newHexId={newTileId}
 				currentColour={currentColour}
