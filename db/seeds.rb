@@ -7,12 +7,12 @@
 #   Character.create(name: 'Luke', movie: movies.first)
 
 Tile.create([
-	{location: "DNK"},
-	{location: "EST"},
-	{location: "FJI"},
-	{location: "GAB"},
+	{location: "DNK", draft: false},
+	{location: "EST", draft: false},
+	{location: "FJI", draft: false},
+	{location: "GAB", draft: false},
 	{location: "GUY"},
-	{location: "HTI"}
+	{location: "HTI", draft: false}
 ])
 
 Trixel.where(position: "A1").update(colour: "#f36f4c")
