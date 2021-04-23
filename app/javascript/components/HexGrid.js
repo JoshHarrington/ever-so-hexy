@@ -137,7 +137,7 @@ const HexGrid = ({tiles, newHexId, currentColour, setPageReady}) => {
 
 					if (Object.keys(t).length === 0 ) {
 						return null
-					} else if (t.id === newHexId) {
+					} else if (t[0].tile_id === newHexId) {
 						return <DraggyHex
 							key={`${li}-${ti}`}
 							ref={t.id === focusedHexId ? focusedHex : undefined}
@@ -170,6 +170,7 @@ const HexGrid = ({tiles, newHexId, currentColour, setPageReady}) => {
 							}
 							ref={t.id === focusedHexId ? focusedHex : undefined}
 							id={t.id}
+							trixels={t}
 							focusedHexId={focusedHexId}
 							key={`${li}-${ti}`}
 							className={classNames(
