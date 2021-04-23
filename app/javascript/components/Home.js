@@ -11,9 +11,8 @@ const Home = ({allHexes}) => {
     document.body.classList.add("overflow-auto")
   }
 
-  console.log(allHexes, splitIntoLayers)
-	const tiles = splitIntoLayers([...allHexes, {}])
-  console.log(tiles)
+	const tiles = splitIntoLayers(allHexes)
+
   const NumberOfLayers = tiles.length
   const LayerWithMostTiles = [...tiles].sort((a,b) => (
     b.length - a.length

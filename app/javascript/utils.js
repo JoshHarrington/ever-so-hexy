@@ -37,7 +37,6 @@ const splitIntoLayers = (items) => {
 
 	const upperLimitLayerLength = 10
 
-
 	for(var i = 1; i < items.length; i++) {
 
 		const sliceStart = i < upperLimitLayerLength ? i * ((i - 1) * 0.5) : ((i - upperLimitLayerLength) * upperLimitLayerLength) + 45
