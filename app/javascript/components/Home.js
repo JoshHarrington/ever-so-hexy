@@ -34,7 +34,7 @@ const Home = ({allHexes}) => {
       </HexWrapper>
       <a
         href="/new"
-        className="fixed bottom-0 right-0 mr-8 mb-8 bg-gray-200 border-2 border-solid border-gray-400 shadow py-1 px-2 rounded"
+        className="fixed bottom-0 right-0 mr-8 mb-8 bg-gray-200 border-2 border-solid border-gray-400 shadow py-1 px-2 rounded text-lg"
       >New</a>
     </>
 	)

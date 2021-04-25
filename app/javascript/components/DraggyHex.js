@@ -110,7 +110,7 @@ const DraggyHex = forwardRef(({
 				/>)}
 			</svg>
 			{publishAllowed.current && <form
-				className="fixed bottom-0 right-0 mr-8 mb-8"
+				className="fixed bottom-0 right-0 mr-8 mb-8 text-lg"
 				action={`/tiles/${id}/publish`}
 				method="get"
 			>

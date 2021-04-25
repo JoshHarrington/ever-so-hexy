@@ -9,7 +9,14 @@ import Hex from './Hex'
 
 const classNames = require('classnames')
 
-const HexGrid = ({tiles, newHexId, currentColour, setPageReady, csrfToken, hexWrapperRef}) => {
+const HexGrid = ({
+	tiles,
+	newHexId,
+	currentColour,
+	setPageReady,
+	csrfToken,
+	hexWrapperRef
+}) => {
 
 	useEffect(()=>  {
 		if ("scrollRestoration" in window.history) {
