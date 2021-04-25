@@ -20,8 +20,8 @@ const DraggyPath = ({
 			fill={colour}
 			style={style}
 			d={d}
-			stroke={colour && colour !== "white" ? colour : "rgba(189,189,189,0.64)"}
-			strokeWidth={colour && colour !== "white" ? "0" : "1"}
+			stroke={colour && colour !== "white" && colour !== "#fff" ? colour : "rgb(226,226,226)"}
+			strokeWidth={colour && colour !== "white" && colour !== "#fff" ? "0" : "1"}
 		></path>
 	)
 }
@@ -48,7 +48,7 @@ const DraggyHex = forwardRef(({
 			} else {
 				return {
 					tile_id: id,
-					colour: currentColour,
+					colour: currentColour.hex,
 					position: p.position,
 					d: p.d
 				}

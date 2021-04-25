@@ -17,11 +17,19 @@ const New = ({allHexes, currentDraftTileID, csrfToken}) => {
     b.length - a.length
   ))[0]
 
-	const colours = [
-		"red",
-		"green",
-		"blue"
-	]
+	const colours = [{
+		name: "blue",
+		hex: "#3B82F6"
+	},{
+		name: "red",
+		hex: "#F43F5E"
+	}, {
+		name: "green",
+		hex: "#10B981"
+	},{
+		name: "white",
+		hex: "#fff"
+	}]
 
 	const hexWrapperRef = useRef(null)
 
@@ -43,24 +51,23 @@ const New = ({allHexes, currentDraftTileID, csrfToken}) => {
 			</HexWrapper>
 			<div
 				className={classNames(
-					"fixed h-screen w-12 right-0 top-0 flex items-center",
+					"fixed h-screen w-24 right-0 top-0 flex items-center",
 					{"hidden": !pageReady}
 				)}
 			>
-				<div className="bg-white w-full p-2 flex flex-col rounded-l">
+				<div className="bg-white w-full p-4 flex flex-col rounded-l shadow">
 					{colours.map((c, i) => <button
 						key={i}
 						onClick={() => updateCurrentColor(c)}
 						className={classNames(
-							"rounded-full h-4 w-4 mt-1 first:mt-0 focus:outline-none",
-							{"ring ring-4": c === currentColour},
-							{"ring-red-300": c === "red",
-								"ring-blue-300": c === "blue",
-								"ring-green-300": c === "green"})
+							"rounded-full h-8 w-8 mt-3 first:mt-0 focus:outline-none shadow-sm",
+							{
+								"ring ring-4": c.name === currentColour.name,
+								"ring-red-300 bg-red-500": c.name === "red",
+								"ring-blue-300 bg-blue-500": c.name === "blue",
+								"ring-green-300 bg-green-500": c.name === "green"
+							})
 						}
-						style={{
-							backgroundColor: c
-						}}
 					></button>)}
 				</div>
 			</div>
