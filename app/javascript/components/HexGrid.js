@@ -9,7 +9,7 @@ import Hex from './Hex'
 
 const classNames = require('classnames')
 
-const HexGrid = ({tiles, newHexId, currentColour, setPageReady, csrfToken}) => {
+const HexGrid = ({tiles, newHexId, currentColour, setPageReady, csrfToken, hexWrapperRef}) => {
 
 	useEffect(()=>  {
 		if ("scrollRestoration" in window.history) {
@@ -75,10 +75,11 @@ const HexGrid = ({tiles, newHexId, currentColour, setPageReady, csrfToken}) => {
     return () => window.removeEventListener('resize', handleResize)
   }, []);
 
-
-	if (document) {
-		document.querySelector("html").style.fontSize = `${zoomLevel * screenSizeZoomIncrease * 100}%`
+	useEffect(() => {
+		if (hexWrapperRef.current) {
+			hexWrapperRef.current.style.fontSize = `${zoomLevel * screenSizeZoomIncrease * 100}%`
 	}
+	}, [hexWrapperRef.current, zoomLevel, screenSizeZoomIncrease])
 
   useEffect(() => {
     if (zoomLevel === minZoomLevel) {
@@ -149,8 +150,8 @@ const HexGrid = ({tiles, newHexId, currentColour, setPageReady, csrfToken}) => {
 								`absolute transform`
 							)}
 							style={{
-								transform: `translate(${leftTransform}rem, ${topTransform}rem)`,
-								width: '6.6rem'
+								transform: `translate(${leftTransform}em, ${topTransform}em)`,
+								width: '6.6em'
 							}}
 							currentColour={currentColour}
 						/>
@@ -159,9 +160,10 @@ const HexGrid = ({tiles, newHexId, currentColour, setPageReady, csrfToken}) => {
 							onClick={
 								!newHexId ?
 								(e) => {
+									console.log(focusedHexId)
 									if (document && window) {
 										if (!focusedHexId) {
-											setFocusedHexId(t.id)
+											setFocusedHexId(t[0].tile_id)
 										} else {
 											setFocusedHexId(null)
 											setZoomLevel(minZoomLevel)
@@ -170,8 +172,8 @@ const HexGrid = ({tiles, newHexId, currentColour, setPageReady, csrfToken}) => {
 								} :
 								undefined
 							}
-							ref={t.id === focusedHexId ? focusedHex : undefined}
-							id={t.id}
+							ref={t[0].tile_id === focusedHexId ? focusedHex : undefined}
+							id={t[0].tile_id}
 							trixels={t}
 							focusedHexId={focusedHexId}
 							key={`${li}-${ti}`}
@@ -180,8 +182,8 @@ const HexGrid = ({tiles, newHexId, currentColour, setPageReady, csrfToken}) => {
 								{"cursor-pointer": !newHexId}
 							)}
 							style={{
-								transform: `translate(${leftTransform}rem, ${topTransform}rem)`,
-								width: '6.6rem'
+								transform: `translate(${leftTransform}em, ${topTransform}em)`,
+								width: '6.6em'
 							}}
 						/>
 					}
