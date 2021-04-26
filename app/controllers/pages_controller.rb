@@ -3,7 +3,7 @@ class PagesController < ApplicationController
     p "request.remote_ip"
     p request.remote_ip
 
-    @tiles = Tile.all.map{ |t|
+    @tiles = Tile.all.order(created_at: :asc).map{ |t|
       if t.draft == true
         helpers.basicTile(tile_id: t.id, colour: "#8e8e8e")
       else
@@ -21,7 +21,7 @@ class PagesController < ApplicationController
 
     @current_draft_tile_id = session[:current_draft_tile_id] != nil ? session[:current_draft_tile_id] : "current_draft_tile_id"
 
-    tiles = Tile.all.map{ |t|
+    tiles = Tile.all.order(created_at: :asc).map{ |t|
       if t.draft == true && t.id != @current_draft_tile_id
         helpers.basicTile(tile_id: t.id, colour: "#8e8e8e")
       else
