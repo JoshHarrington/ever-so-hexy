@@ -4,7 +4,7 @@ class PagesController < ApplicationController
     p request.remote_ip
 
     @tiles = Tile.all.map{ |t|
-      if t.draft == true && t.id != @current_draft_tile_id
+      if t.draft == true
         helpers.basicTile(tile_id: t.id, colour: "#8e8e8e")
       else
         t.trixels.map{|tr| {
