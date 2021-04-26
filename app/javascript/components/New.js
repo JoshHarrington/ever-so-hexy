@@ -6,17 +6,6 @@ import HexWrapper from "./HexWapper"
 
 const New = ({allHexes, currentDraftTileID, csrfToken}) => {
 
-	const [currentColour, updateCurrentColor] = useState('red')
-	const newTileId = currentDraftTileID
-	const tiles = splitIntoLayers(allHexes)
-
-	const [pageReady, setPageReady] = useState(false)
-
-  const NumberOfLayers = tiles.length
-  const LayerWithMostTiles = [...tiles].sort((a,b) => (
-    b.length - a.length
-  ))[0]
-
 	const colours = [{
 		name: "blue",
 		hex: "#3B82F6"
@@ -30,6 +19,17 @@ const New = ({allHexes, currentDraftTileID, csrfToken}) => {
 		name: "white",
 		hex: "#fff"
 	}]
+
+	const [currentColour, updateCurrentColor] = useState(colours[0])
+	const newTileId = currentDraftTileID
+	const tiles = splitIntoLayers(allHexes)
+
+	const [pageReady, setPageReady] = useState(false)
+
+  const NumberOfLayers = tiles.length
+  const LayerWithMostTiles = [...tiles].sort((a,b) => (
+    b.length - a.length
+  ))[0]
 
 	const hexWrapperRef = useRef(null)
 
