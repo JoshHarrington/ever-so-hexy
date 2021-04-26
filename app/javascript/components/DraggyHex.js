@@ -4,26 +4,36 @@ var classNames = require('classnames')
 
 const DraggyPath = ({
 	colour,
-	id,
-	style,
-	d,
-	onMouseDown,
-	onMouseMove,
-	onMouseUp
+	position,
+	d
 }) => {
 	return (
 		<path
-			onMouseDown={onMouseDown}
-			onMouseMove={onMouseMove}
-			onMouseUp={onMouseUp}
-			id={id}
+			data-position={position}
 			fill={colour}
-			style={style}
 			d={d}
 			stroke={colour && colour !== "white" && colour !== "#fff" ? colour : "rgb(226,226,226)"}
 			strokeWidth={colour && colour !== "white" && colour !== "#fff" ? "0" : "1"}
 		></path>
 	)
+}
+
+const sendNewPaths = ({id, statefulPaths, updatePaths, csrfToken}) => {
+	fetch(`/tiles/${id}`, {
+		method: 'POST',
+		headers: {
+			"X-CSRF-Token": csrfToken,
+			'Content-Type': 'application/json',
+		},
+		body: JSON.stringify(statefulPaths)
+	})
+	.then(response => response.json())
+	.then(data => {
+		updatePaths(data)
+	})
+	.catch((error) => {
+		console.log('Error', error)
+	})
 }
 
 const DraggyHex = forwardRef(({
@@ -67,46 +77,42 @@ const DraggyHex = forwardRef(({
 				className={classNames(className, {"opacity-50": focusedHexId && focusedHexId !== id})}
 				style={style ? style : {}}
 				ref={ref}
-			>
-				{statefulPaths.map(p => <DraggyPath
-					id={p.position}
-					key={p.position}
-					colour={p.colour}
-					d={p.d}
-					onMouseDown={(e) => {
-						updateCurrentPositionReference(p.position)
-						updatePathsFn({pathPosition: p.position})
-					}}
-					onMouseMove={(e) => {
-						if(currentPositionReference !== null) {
-							if (currentPositionReference !== p.position) {
-								updatePathsFn({pathPosition: p.position})
-								updateCurrentPositionReference(p.position)
-							}
-						}
-					}}
-					onMouseUp={(e) => {
+				onMouseLeave={() => {
+					if (currentPositionReference !== null) {
 						updateCurrentPositionReference(null)
 						if (publishAllowed.current) {
-
-							fetch(`/tiles/${id}`, {
-								method: 'POST',
-								headers: {
-									"X-CSRF-Token": csrfToken,
-									'Content-Type': 'application/json',
-								},
-								body: JSON.stringify(statefulPaths)
-							})
-							.then(response => response.json())
-							.then(data => {
-								console.log('Success', data)
-								updatePaths(data)
-							})
-							.catch((error) => {
-								console.log('Error', error)
-							})
+							sendNewPaths({id, statefulPaths, updatePaths, csrfToken})
 						}
-					}}
+					}
+				}}
+				onMouseUp={() => {
+					updateCurrentPositionReference(null)
+					if (publishAllowed.current) {
+						sendNewPaths({id, statefulPaths, updatePaths, csrfToken})
+					}
+				}}
+				onMouseDown={(e) => {
+					if (e.target.tagName === "path") {
+						const position = e.target.dataset.position
+						updateCurrentPositionReference(position)
+						updatePathsFn({pathPosition: position})
+					}
+				}}
+				onMouseMove={(e) => {
+					if(currentPositionReference !== null) {
+						const position = e.target.dataset.position
+						if (currentPositionReference !== position) {
+							updatePathsFn({pathPosition: position})
+							updateCurrentPositionReference(position)
+						}
+					}
+				}}
+			>
+				{statefulPaths.map(p => <DraggyPath
+					key={p.position}
+					colour={p.colour}
+					position={p.position}
+					d={p.d}
 				/>)}
 			</svg>
 			{publishAllowed.current && <form
