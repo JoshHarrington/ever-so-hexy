@@ -20,9 +20,10 @@ const HexGrid = ({
 
 	useEffect(()=>  {
 		if ("scrollRestoration" in window.history) {
-				window.history.scrollRestoration = "manual"
-			}
-},[]);
+			window.history.scrollRestoration = "manual"
+		}
+	},[]);
+
 	const [focusedHexId, setFocusedHexId] = useState(newHexId ? newHexId : null)
 
 	const focusedHex = useRef(null)

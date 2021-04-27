@@ -19,7 +19,7 @@ class PagesController < ApplicationController
   end
   def new
 
-    @current_draft_tile_id = session[:current_draft_tile_id] != nil ? session[:current_draft_tile_id] : "current_draft_tile_id"
+    @current_draft_tile_id = session[:current_draft_tile_id] != nil ? session[:current_draft_tile_id] : "draft_tile"
 
     tiles = Tile.all.order(created_at: :asc).map{ |t|
       if t.draft == true && t.id != @current_draft_tile_id
@@ -34,19 +34,20 @@ class PagesController < ApplicationController
       end
     }
 
-    if session[:current_draft_tile_id] == nil
-      @tiles = tiles + [helpers.basicTile(tile_id: @current_draft_tile_id)]
-    else
+    if session[:current_draft_tile_id] != nil
       @tiles = tiles
+    else
+      @tiles = tiles + [helpers.basicTile(tile_id: @current_draft_tile_id)]
     end
 
   end
+
   def update
 
     json_data = params["_json"]
     tile_id = json_data[0]["tile_id"]
 
-    if tile_id == "new" || tile_id == "current_draft_tile_id"
+    if tile_id == "draft_tile"
       tile = Tile.create(location: request.remote_ip)
     else
       tile = Tile.find(tile_id)
