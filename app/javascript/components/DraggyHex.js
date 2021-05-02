@@ -74,7 +74,7 @@ const DraggyHex = forwardRef(({
 				id={id}
 				viewBox="0 0 156 180"
 				width="300px"
-				className={classNames(className, {"opacity-50": focusedHexId && focusedHexId !== id})}
+				className={classNames(className, "z-10", {"opacity-50": focusedHexId && focusedHexId !== id})}
 				style={style ? style : {}}
 				ref={ref}
 				onMouseLeave={() => {
