@@ -5,7 +5,7 @@ import { splitIntoLayers } from '../utils'
 import HexGrid from './HexGrid'
 import HexWrapper from './HexWapper'
 
-const Home = ({allHexes}) => {
+const Home = ({allHexes, lastTileId}) => {
 
   if (document && document.body) {
     document.body.classList.add("overflow-auto")
@@ -28,6 +28,7 @@ const Home = ({allHexes}) => {
         minHeight={`${(LayerWithMostTiles.length - 1) * 6 + 14}em`}
       >
         <HexGrid
+          lastTileId={lastTileId}
           tiles={tiles}
           hexWrapperRef={hexWrapperRef}
         />

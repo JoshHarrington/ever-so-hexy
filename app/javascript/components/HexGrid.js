@@ -12,6 +12,7 @@ const classNames = require('classnames')
 const HexGrid = ({
 	tiles,
 	newHexId,
+	lastTileId,
 	currentColour,
 	setPageReady,
 	csrfToken,
@@ -100,40 +101,48 @@ const HexGrid = ({
   }, [zoomLevel])
 
   useEffect(() => {
-		if (window && document && focusedHexId) {
-
-			let focusedHexProps = focusedHex.current.getBoundingClientRect()
-
-			const svgWidth = focusedHexProps.width
-			const svgHeight = focusedHexProps.height
-
-			const widthRatio = windowWidth.current / svgWidth
-			const heightRatio = windowHeight.current / svgHeight
-
-			const zoomLevelFromOrientation = (widthRatio >= heightRatio ? heightRatio : widthRatio ) * 0.8
-
-			setZoomLevel(zoomLevelFromOrientation >= minZoomLevel ? zoomLevelFromOrientation : minZoomLevel)
-
-			const svgLeftOffset = focusedHexProps.left
-			const svgTopOffset = focusedHexProps.top
-
-			const svgHalfWidth = svgWidth / 2
-			const svgHalfHeight = svgHeight / 2
-
-			const xScrollPosition = Math.round(((svgLeftOffset + svgHalfWidth + window.scrollX) * zoomLevelFromOrientation - (windowWidth.current / 2)))
-			const yScrollPosition = Math.round(((svgTopOffset + svgHalfHeight + window.scrollY) * zoomLevelFromOrientation - (windowHeight.current / 2)))
-
-			const timeout = setTimeout(() => {
-				window.scrollTo({
-					top: yScrollPosition,
-					left: xScrollPosition
-				})
-				if (setPageReady) {
-					setPageReady(true)
+		if (window && document) {
+			if (focusedHexId || lastTileId) {
+				let focusedHexProps = {}
+				if (focusedHex.current) {
+					focusedHexProps = focusedHex.current.getBoundingClientRect()
+				} else if (lastTileId) {
+					focusedHexProps = document.querySelector(`svg#id-${lastTileId}`).getBoundingClientRect()
 				}
-			}, 1)
 
-			return () => clearTimeout(timeout)
+				const svgWidth = focusedHexProps.width
+				const svgHeight = focusedHexProps.height
+
+				const widthRatio = windowWidth.current / svgWidth
+				const heightRatio = windowHeight.current / svgHeight
+
+				let zoomLevelFromOrientation = 1
+				if (focusedHex.current) {
+					zoomLevelFromOrientation = (widthRatio >= heightRatio ? heightRatio : widthRatio ) * 0.8
+					setZoomLevel(zoomLevelFromOrientation >= minZoomLevel ? zoomLevelFromOrientation : minZoomLevel)
+				}
+
+				const svgLeftOffset = focusedHexProps.left
+				const svgTopOffset = focusedHexProps.top
+
+				const svgHalfWidth = svgWidth / 2
+				const svgHalfHeight = svgHeight / 2
+
+				const xScrollPosition = Math.round(((svgLeftOffset + svgHalfWidth + window.scrollX) * zoomLevelFromOrientation - (windowWidth.current / 2)))
+				const yScrollPosition = Math.round(((svgTopOffset + svgHalfHeight + window.scrollY) * zoomLevelFromOrientation - (windowHeight.current / 2)))
+
+				const timeout = setTimeout(() => {
+					window.scrollTo({
+						top: yScrollPosition,
+						left: xScrollPosition
+					})
+					if (setPageReady) {
+						setPageReady(true)
+					}
+				}, 1)
+
+				return () => clearTimeout(timeout)
+			}
     }
   }, [focusedHexId, setPageReady]);
 
