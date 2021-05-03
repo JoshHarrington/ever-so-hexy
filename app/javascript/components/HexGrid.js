@@ -25,7 +25,14 @@ const HexGrid = ({
 		}
 	},[]);
 
-	const [focusedHexId, setFocusedHexId] = useState(newHexId ? newHexId : null)
+	let setupFocusedHexId = null
+	if (newHexId) {
+		setupFocusedHexId = newHexId
+	} else if (window && window.location.hash.replace("#", "")) {
+		setupFocusedHexId = parseInt(window.location.hash.replace("#", ""))
+	}
+
+	const [focusedHexId, setFocusedHexId] = useState(setupFocusedHexId)
 
 	const focusedHex = useRef(null)
 
@@ -181,9 +188,11 @@ const HexGrid = ({
 									if (document && window) {
 										if (!focusedHexId) {
 											setFocusedHexId(t[0].tile_id)
+											window.history.pushState("", "", window.location.origin + `#${t[0].tile_id}`)
 										} else {
 											setFocusedHexId(null)
 											setZoomLevel(minZoomLevel)
+											window.history.pushState("", "", window.location.origin)
 										}
 									}
 								} :
