@@ -14,7 +14,7 @@ const New = ({allHexes, currentDraftTileID, csrfToken}) => {
 		hex: "#F43F5E"
 	}, {
 		name: "red-600",
-		hex: "#DB2777"
+		hex: "#E11D48"
 	}, {
 		name: "purple-400",
 		hex: "#C084FC"
