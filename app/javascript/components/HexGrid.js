@@ -9,6 +9,54 @@ import Hex from './Hex'
 
 const classNames = require('classnames')
 
+const zoomAndScroll = ({
+	elementProps,
+	hexSizePercentage,
+	window,
+	zoomLevel,
+	setPageReady,
+	setZoomLevel
+}) => {
+	const svgWidth = elementProps.width
+	const svgHeight = elementProps.height
+
+	const windowWidth = window.innerWidth
+	const windowHeight = window.innerHeight
+
+	const widthRatio = svgWidth / windowWidth
+	/// get the decimal fraction of the width of the svg of the total width of the window
+	const heightRatio = svgHeight / windowHeight
+	/// get the decimal fraction of the height of the svg of the total height of the window
+
+	const orientationRatioToSizeOn = heightRatio >= widthRatio ? heightRatio : widthRatio
+
+	let percentageSizeOfHex = hexSizePercentage / 100
+
+	const newZoomLevel = zoomLevel * (percentageSizeOfHex / orientationRatioToSizeOn)
+	setZoomLevel(newZoomLevel)
+
+	const svgLeftOffset = elementProps.left
+	const svgTopOffset = elementProps.top
+
+	const svgHalfWidth = svgWidth / 2
+	const svgHalfHeight = svgHeight / 2
+
+	const xScrollPosition = Math.round(((svgLeftOffset + svgHalfWidth + window.scrollX) * (newZoomLevel / zoomLevel) - (windowWidth / 2)))
+	const yScrollPosition = Math.round(((svgTopOffset + svgHalfHeight + window.scrollY) * (newZoomLevel / zoomLevel) - (windowHeight / 2)))
+
+	const timeout = setTimeout(() => {
+		window.scrollTo({
+			top: yScrollPosition,
+			left: xScrollPosition
+		})
+		if (setPageReady) {
+			setPageReady(true)
+		}
+	}, 1)
+
+	return () => clearTimeout(timeout)
+}
+
 const HexGrid = ({
 	tiles,
 	newHexId,
@@ -103,60 +151,44 @@ const HexGrid = ({
 	}, [hexWrapperRef.current, zoomLevel, screenSizeZoomIncrease])
 
   useEffect(() => {
-		if (window && document) {
-			if (focusedHexId || lastTileId) {
-				let focusedHexProps = {}
-				if (focusedHex.current) {
-					focusedHexProps = focusedHex.current.getBoundingClientRect()
-				} else if (focusedHexId) {
-					focusedHexProps = document.querySelector(`svg#id-${focusedHexId}`).getBoundingClientRect()
-				} else if (lastTileId) {
-					focusedHexProps = document.querySelector(`svg#id-${lastTileId}`).getBoundingClientRect()
+		if (document && window && !!lastTileId) {
+			zoomAndScroll({
+				elementProps: document.querySelector(`svg#id-${lastTileId}`).getBoundingClientRect(),
+				hexSizePercentage: 20,
+				window,
+				zoomLevel: zoomLevelRef.current,
+				setPageReady,
+				setZoomLevel
+			})
 				}
+	}, [lastTileId, setPageReady])
 
-				const svgWidth = focusedHexProps.width
-				const svgHeight = focusedHexProps.height
-
-				const widthRatio = svgWidth / windowWidth.current
-				/// get the decimal fraction of the width of the svg of the total width of the window
-				const heightRatio = svgHeight / windowHeight.current
-				/// get the decimal fraction of the height of the svg of the total height of the window
-
-				const orientationRatioToSizeOn = heightRatio >= widthRatio ? heightRatio : widthRatio
-
-				let percentageSizeOfHex = 0.5
-				if (!!newHexId) {
-					percentageSizeOfHex = 0.7
-				} else if (!focusedHexId) {
-					percentageSizeOfHex = 0.2
+	useEffect(() => {
+		if (document && window && !!focusedHexId) {
+			const focusedHexEl = focusedHex.current || document.querySelector(`svg#id-${focusedHexId}`)
+			zoomAndScroll({
+				elementProps: focusedHexEl.getBoundingClientRect(),
+				hexSizePercentage: 50,
+				window,
+				zoomLevel: zoomLevelRef.current,
+				setPageReady,
+				setZoomLevel
+			})
 				}
+	}, [focusedHexId, setPageReady])
 
-				const newZoomLevel = zoomLevelRef.current * (percentageSizeOfHex / orientationRatioToSizeOn)
-				setZoomLevel(newZoomLevel)
-
-				const svgLeftOffset = focusedHexProps.left
-				const svgTopOffset = focusedHexProps.top
-
-				const svgHalfWidth = svgWidth / 2
-				const svgHalfHeight = svgHeight / 2
-
-				const xScrollPosition = Math.round(((svgLeftOffset + svgHalfWidth + window.scrollX) * (newZoomLevel / zoomLevelRef.current) - (windowWidth.current / 2)))
-				const yScrollPosition = Math.round(((svgTopOffset + svgHalfHeight + window.scrollY) * (newZoomLevel / zoomLevelRef.current) - (windowHeight.current / 2)))
-
-				const timeout = setTimeout(() => {
-					window.scrollTo({
-						top: yScrollPosition,
-						left: xScrollPosition
+	useEffect(() => {
+		if (document && window && !!newHexId) {
+			zoomAndScroll({
+				elementProps: document.querySelector(`svg#id-${newHexId}`).getBoundingClientRect(),
+				hexSizePercentage: 70,
+				window,
+				zoomLevel: zoomLevelRef.current,
+				setPageReady,
+				setZoomLevel
 					})
-					if (setPageReady) {
-						setPageReady(true)
 					}
-				}, 1)
-
-				return () => clearTimeout(timeout)
-			}
-    }
-  }, [focusedHexId, setPageReady, newHexId]);
+	}, [newHexId, setPageReady])
 
 	return (
 		<>
@@ -180,7 +212,8 @@ const HexGrid = ({
 							)}
 							style={{
 								transform: `translate(${leftTransform}em, ${topTransform}em)`,
-								width: '6.6em'
+								width: '6.6em',
+								clipPath: 'polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%)'
 							}}
 							currentColour={currentColour}
 						/>
@@ -213,7 +246,8 @@ const HexGrid = ({
 							)}
 							style={{
 								transform: `translate(${leftTransform}em, ${topTransform}em)`,
-								width: '6.6em'
+								width: '6.6em',
+								clipPath: 'polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%)'
 							}}
 						/>
 					}
