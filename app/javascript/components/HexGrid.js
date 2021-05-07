@@ -37,6 +37,11 @@ const HexGrid = ({
 	const focusedHex = useRef(null)
 
   const [zoomLevel, setZoomLevel] = useState(minZoomLevel)
+	const zoomLevelRef = useRef(zoomLevel)
+
+	useEffect(() => {
+		zoomLevelRef.current = zoomLevel
+	}, [zoomLevel])
 
   const [screenSizeZoomIncrease, changeScreenSizeZoomIncrease] = useState(window ? (window.innerWidth > 1200 ? 1.5 : 1) : 1)
 
@@ -98,21 +103,13 @@ const HexGrid = ({
 	}, [hexWrapperRef.current, zoomLevel, screenSizeZoomIncrease])
 
   useEffect(() => {
-    if (zoomLevel === minZoomLevel) {
-      document.body.classList.remove("overflow-hidden")
-      document.body.classList.add("overflow-auto")
-    } else {
-      document.body.classList.remove("overflow-auto")
-      document.body.classList.add("overflow-hidden")
-    }
-  }, [zoomLevel])
-
-  useEffect(() => {
 		if (window && document) {
 			if (focusedHexId || lastTileId) {
 				let focusedHexProps = {}
 				if (focusedHex.current) {
 					focusedHexProps = focusedHex.current.getBoundingClientRect()
+				} else if (focusedHexId) {
+					focusedHexProps = document.querySelector(`svg#id-${focusedHexId}`).getBoundingClientRect()
 				} else if (lastTileId) {
 					focusedHexProps = document.querySelector(`svg#id-${lastTileId}`).getBoundingClientRect()
 				}
@@ -120,14 +117,22 @@ const HexGrid = ({
 				const svgWidth = focusedHexProps.width
 				const svgHeight = focusedHexProps.height
 
-				const widthRatio = windowWidth.current / svgWidth
-				const heightRatio = windowHeight.current / svgHeight
+				const widthRatio = svgWidth / windowWidth.current
+				/// get the decimal fraction of the width of the svg of the total width of the window
+				const heightRatio = svgHeight / windowHeight.current
+				/// get the decimal fraction of the height of the svg of the total height of the window
 
-				let zoomLevelFromOrientation = 1
-				if (focusedHex.current) {
-					zoomLevelFromOrientation = (widthRatio >= heightRatio ? heightRatio : widthRatio ) * 0.8
-					setZoomLevel(zoomLevelFromOrientation >= minZoomLevel ? zoomLevelFromOrientation : minZoomLevel)
+				const orientationRatioToSizeOn = heightRatio >= widthRatio ? heightRatio : widthRatio
+
+				let percentageSizeOfHex = 0.5
+				if (!!newHexId) {
+					percentageSizeOfHex = 0.7
+				} else if (!focusedHexId) {
+					percentageSizeOfHex = 0.2
 				}
+
+				const newZoomLevel = zoomLevelRef.current * (percentageSizeOfHex / orientationRatioToSizeOn)
+				setZoomLevel(newZoomLevel)
 
 				const svgLeftOffset = focusedHexProps.left
 				const svgTopOffset = focusedHexProps.top
@@ -135,8 +140,8 @@ const HexGrid = ({
 				const svgHalfWidth = svgWidth / 2
 				const svgHalfHeight = svgHeight / 2
 
-				const xScrollPosition = Math.round(((svgLeftOffset + svgHalfWidth + window.scrollX) * zoomLevelFromOrientation - (windowWidth.current / 2)))
-				const yScrollPosition = Math.round(((svgTopOffset + svgHalfHeight + window.scrollY) * zoomLevelFromOrientation - (windowHeight.current / 2)))
+				const xScrollPosition = Math.round(((svgLeftOffset + svgHalfWidth + window.scrollX) * (newZoomLevel / zoomLevelRef.current) - (windowWidth.current / 2)))
+				const yScrollPosition = Math.round(((svgTopOffset + svgHalfHeight + window.scrollY) * (newZoomLevel / zoomLevelRef.current) - (windowHeight.current / 2)))
 
 				const timeout = setTimeout(() => {
 					window.scrollTo({
@@ -151,7 +156,7 @@ const HexGrid = ({
 				return () => clearTimeout(timeout)
 			}
     }
-  }, [focusedHexId, setPageReady]);
+  }, [focusedHexId, setPageReady, newHexId]);
 
 	return (
 		<>
@@ -184,14 +189,13 @@ const HexGrid = ({
 							onClick={
 								!newHexId ?
 								(e) => {
-									console.log(focusedHexId)
 									if (document && window) {
-										if (!focusedHexId) {
+										if (!focusedHexId || (focusedHexId && focusedHexId !== t[0].tile_id)) {
 											setFocusedHexId(t[0].tile_id)
 											window.history.pushState("", "", window.location.origin + `#${t[0].tile_id}`)
 										} else {
-											setFocusedHexId(null)
 											setZoomLevel(minZoomLevel)
+											setFocusedHexId(null)
 											window.history.pushState("", "", window.location.origin)
 										}
 									}
