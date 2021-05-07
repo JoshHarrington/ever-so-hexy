@@ -150,7 +150,7 @@ const HexGrid = ({
 	}
 	}, [hexWrapperRef.current, zoomLevel, screenSizeZoomIncrease])
 
-  useEffect(() => {
+	useEffect(() => {
 		if (document && window && !!lastTileId) {
 			zoomAndScroll({
 				elementProps: document.querySelector(`svg#id-${lastTileId}`).getBoundingClientRect(),
@@ -160,7 +160,7 @@ const HexGrid = ({
 				setPageReady,
 				setZoomLevel
 			})
-				}
+		}
 	}, [lastTileId, setPageReady])
 
 	useEffect(() => {
@@ -174,7 +174,7 @@ const HexGrid = ({
 				setPageReady,
 				setZoomLevel
 			})
-				}
+		}
 	}, [focusedHexId, setPageReady])
 
 	useEffect(() => {
@@ -186,8 +186,8 @@ const HexGrid = ({
 				zoomLevel: zoomLevelRef.current,
 				setPageReady,
 				setZoomLevel
-					})
-					}
+			})
+		}
 	}, [newHexId, setPageReady])
 
 	return (
@@ -239,10 +239,10 @@ const HexGrid = ({
 							id={t[0].tile_id}
 							trixels={t}
 							focusedHexId={focusedHexId}
+							newHexPage={!!newHexId}
 							key={`${li}-${ti}`}
 							className={classNames(
-								`absolute transform`,
-								{"cursor-pointer": !newHexId}
+								`absolute transform`
 							)}
 							style={{
 								transform: `translate(${leftTransform}em, ${topTransform}em)`,

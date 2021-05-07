@@ -10,6 +10,17 @@ module.exports = {
   ],
   darkMode: false, // or 'media' or 'class'
   theme: {
+    cursor: {
+      auto: 'auto',
+      default: 'default',
+      pointer: 'pointer',
+      wait: 'wait',
+      text: 'text',
+      move: 'move',
+      'not-allowed': 'not-allowed',
+      'zoom-in': 'zoom-in',
+      'zoom-out': 'zoom-out'
+    },
     extend: {
       colors: {
         red: colors.rose,
