@@ -1,4 +1,5 @@
-import React, { useRef } from 'react'
+import React, { useEffect, useRef } from 'react'
+import Panzoom from '@panzoom/panzoom'
 
 import { splitIntoLayers } from '../utils'
 
@@ -7,9 +8,9 @@ import HexWrapper from './HexWapper'
 
 const Home = ({allHexes, lastTileId}) => {
 
-  if (document && document.body) {
-    document.body.classList.add("overflow-auto")
-  }
+  // if (document && document.body) {
+  //   document.body.classList.add("overflow-auto")
+  // }
 
 	const tiles = splitIntoLayers(allHexes)
 
@@ -19,18 +20,29 @@ const Home = ({allHexes, lastTileId}) => {
   ))[0]
 
   const hexWrapperRef = useRef(null)
+  const hexGridRef = useRef(null)
+
+  const panzoom = useRef(null)
+
+  useEffect(() => {
+    panzoom.current = Panzoom(hexGridRef.current, {
+      maxScale: 5
+    })
+  }, [hexGridRef])
 
 	return (
     <>
       <HexWrapper
         ref={hexWrapperRef}
-        minWidth={`${NumberOfLayers * 7 + 6}em`}
-        minHeight={`${(LayerWithMostTiles.length - 1) * 6 + 14}em`}
+        // minWidth={`${NumberOfLayers * 7 + 6}em`}
+        // minHeight={`${(LayerWithMostTiles.length - 1) * 6 + 14}em`}
       >
         <HexGrid
           lastTileId={lastTileId}
           tiles={tiles}
           hexWrapperRef={hexWrapperRef}
+          ref={hexGridRef}
+          panzoom={panzoom.current}
         />
       </HexWrapper>
       <a

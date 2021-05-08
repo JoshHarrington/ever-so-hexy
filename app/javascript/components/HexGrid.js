@@ -1,4 +1,4 @@
-import React, { useState, Fragment, useEffect, useRef } from 'react'
+import React, { useState, Fragment, useEffect, useRef, forwardRef } from 'react'
 
 import { maxZoomLevel, minZoomLevel } from '../constants'
 
@@ -57,15 +57,16 @@ const zoomAndScroll = ({
 	return () => clearTimeout(timeout)
 }
 
-const HexGrid = ({
+const HexGrid = forwardRef(({
 	tiles,
 	newHexId,
 	lastTileId,
 	currentColour,
 	setPageReady,
 	csrfToken,
-	hexWrapperRef
-}) => {
+	hexWrapperRef,
+	panzoom
+}, ref) => {
 
 	useEffect(()=>  {
 		if ("scrollRestoration" in window.history) {
@@ -93,105 +94,105 @@ const HexGrid = ({
 
   const [screenSizeZoomIncrease, changeScreenSizeZoomIncrease] = useState(window ? (window.innerWidth > 1200 ? 1.5 : 1) : 1)
 
-  useEffect(() => {
-    const debouncedKeydownEventFn = debounce((e) => {
-        if (e.ctrlKey || e.metaKey) {
-          if (e.key === '-') {
-            // Ctrl / Cmd + '-' (zoom out)
-            setZoomLevel((Math.floor(zoomLevel) - 1) > minZoomLevel ? Math.floor(zoomLevel) - 1 : minZoomLevel)
-          }
-          if (e.key === '=') {
-            // Ctrl / Cmd + '=' (zoom in)
-            setZoomLevel((Math.floor(zoomLevel) + 1) <= maxZoomLevel ? Math.floor(zoomLevel) + 1 : maxZoomLevel)
-          }
-          if (e.key === '0') {
-            // Ctrl / Cmd + '0' (reset zoom)
-            setZoomLevel(minZoomLevel)
-          }
-        }
-      }, 100, true)
-    let keydownFnName = () => {}
-    window.addEventListener('keydown', keydownFnName = (e) => {
-      if ((e.ctrlKey || e.metaKey) &&
-          (e.key === '-' || e.key === '=' || e.key === '0')) {
-        e.preventDefault()
-      }
-      debouncedKeydownEventFn(e)
-    })
-    return () => window.removeEventListener('keydown', keydownFnName)
-  }, [zoomLevel]);
+  // useEffect(() => {
+  //   const debouncedKeydownEventFn = debounce((e) => {
+  //       if (e.ctrlKey || e.metaKey) {
+  //         if (e.key === '-') {
+  //           // Ctrl / Cmd + '-' (zoom out)
+  //           setZoomLevel((Math.floor(zoomLevel) - 1) > minZoomLevel ? Math.floor(zoomLevel) - 1 : minZoomLevel)
+  //         }
+  //         if (e.key === '=') {
+  //           // Ctrl / Cmd + '=' (zoom in)
+  //           setZoomLevel((Math.floor(zoomLevel) + 1) <= maxZoomLevel ? Math.floor(zoomLevel) + 1 : maxZoomLevel)
+  //         }
+  //         if (e.key === '0') {
+  //           // Ctrl / Cmd + '0' (reset zoom)
+  //           setZoomLevel(minZoomLevel)
+  //         }
+  //       }
+  //     }, 100, true)
+  //   let keydownFnName = () => {}
+  //   window.addEventListener('keydown', keydownFnName = (e) => {
+  //     if ((e.ctrlKey || e.metaKey) &&
+  //         (e.key === '-' || e.key === '=' || e.key === '0')) {
+  //       e.preventDefault()
+  //     }
+  //     debouncedKeydownEventFn(e)
+  //   })
+  //   return () => window.removeEventListener('keydown', keydownFnName)
+  // }, [zoomLevel]);
 
   const windowWidth = useRef(window ? window.innerWidth : null)
   const windowHeight = useRef(window ? window.innerHeight : null)
 
-  useEffect(() => {
-    const handleResize = debounce(
-      () => {
-        const getWindowWidth = window.innerWidth
-        windowWidth.current = getWindowWidth
-        windowHeight.current = window.innerHeight
-        if (getWindowWidth > 1200) {
-          changeScreenSizeZoomIncrease(1.5)
-        } else {
-          changeScreenSizeZoomIncrease(1)
-        }
-      },
-      400,
-      false
-    )
-    window.addEventListener('resize', handleResize)
-    handleResize()
-    return () => window.removeEventListener('resize', handleResize)
-  }, []);
+  // useEffect(() => {
+  //   const handleResize = debounce(
+  //     () => {
+  //       const getWindowWidth = window.innerWidth
+  //       windowWidth.current = getWindowWidth
+  //       windowHeight.current = window.innerHeight
+  //       if (getWindowWidth > 1200) {
+  //         changeScreenSizeZoomIncrease(1.5)
+  //       } else {
+  //         changeScreenSizeZoomIncrease(1)
+  //       }
+  //     },
+  //     400,
+  //     false
+  //   )
+  //   window.addEventListener('resize', handleResize)
+  //   handleResize()
+  //   return () => window.removeEventListener('resize', handleResize)
+  // }, []);
 
-	useEffect(() => {
-		if (hexWrapperRef.current) {
-			hexWrapperRef.current.style.fontSize = `${zoomLevel * screenSizeZoomIncrease * 100}%`
-	}
-	}, [hexWrapperRef.current, zoomLevel, screenSizeZoomIncrease])
+	// useEffect(() => {
+	// 	if (hexWrapperRef.current) {
+	// 		hexWrapperRef.current.style.fontSize = `${zoomLevel * screenSizeZoomIncrease * 100}%`
+	// }
+	// }, [hexWrapperRef.current, zoomLevel, screenSizeZoomIncrease])
 
-	useEffect(() => {
-		if (document && window && !!lastTileId) {
-			zoomAndScroll({
-				elementProps: document.querySelector(`svg#id-${lastTileId}`).getBoundingClientRect(),
-				hexSizePercentage: 20,
-				window,
-				zoomLevel: zoomLevelRef.current,
-				setPageReady,
-				setZoomLevel
-			})
-		}
-	}, [lastTileId, setPageReady])
+	// useEffect(() => {
+	// 	if (document && window && !!lastTileId) {
+	// 		zoomAndScroll({
+	// 			elementProps: document.querySelector(`svg#id-${lastTileId}`).getBoundingClientRect(),
+	// 			hexSizePercentage: 20,
+	// 			window,
+	// 			zoomLevel: zoomLevelRef.current,
+	// 			setPageReady,
+	// 			setZoomLevel
+	// 		})
+	// 	}
+	// }, [lastTileId, setPageReady])
 
-	useEffect(() => {
-		if (document && window && !!focusedHexId) {
-			const focusedHexEl = focusedHex.current || document.querySelector(`svg#id-${focusedHexId}`)
-			zoomAndScroll({
-				elementProps: focusedHexEl.getBoundingClientRect(),
-				hexSizePercentage: 50,
-				window,
-				zoomLevel: zoomLevelRef.current,
-				setPageReady,
-				setZoomLevel
-			})
-		}
-	}, [focusedHexId, setPageReady])
+	// useEffect(() => {
+	// 	if (document && window && !!focusedHexId) {
+	// 		const focusedHexEl = focusedHex.current || document.querySelector(`svg#id-${focusedHexId}`)
+	// 		zoomAndScroll({
+	// 			elementProps: focusedHexEl.getBoundingClientRect(),
+	// 			hexSizePercentage: 50,
+	// 			window,
+	// 			zoomLevel: zoomLevelRef.current,
+	// 			setPageReady,
+	// 			setZoomLevel
+	// 		})
+	// 	}
+	// }, [focusedHexId, setPageReady])
 
-	useEffect(() => {
-		if (document && window && !!newHexId) {
-			zoomAndScroll({
-				elementProps: document.querySelector(`svg#id-${newHexId}`).getBoundingClientRect(),
-				hexSizePercentage: 70,
-				window,
-				zoomLevel: zoomLevelRef.current,
-				setPageReady,
-				setZoomLevel
-			})
-		}
-	}, [newHexId, setPageReady])
+	// useEffect(() => {
+	// 	if (document && window && !!newHexId) {
+	// 		zoomAndScroll({
+	// 			elementProps: document.querySelector(`svg#id-${newHexId}`).getBoundingClientRect(),
+	// 			hexSizePercentage: 70,
+	// 			window,
+	// 			zoomLevel: zoomLevelRef.current,
+	// 			setPageReady,
+	// 			setZoomLevel
+	// 		})
+	// 	}
+	// }, [newHexId, setPageReady])
 
 	return (
-		<>
+		<div ref={ref}>
 			{tiles.map((l, li) => {
 				return <Fragment key={li}>{l.map((t, ti) => {
 					const leftTransform = (li * 7) - (ti * 3.5)
@@ -227,7 +228,7 @@ const HexGrid = ({
 											setFocusedHexId(t[0].tile_id)
 											window.history.pushState("", "", window.location.origin + `#${t[0].tile_id}`)
 										} else {
-											setZoomLevel(minZoomLevel)
+											// setZoomLevel(minZoomLevel)
 											setFocusedHexId(null)
 											window.history.pushState("", "", window.location.origin)
 										}
@@ -253,8 +254,8 @@ const HexGrid = ({
 					}
 				})}</Fragment>
 			})}
-    </>
+    </div>
 	)
-}
+})
 
 export default HexGrid
