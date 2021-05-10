@@ -40,7 +40,8 @@ module.exports = {
         red: colors.rose,
         green: colors.emerald,
         blueGray: colors.blueGray,
-        coolGray: colors.coolGray
+        coolGray: colors.coolGray,
+        teal: colors.teal
       }
     },
   },

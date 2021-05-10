@@ -27,11 +27,10 @@ const DraggyHex = forwardRef(({
 	trixels,
 	setNewTileTrixels,
 	currentColour,
-	csrfToken
+	csrfToken,
+	publishAllowed
 }, ref) => {
 	const [currentPositionReference, updateCurrentPositionReference] = useState(null)
-
-	const publishAllowed = useRef(trixels.filter(t => t.colour !== "white" && t.colour !== "#fff").length > 5)
 
   return (
 		<>
@@ -94,13 +93,6 @@ const DraggyHex = forwardRef(({
 					d={p.d}
 				/>)}
 			</svg>
-			{publishAllowed.current && <form
-				className="fixed bottom-0 right-0 mr-8 mb-8 text-lg z-10"
-				action={`/tiles/${id}/publish`}
-				method="get"
-			>
-				<button className="bg-gray-200 border-2 border-solid border-gray-400 shadow py-1 px-2 rounded">Publish</button>
-			</form>}
 		</>
   )
 })

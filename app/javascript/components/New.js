@@ -67,6 +67,7 @@ const New = ({allHexes, currentDraftTileID, csrfToken}) => {
 	const hexWrapperRef = useRef(null)
 
 	const [newTileTrixels, setNewTileTrixels] = useState(allHexes.filter(h => h[0].tile_id === newTileId)[0])
+	const publishAllowed = useRef(newTileTrixels.filter(t => t.colour !== "white" && t.colour !== "#fff").length > 5)
 
 	return (
 		<>
@@ -84,6 +85,7 @@ const New = ({allHexes, currentDraftTileID, csrfToken}) => {
 					hexWrapperRef={hexWrapperRef}
 					newTileTrixels={newTileTrixels}
 					setNewTileTrixels={setNewTileTrixels}
+					publishAllowed={publishAllowed}
 				/>
 			</HexWrapper>
 			<div
@@ -131,6 +133,7 @@ const New = ({allHexes, currentDraftTileID, csrfToken}) => {
 								colour: currentColour.hex,
 								csrfToken
 							})
+							publishAllowed.current = false
 						}}
 						className={classNames(
 							"w-full rounded-full text-center p-2 bg-blueGray-500 text-white mb-3",
@@ -148,6 +151,7 @@ const New = ({allHexes, currentDraftTileID, csrfToken}) => {
 								colour: "white",
 								csrfToken
 							})
+							publishAllowed.current = false
 						}}
 						className={classNames(
 							"w-full rounded-full text-center p-2 bg-blueGray-500 text-white mb-3",
@@ -157,6 +161,26 @@ const New = ({allHexes, currentDraftTileID, csrfToken}) => {
 						)}
 					>Clear all</button>
 				</div>
+			</div>
+			<div className="fixed bottom-0 flex justify-center px-6 pb-8 text-lg z-10 w-full">
+				<button className={classNames(
+					"border-0 border-solid shadow py-2 px-4 text-white rounded-full",
+					"bg-teal-600 hover:bg-teal-700 mr-auto",
+					"focus:outline-none"
+				)}>{"<"}</button>
+				{publishAllowed.current &&
+					<form
+						className="mr-auto -ml-10"
+						action={`/tiles/${newTileId}/publish`}
+						method="get"
+					>
+						<button className={classNames(
+							"border-0 border-solid shadow py-2 px-4 text-white rounded-full",
+							"bg-teal-600 hover:bg-teal-700",
+							"focus:outline-none"
+							)}>Save and add to grid</button>
+					</form>
+				}
 			</div>
 		</>
 	)

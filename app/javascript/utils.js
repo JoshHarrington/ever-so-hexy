@@ -89,7 +89,9 @@ const sendNewPaths = ({id, trixels, setNewTileTrixels, csrfToken}) => {
 	})
 	.then(response => response.json())
 	.then(data => {
-		setNewTileTrixels(data)
+		if (setNewTileTrixels) {
+			setNewTileTrixels(data)
+		}
 	})
 	.catch((error) => {
 		console.log('Error', error)
@@ -123,7 +125,7 @@ const updateAllTrixelsFn = ({trixels, setNewTileTrixels, id, colour, csrfToken})
 		}
 	})
 	setNewTileTrixels(updatedTrixels)
-	sendNewPaths({id, trixels: updatedTrixels, setNewTileTrixels, csrfToken})
+	sendNewPaths({id, trixels: updatedTrixels, csrfToken})
 }
 
 export {

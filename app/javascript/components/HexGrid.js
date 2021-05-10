@@ -66,7 +66,8 @@ const HexGrid = ({
 	csrfToken,
 	hexWrapperRef,
 	newTileTrixels,
-	setNewTileTrixels
+	setNewTileTrixels,
+	publishAllowed
 }) => {
 
 	useEffect(()=>  {
@@ -210,6 +211,7 @@ const HexGrid = ({
 							trixels={newTileTrixels}
 							setNewTileTrixels={setNewTileTrixels}
 							csrfToken={csrfToken}
+							publishAllowed={publishAllowed}
 							className={classNames(
 								`absolute transform`
 							)}
