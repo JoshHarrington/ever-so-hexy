@@ -78,4 +78,61 @@ function usePrevious(value) {
   return ref.current
 }
 
-export { splitIntoShells, splitIntoLayers, getSvgSize, debounce, usePrevious }
+const sendNewPaths = ({id, trixels, setNewTileTrixels, csrfToken}) => {
+	fetch(`/tiles/${id}`, {
+		method: 'POST',
+		headers: {
+			"X-CSRF-Token": csrfToken,
+			'Content-Type': 'application/json',
+		},
+		body: JSON.stringify(trixels)
+	})
+	.then(response => response.json())
+	.then(data => {
+		setNewTileTrixels(data)
+	})
+	.catch((error) => {
+		console.log('Error', error)
+	})
+}
+
+const updatePathsFn = ({pathPosition, trixels, setNewTileTrixels, publishAllowed, id, currentColour}) => {
+	const updatedPaths = trixels.map(p => {
+		if (p.position !== pathPosition) {
+			return p
+		} else {
+			return {
+				tile_id: id,
+				colour: currentColour.hex,
+				position: p.position,
+				d: p.d
+			}
+		}
+	})
+	setNewTileTrixels(updatedPaths)
+	publishAllowed.current = trixels.filter(t => t.colour !== "white" && t.colour !== "#fff").length > 5
+}
+
+const updateAllTrixelsFn = ({trixels, setNewTileTrixels, id, colour, csrfToken}) => {
+	const updatedTrixels = trixels.map(p => {
+		return {
+			tile_id: id,
+			colour,
+			position: p.position,
+			d: p.d
+		}
+	})
+	setNewTileTrixels(updatedTrixels)
+	sendNewPaths({id, trixels: updatedTrixels, setNewTileTrixels, csrfToken})
+}
+
+export {
+	splitIntoShells,
+	splitIntoLayers,
+	getSvgSize,
+	debounce,
+	usePrevious,
+	sendNewPaths,
+	updatePathsFn,
+	updateAllTrixelsFn
+}

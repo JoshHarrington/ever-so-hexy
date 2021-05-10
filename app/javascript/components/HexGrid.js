@@ -64,7 +64,9 @@ const HexGrid = ({
 	currentColour,
 	setPageReady,
 	csrfToken,
-	hexWrapperRef
+	hexWrapperRef,
+	newTileTrixels,
+	setNewTileTrixels
 }) => {
 
 	useEffect(()=>  {
@@ -205,7 +207,8 @@ const HexGrid = ({
 							ref={t[0].tile_id === focusedHexId ? focusedHex : undefined}
 							focusedHexId={focusedHexId}
 							id={t[0].tile_id}
-							trixels={t}
+							trixels={newTileTrixels}
+							setNewTileTrixels={setNewTileTrixels}
 							csrfToken={csrfToken}
 							className={classNames(
 								`absolute transform`

@@ -1,4 +1,5 @@
 import React, { forwardRef, useRef, useState } from 'react'
+import { sendNewPaths, updatePathsFn } from '../utils'
 
 var classNames = require('classnames')
 
@@ -18,55 +19,19 @@ const DraggyPath = ({
 	)
 }
 
-const sendNewPaths = ({id, statefulPaths, updatePaths, csrfToken}) => {
-	fetch(`/tiles/${id}`, {
-		method: 'POST',
-		headers: {
-			"X-CSRF-Token": csrfToken,
-			'Content-Type': 'application/json',
-		},
-		body: JSON.stringify(statefulPaths)
-	})
-	.then(response => response.json())
-	.then(data => {
-		updatePaths(data)
-	})
-	.catch((error) => {
-		console.log('Error', error)
-	})
-}
-
 const DraggyHex = forwardRef(({
 	className,
 	style,
 	focusedHexId,
 	id,
 	trixels,
+	setNewTileTrixels,
 	currentColour,
 	csrfToken
 }, ref) => {
 	const [currentPositionReference, updateCurrentPositionReference] = useState(null)
 
-	const [statefulPaths, updatePaths] = useState(trixels)
-
 	const publishAllowed = useRef(trixels.filter(t => t.colour !== "white" && t.colour !== "#fff").length > 5)
-
-	const updatePathsFn = ({pathPosition}) => {
-		const updatedPaths = statefulPaths.map(p => {
-			if (p.position !== pathPosition) {
-				return p
-			} else {
-				return {
-					tile_id: id,
-					colour: currentColour.hex,
-					position: p.position,
-					d: p.d
-				}
-			}
-		})
-		updatePaths(updatedPaths)
-		publishAllowed.current = statefulPaths.filter(t => t.colour !== "white" && t.colour !== "#fff").length > 5
-	}
 
   return (
 		<>
@@ -81,34 +46,48 @@ const DraggyHex = forwardRef(({
 					if (currentPositionReference !== null) {
 						updateCurrentPositionReference(null)
 						if (publishAllowed.current) {
-							sendNewPaths({id, statefulPaths, updatePaths, csrfToken})
+							sendNewPaths({id, trixels, setNewTileTrixels, csrfToken})
 						}
 					}
 				}}
 				onMouseUp={() => {
 					updateCurrentPositionReference(null)
 					if (publishAllowed.current) {
-						sendNewPaths({id, statefulPaths, updatePaths, csrfToken})
+						sendNewPaths({id, trixels, setNewTileTrixels, csrfToken})
 					}
 				}}
 				onMouseDown={(e) => {
 					if (e.target.tagName === "path") {
 						const position = e.target.dataset.position
 						updateCurrentPositionReference(position)
-						updatePathsFn({pathPosition: position})
+						updatePathsFn({
+							pathPosition: position,
+							trixels,
+							setNewTileTrixels,
+							publishAllowed,
+							id,
+							currentColour
+						})
 					}
 				}}
 				onMouseMove={(e) => {
 					if(currentPositionReference !== null) {
 						const position = e.target.dataset.position
 						if (currentPositionReference !== position) {
-							updatePathsFn({pathPosition: position})
+							updatePathsFn({
+								pathPosition: position,
+								trixels,
+								setNewTileTrixels,
+								publishAllowed,
+								id,
+								currentColour
+							})
 							updateCurrentPositionReference(position)
 						}
 					}
 				}}
 			>
-				{statefulPaths.map(p => <DraggyPath
+				{trixels.map(p => <DraggyPath
 					key={p.position}
 					colour={p.colour}
 					position={p.position}

@@ -1,6 +1,6 @@
 import classNames from "classnames"
 import React, { useRef, useState } from "react"
-import { splitIntoLayers } from "../utils"
+import { splitIntoLayers, updateAllTrixelsFn } from "../utils"
 import HexGrid from "./HexGrid"
 import HexWrapper from "./HexWapper"
 
@@ -66,6 +66,8 @@ const New = ({allHexes, currentDraftTileID, csrfToken}) => {
 
 	const hexWrapperRef = useRef(null)
 
+	const [newTileTrixels, setNewTileTrixels] = useState(allHexes.filter(h => h[0].tile_id === newTileId)[0])
+
 	return (
 		<>
 			<HexWrapper
@@ -80,6 +82,8 @@ const New = ({allHexes, currentDraftTileID, csrfToken}) => {
 					currentColour={currentColour}
 					setPageReady={setPageReady}
 					hexWrapperRef={hexWrapperRef}
+					newTileTrixels={newTileTrixels}
+					setNewTileTrixels={setNewTileTrixels}
 				/>
 			</HexWrapper>
 			<div
@@ -119,7 +123,15 @@ const New = ({allHexes, currentDraftTileID, csrfToken}) => {
 						></button>)}
 					</div>
 					<button
-						onClick={(e) => console.log(e)}
+						onClick={() => {
+							updateAllTrixelsFn({
+								trixels: newTileTrixels,
+								setNewTileTrixels,
+								id: newTileId,
+								colour: currentColour.hex,
+								csrfToken
+							})
+						}}
 						className={classNames(
 							"w-full rounded-full text-center p-2 bg-blueGray-500 text-white mb-3",
 							"border border-2 border-white",
@@ -128,7 +140,15 @@ const New = ({allHexes, currentDraftTileID, csrfToken}) => {
 						)}
 					>Fill all</button>
 					<button
-						onClick={(e) => console.log(e)}
+						onClick={() => {
+							updateAllTrixelsFn({
+								trixels: newTileTrixels,
+								setNewTileTrixels,
+								id: newTileId,
+								colour: "white",
+								csrfToken
+							})
+						}}
 						className={classNames(
 							"w-full rounded-full text-center p-2 bg-blueGray-500 text-white mb-3",
 							"border border-2 border-white",
