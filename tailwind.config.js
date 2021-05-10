@@ -21,6 +21,20 @@ module.exports = {
       'zoom-in': 'zoom-in',
       'zoom-out': 'zoom-out'
     },
+    borderRadius: {
+      'none': '0',
+      'sm': '0.125rem',
+      DEFAULT: '0.25rem',
+      'md': '0.375rem',
+      'lg': '0.5rem',
+      'xl': '0.625rem',
+      '4xl': '1rem',
+      '8xl': '1.5rem',
+      '12xl': '2rem',
+      '16xl': '2.5rem',
+      '20xl': '3rem',
+      'full': '9999px'
+    },
     extend: {
       colors: {
         red: colors.rose,

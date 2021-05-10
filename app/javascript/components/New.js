@@ -84,38 +84,58 @@ const New = ({allHexes, currentDraftTileID, csrfToken}) => {
 			</HexWrapper>
 			<div
 				className={classNames(
-					"fixed h-screen w-36 right-0 top-0 flex items-center",
+					"fixed h-screen right-0 top-0 flex items-center",
 					{"hidden": !pageReady}
 				)}
 			>
-				<div className="bg-white w-full p-4 flex flex-col rounded-l shadow">
-					<div className="grid grid-cols-3 gap-4">
+				<div className="bg-white w-full p-8 pr-6 flex flex-col rounded-l-16xl shadow">
+					<div className="grid grid-cols-3 gap-2 pb-6 mb-6 border-0 border-b border-coolGray-200">
 						{colours.map((c, i) => <button
 							key={i}
 							onClick={() => updateCurrentColor(c)}
 							className={classNames(
-								"rounded-full h-8 w-8 focus:outline-none shadow-sm",
+								"ring ring-2 transition-shadow duration-150",
+								"rounded-full h-10 w-10 focus:outline-none shadow-sm border border-2 border-white",
 								{
-									"ring ring-4": c.name === currentColour.name,
-									"ring-red-300 bg-red-400": c.name === "red-400",
-									"ring-red-300 bg-red-500": c.name === "red-500",
-									"ring-red-300 bg-red-600": c.name === "red-600",
-									"ring-purple-300 bg-purple-400": c.name === "purple-400",
-									"ring-purple-300 bg-purple-500": c.name === "purple-500",
-									"ring-purple-300 bg-purple-600": c.name === "purple-600",
-									"ring-green-300 bg-green-400": c.name === "green-400",
-									"ring-green-300 bg-green-500": c.name === "green-500",
-									"ring-green-300 bg-green-600": c.name === "green-600",
-									"ring-green-300 bg-blueGray-400": c.name === "blueGray-400",
-									"ring-green-300 bg-blueGray-500": c.name === "blueGray-500",
-									"ring-green-300 bg-blueGray-600": c.name === "blueGray-600",
-									"ring-green-300 bg-white": c.name === "white",
-									"ring-green-300 bg-coolGray-100": c.name === "coolGray-100",
-									"ring-green-300 bg-coolGray-200": c.name === "coolGray-200",
+									"ring-transparent hover:ring-blueGray-400": c.name !== currentColour.name,
+									"ring ring-2 ring-blueGray-600": c.name === currentColour.name,
+									"bg-red-400": c.name === "red-400",
+									"bg-red-500": c.name === "red-500",
+									"bg-red-600": c.name === "red-600",
+									"bg-purple-400": c.name === "purple-400",
+									"bg-purple-500": c.name === "purple-500",
+									"bg-purple-600": c.name === "purple-600",
+									"bg-green-400": c.name === "green-400",
+									"bg-green-500": c.name === "green-500",
+									"bg-green-600": c.name === "green-600",
+									"bg-blueGray-400": c.name === "blueGray-400",
+									"bg-blueGray-500": c.name === "blueGray-500",
+									"bg-blueGray-600": c.name === "blueGray-600",
+									"bg-white": c.name === "white",
+									"bg-coolGray-100": c.name === "coolGray-100",
+									"bg-coolGray-200": c.name === "coolGray-200",
 								})
 							}
 						></button>)}
 					</div>
+					<button
+						onClick={(e) => console.log(e)}
+						className={classNames(
+							"w-full rounded-full text-center p-2 bg-blueGray-500 text-white mb-3",
+							"border border-2 border-white",
+							"ring ring-2 ring-transparent transition-shadow duration-150",
+							"hover:ring-blueGray-400"
+						)}
+					>Fill all</button>
+					<button
+						onClick={(e) => console.log(e)}
+						className={classNames(
+							"w-full rounded-full text-center p-2 bg-blueGray-500 text-white mb-3",
+							"border border-2 border-white",
+							"ring ring-2 ring-transparent transition-shadow duration-150",
+							"hover:ring-blueGray-400"
+						)}
+					>Clear all</button>
 				</div>
 			</div>
 		</>
