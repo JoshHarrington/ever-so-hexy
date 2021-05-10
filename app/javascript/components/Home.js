@@ -24,8 +24,8 @@ const Home = ({allHexes, lastTileId}) => {
     <>
       <HexWrapper
         ref={hexWrapperRef}
-        minWidth={`${NumberOfLayers * 7 + 6}em`}
-        minHeight={`${(LayerWithMostTiles.length - 1) * 6 + 14}em`}
+        width={`${NumberOfLayers * 7 + 6}rem`}
+        height={`${(LayerWithMostTiles.length - 1) * 6 + 14}rem`}
       >
         <HexGrid
           lastTileId={lastTileId}

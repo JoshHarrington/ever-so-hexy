@@ -15,7 +15,8 @@ const zoomAndScroll = ({
 	window,
 	zoomLevel,
 	setPageReady,
-	setZoomLevel
+	setZoomLevel,
+	screenSizeZoomIncrease
 }) => {
 	const svgWidth = elementProps.width
 	const svgHeight = elementProps.height
@@ -32,7 +33,7 @@ const zoomAndScroll = ({
 
 	let percentageSizeOfHex = hexSizePercentage / 100
 
-	const newZoomLevel = zoomLevel * (percentageSizeOfHex / orientationRatioToSizeOn)
+	const newZoomLevel = Math.floor(zoomLevel * screenSizeZoomIncrease * (percentageSizeOfHex / orientationRatioToSizeOn))
 	setZoomLevel(newZoomLevel)
 
 	const svgLeftOffset = elementProps.left
@@ -41,8 +42,8 @@ const zoomAndScroll = ({
 	const svgHalfWidth = svgWidth / 2
 	const svgHalfHeight = svgHeight / 2
 
-	const xScrollPosition = Math.round(((svgLeftOffset + svgHalfWidth + window.scrollX) * (newZoomLevel / zoomLevel) - (windowWidth / 2)))
-	const yScrollPosition = Math.round(((svgTopOffset + svgHalfHeight + window.scrollY) * (newZoomLevel / zoomLevel) - (windowHeight / 2)))
+	const xScrollPosition = Math.round(((svgLeftOffset + svgHalfWidth + window.scrollX) * (newZoomLevel / (zoomLevel)) - (windowWidth / 2)))
+	const yScrollPosition = Math.round(((svgTopOffset + svgHalfHeight + window.scrollY) * (newZoomLevel / (zoomLevel)) - (windowHeight / 2)))
 
 	const timeout = setTimeout(() => {
 		window.scrollTo({
@@ -78,6 +79,8 @@ const HexGrid = ({
 		setupFocusedHexId = newHexId
 	} else if (window && window.location.hash.replace("#", "")) {
 		setupFocusedHexId = parseInt(window.location.hash.replace("#", ""))
+	} else if (lastTileId) {
+		setupFocusedHexId = lastTileId
 	}
 
 	const [focusedHexId, setFocusedHexId] = useState(setupFocusedHexId)
@@ -145,26 +148,16 @@ const HexGrid = ({
   }, []);
 
 	useEffect(() => {
+		const adjustedZoomLevel = Math.floor(zoomLevel * screenSizeZoomIncrease)
+
 		if (hexWrapperRef.current) {
-			hexWrapperRef.current.style.fontSize = `${zoomLevel * screenSizeZoomIncrease * 100}%`
+			hexWrapperRef.current.style.transform = `scale(${adjustedZoomLevel})`
 	}
 	}, [hexWrapperRef.current, zoomLevel, screenSizeZoomIncrease])
 
 	useEffect(() => {
-		if (document && window && !!lastTileId) {
-			zoomAndScroll({
-				elementProps: document.querySelector(`svg#id-${lastTileId}`).getBoundingClientRect(),
-				hexSizePercentage: 20,
-				window,
-				zoomLevel: zoomLevelRef.current,
-				setPageReady,
-				setZoomLevel
-			})
-		}
-	}, [lastTileId, setPageReady])
-
-	useEffect(() => {
 		if (document && window && !!focusedHexId) {
+			console.log("focusedHexId", focusedHexId)
 			const focusedHexEl = focusedHex.current || document.querySelector(`svg#id-${focusedHexId}`)
 			zoomAndScroll({
 				elementProps: focusedHexEl.getBoundingClientRect(),
@@ -172,23 +165,32 @@ const HexGrid = ({
 				window,
 				zoomLevel: zoomLevelRef.current,
 				setPageReady,
-				setZoomLevel
+				setZoomLevel,
+				screenSizeZoomIncrease
 			})
 		}
 	}, [focusedHexId, setPageReady])
 
 	useEffect(() => {
 		if (document && window && !!newHexId) {
+			console.log("newHexId", newHexId)
 			zoomAndScroll({
 				elementProps: document.querySelector(`svg#id-${newHexId}`).getBoundingClientRect(),
 				hexSizePercentage: 70,
 				window,
 				zoomLevel: zoomLevelRef.current,
 				setPageReady,
-				setZoomLevel
+				setZoomLevel,
+				screenSizeZoomIncrease
 			})
 		}
 	}, [newHexId, setPageReady])
+
+	useEffect(() => {
+		if (document) {
+			document.body.classList.add('bg-gray-100')
+		}
+	})
 
 	return (
 		<>
@@ -211,8 +213,8 @@ const HexGrid = ({
 								`absolute transform`
 							)}
 							style={{
-								transform: `translate(${leftTransform}em, ${topTransform}em)`,
-								width: '6.6em',
+								transform: `translate(${leftTransform}rem, ${topTransform}rem)`,
+								width: '6.6rem',
 								clipPath: 'polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%)'
 							}}
 							currentColour={currentColour}
@@ -245,8 +247,8 @@ const HexGrid = ({
 								`absolute transform`
 							)}
 							style={{
-								transform: `translate(${leftTransform}em, ${topTransform}em)`,
-								width: '6.6em',
+								transform: `translate(${leftTransform}rem, ${topTransform}rem)`,
+								width: '6.6rem',
 								clipPath: 'polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%)'
 							}}
 						/>
