@@ -67,7 +67,9 @@ const HexGrid = ({
 	hexWrapperRef,
 	newTileTrixels,
 	setNewTileTrixels,
-	publishAllowed
+	publishAllowed,
+	focusedHexId,
+	setFocusedHexId
 }) => {
 
 	useEffect(()=>  {
@@ -75,15 +77,6 @@ const HexGrid = ({
 			window.history.scrollRestoration = "manual"
 		}
 	},[]);
-
-	let setupFocusedHexId = null
-	if (newHexId) {
-		setupFocusedHexId = newHexId
-	} else if (window && window.location.hash.replace("#", "")) {
-		setupFocusedHexId = parseInt(window.location.hash.replace("#", ""))
-	}
-
-	const [focusedHexId, setFocusedHexId] = useState(setupFocusedHexId)
 
 	const focusedHex = useRef(null)
 

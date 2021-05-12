@@ -1,5 +1,5 @@
-import classNames from "classnames"
 import React, { useRef, useState } from "react"
+import classNames from "classnames"
 import { splitIntoLayers, updateAllTrixelsFn } from "../utils"
 import HexGrid from "./HexGrid"
 import HexWrapper from "./HexWapper"
@@ -69,6 +69,16 @@ const New = ({allHexes, currentDraftTileID, csrfToken}) => {
 	const [newTileTrixels, setNewTileTrixels] = useState(allHexes.filter(h => h[0].tile_id === newTileId)[0])
 	const publishAllowed = useRef(newTileTrixels.filter(t => t.colour !== "white" && t.colour !== "#fff").length > 5)
 
+
+	let setupFocusedHexId = null
+	if (newTileId) {
+		setupFocusedHexId = newTileId
+	} else if (window && window.location.hash.replace("#", "")) {
+		setupFocusedHexId = parseInt(window.location.hash.replace("#", ""))
+	}
+
+	const [focusedHexId, setFocusedHexId] = useState(setupFocusedHexId)
+
 	return (
 		<>
 			<HexWrapper
@@ -86,6 +96,8 @@ const New = ({allHexes, currentDraftTileID, csrfToken}) => {
 					newTileTrixels={newTileTrixels}
 					setNewTileTrixels={setNewTileTrixels}
 					publishAllowed={publishAllowed}
+          focusedHexId={focusedHexId}
+          setFocusedHexId={setFocusedHexId}
 				/>
 			</HexWrapper>
 			<div
