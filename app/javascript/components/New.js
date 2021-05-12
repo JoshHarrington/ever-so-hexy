@@ -3,6 +3,8 @@ import classNames from "classnames"
 import { splitIntoLayers, updateAllTrixelsFn } from "../utils"
 import HexGrid from "./HexGrid"
 import HexWrapper from "./HexWapper"
+import { Back } from "./Icons"
+import { Badge, TextBadge } from "./Badge"
 
 const New = ({allHexes, currentDraftTileID, csrfToken}) => {
 
@@ -102,7 +104,7 @@ const New = ({allHexes, currentDraftTileID, csrfToken}) => {
 			</HexWrapper>
 			<div
 				className={classNames(
-					"fixed h-screen right-0 top-0 flex items-center",
+					"fixed h-screen right-0 top-0 flex items-center z-10",
 					{"hidden": !pageReady}
 				)}
 			>
@@ -175,22 +177,14 @@ const New = ({allHexes, currentDraftTileID, csrfToken}) => {
 				</div>
 			</div>
 			<div className="fixed bottom-0 flex justify-center px-6 pb-8 text-lg z-10 w-full">
-				<button className={classNames(
-					"border-0 border-solid shadow py-2 px-4 text-white rounded-full",
-					"bg-teal-600 hover:bg-teal-700 mr-auto",
-					"focus:outline-none"
-				)}>{"<"}</button>
+				<Badge href="/" className="mr-auto"><Back className="w-6 h-6" /></Badge>
 				{publishAllowed.current &&
 					<form
 						className="mr-auto -ml-10"
 						action={`/tiles/${newTileId}/publish`}
 						method="get"
 					>
-						<button className={classNames(
-							"border-0 border-solid shadow py-2 px-4 text-white rounded-full",
-							"bg-teal-600 hover:bg-teal-700",
-							"focus:outline-none"
-							)}>Save and add to grid</button>
+						<TextBadge>Save and add to grid</TextBadge>
 					</form>
 				}
 			</div>

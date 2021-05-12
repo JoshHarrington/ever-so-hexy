@@ -5,6 +5,8 @@ import { splitIntoLayers } from '../utils'
 
 import HexGrid from './HexGrid'
 import HexWrapper from './HexWapper'
+import { Cross, Info, Plus } from './Icons'
+import { Badge, TextBadge } from './Badge'
 
 const Home = ({allHexes, lastTileId}) => {
 
@@ -68,39 +70,23 @@ const Home = ({allHexes, lastTileId}) => {
           }
           <hr className="my-5" />
           <div className="flex items-center justify-between">
-            <a
-              href="/new"
-              className={classNames(
-                "border-0 border-solid shadow py-2 px-4 text-white rounded-full",
-                "bg-teal-600 hover:bg-teal-700",
-                "focus:outline-none mr-3",
-                "flex items-center"
-              )}
-            >+ Add a hexagon</a>
-            <button
-              onClick={() => setInfoBlockShown(false)}
-              className="px-4 py-2 bg-transparent border-0"
-            >X</button>
+            <TextBadge href="/new"><Plus className="w-5 h-5 -ml-1 mr-2" /> Add a hexagon</TextBadge>
+            <Badge onClick={() => setInfoBlockShown(false)}>
+              <Cross className="w-6 h-6" />
+            </Badge>
           </div>
         </div>
         :
         <div className="fixed bottom-0 right-0 mb-8 mr-8 flex">
-      <a
-        href="/new"
-            className={classNames(
-              "border-0 border-solid shadow py-2 px-4 rounded-full",
-              "focus:outline-none text-teal-600 bg-white w-12 h-12",
-              "flex items-center justify-center"
-            )}
-          >+</a>
-          <button
+          <Badge href="/new">
+            <Plus className="w-6 h-6" />
+          </Badge>
+          <Badge
+            className="ml-4"
             onClick={() => setInfoBlockShown(true)}
-            className={classNames(
-              "border-0 border-solid shadow py-2 px-4 rounded-full",
-              "focus:outline-none text-teal-600 bg-white w-12 h-12",
-              "flex items-center justify-center ml-4"
-            )}
-          >i</button>
+          >
+            <Info className="w-6 h-6" />
+          </Badge>
         </div>
       }
     </>
