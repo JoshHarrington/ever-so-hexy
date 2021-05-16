@@ -1,1 +1,3 @@
+<% content_for :title, "Ever So Hexy | New Hexagon" %>
+
 <%= react_component("New", { allHexes: @tiles, currentDraftTileID: @current_draft_tile_id, csrfToken: form_authenticity_token }) %>
