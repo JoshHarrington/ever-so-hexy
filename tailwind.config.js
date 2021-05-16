@@ -41,7 +41,14 @@ module.exports = {
         green: colors.emerald,
         blueGray: colors.blueGray,
         coolGray: colors.coolGray,
-        teal: colors.teal
+        teal: {
+          ...colors.teal,
+
+          // this approach assumes that tailwind is using 6 letter hex codes
+          // depends on tailwind no changing their colour implementation
+          '500-a25': `${colors.teal[500]}40`,
+          '500-a50': `${colors.teal[500]}80`
+        }
       }
     },
   },
