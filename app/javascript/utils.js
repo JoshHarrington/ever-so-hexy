@@ -1,36 +1,5 @@
 import { useEffect, useRef } from 'react'
 
-const splitIntoShells = (items) => {
-
-	let finalShelledArray = []
-
-	for (var i=0,j=items.length; i < j; i++) {
-		const currentLengthOfFlatShelledArray = finalShelledArray.flat().length
-
-		const finalShellArrayLength = finalShelledArray.length
-
-		const howManyItemsInLastShell = finalShellArrayLength ? finalShelledArray[finalShellArrayLength - 1].length :  finalShellArrayLength
-
-		switch(howManyItemsInLastShell) {
-			case 0:
-				finalShelledArray.push(items.slice(0,1))
-				break
-			case 1:
-				finalShelledArray.push(items.slice(currentLengthOfFlatShelledArray, currentLengthOfFlatShelledArray+6))
-				break
-			default:
-				const shellNumber = howManyItemsInLastShell / 6
-				finalShelledArray.push(items.slice(currentLengthOfFlatShelledArray, currentLengthOfFlatShelledArray+((shellNumber+1)*6)))
-				break
- 		}
-
-		if (finalShelledArray.flat().length === items.length) {
-			return finalShelledArray
-		}
-	}
-
-}
-
 const splitIntoLayers = (items) => {
 
 	let itemsInLayers = []
@@ -48,11 +17,6 @@ const splitIntoLayers = (items) => {
 		}
 	}
 
-}
-
-const getSvgSize = (target) => {
-	const svg = target.tagName === "svg" ? target : target.closest("svg")
-	return svg.getBoundingClientRect()
 }
 
 function debounce(func, wait, immediate) {
@@ -128,13 +92,60 @@ const updateAllTrixelsFn = ({trixels, setNewTileTrixels, id, colour, csrfToken})
 	sendNewPaths({id, trixels: updatedTrixels, csrfToken})
 }
 
+const zoomAndScroll = ({
+	elementProps,
+	hexSizePercentage,
+	window,
+	zoomLevel,
+	setPageReady,
+	setZoomLevel
+}) => {
+	const svgWidth = elementProps.width
+	const svgHeight = elementProps.height
+
+	const windowWidth = window.innerWidth
+	const windowHeight = window.innerHeight
+
+	const widthRatio = svgWidth / windowWidth
+	/// get the decimal fraction of the width of the svg of the total width of the window
+	const heightRatio = svgHeight / windowHeight
+	/// get the decimal fraction of the height of the svg of the total height of the window
+
+	const orientationRatioToSizeOn = heightRatio >= widthRatio ? heightRatio : widthRatio
+
+	let percentageSizeOfHex = hexSizePercentage / 100
+
+	const newZoomLevel = zoomLevel * (percentageSizeOfHex / orientationRatioToSizeOn)
+	setZoomLevel(newZoomLevel)
+
+	const svgLeftOffset = elementProps.left
+	const svgTopOffset = elementProps.top
+
+	const svgHalfWidth = svgWidth / 2
+	const svgHalfHeight = svgHeight / 2
+
+	const xScrollPosition = Math.round(((svgLeftOffset + svgHalfWidth + window.scrollX) * (newZoomLevel / zoomLevel) - (windowWidth / 2)))
+	const yScrollPosition = Math.round(((svgTopOffset + svgHalfHeight + window.scrollY) * (newZoomLevel / zoomLevel) - (windowHeight / 2)))
+
+	const timeout = setTimeout(() => {
+		window.scrollTo({
+			top: yScrollPosition,
+			left: xScrollPosition
+		})
+		if (setPageReady) {
+			setPageReady(true)
+		}
+	}, 1)
+
+	return () => clearTimeout(timeout)
+}
+
 export {
-	splitIntoShells,
 	splitIntoLayers,
-	getSvgSize,
 	debounce,
 	usePrevious,
 	sendNewPaths,
 	updatePathsFn,
-	updateAllTrixelsFn
+	updateAllTrixelsFn,
+	zoomAndScroll
 }
