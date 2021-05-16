@@ -1,75 +1,21 @@
 import React, { useState, Fragment, useEffect, useRef } from 'react'
+import classNames from 'classnames'
 
 import { maxZoomLevel, minZoomLevel } from '../constants'
-
-import { debounce } from '../utils'
-import DraggyHex from './DraggyHex'
+import { debounce, zoomAndScroll } from '../utils'
 
 import Hex from './Hex'
-
-const classNames = require('classnames')
-
-const zoomAndScroll = ({
-	elementProps,
-	hexSizePercentage,
-	window,
-	zoomLevel,
-	setPageReady,
-	setZoomLevel
-}) => {
-	const svgWidth = elementProps.width
-	const svgHeight = elementProps.height
-
-	const windowWidth = window.innerWidth
-	const windowHeight = window.innerHeight
-
-	const widthRatio = svgWidth / windowWidth
-	/// get the decimal fraction of the width of the svg of the total width of the window
-	const heightRatio = svgHeight / windowHeight
-	/// get the decimal fraction of the height of the svg of the total height of the window
-
-	const orientationRatioToSizeOn = heightRatio >= widthRatio ? heightRatio : widthRatio
-
-	let percentageSizeOfHex = hexSizePercentage / 100
-
-	const newZoomLevel = zoomLevel * (percentageSizeOfHex / orientationRatioToSizeOn)
-	setZoomLevel(newZoomLevel)
-
-	const svgLeftOffset = elementProps.left
-	const svgTopOffset = elementProps.top
-
-	const svgHalfWidth = svgWidth / 2
-	const svgHalfHeight = svgHeight / 2
-
-	const xScrollPosition = Math.round(((svgLeftOffset + svgHalfWidth + window.scrollX) * (newZoomLevel / zoomLevel) - (windowWidth / 2)))
-	const yScrollPosition = Math.round(((svgTopOffset + svgHalfHeight + window.scrollY) * (newZoomLevel / zoomLevel) - (windowHeight / 2)))
-
-	const timeout = setTimeout(() => {
-		window.scrollTo({
-			top: yScrollPosition,
-			left: xScrollPosition
-		})
-		if (setPageReady) {
-			setPageReady(true)
-		}
-	}, 1)
-
-	return () => clearTimeout(timeout)
-}
 
 const HexGrid = ({
 	tiles,
 	newHexId,
 	lastTileId,
-	currentColour,
 	setPageReady,
-	csrfToken,
 	hexWrapperRef,
-	newTileTrixels,
-	setNewTileTrixels,
-	publishAllowed,
 	focusedHexId,
-	setFocusedHexId
+	setFocusedHexId,
+	focusedHex,
+	children
 }) => {
 
 	useEffect(()=>  {
@@ -77,8 +23,6 @@ const HexGrid = ({
 			window.history.scrollRestoration = "manual"
 		}
 	},[]);
-
-	const focusedHex = useRef(null)
 
   const [zoomLevel, setZoomLevel] = useState(minZoomLevel)
 	const zoomLevelRef = useRef(zoomLevel)
@@ -173,19 +117,6 @@ const HexGrid = ({
 		}
 	}, [focusedHexId, setPageReady])
 
-	useEffect(() => {
-		if (document && window && !!newHexId) {
-			zoomAndScroll({
-				elementProps: document.querySelector(`svg#id-${newHexId}`).getBoundingClientRect(),
-				hexSizePercentage: 70,
-				window,
-				zoomLevel: zoomLevelRef.current,
-				setPageReady,
-				setZoomLevel
-			})
-		}
-	}, [newHexId, setPageReady])
-
 	return (
 		<>
 			{tiles.map((l, li) => {
@@ -193,32 +124,9 @@ const HexGrid = ({
 					const leftTransform = (li * 7) - (ti * 3.5)
 					const topTransform = ti * 6
 
-					if (Object.keys(t).length === 0 ) {
-						return null
-					} else if (t[0].tile_id === newHexId) {
-						return <DraggyHex
-							key={`${li}-${ti}`}
-							ref={t[0].tile_id === focusedHexId ? focusedHex : undefined}
-							focusedHexId={focusedHexId}
-							id={t[0].tile_id}
-							trixels={newTileTrixels}
-							setNewTileTrixels={setNewTileTrixels}
-							csrfToken={csrfToken}
-							publishAllowed={publishAllowed}
-							className={classNames(
-								`absolute transform`
-							)}
-							style={{
-								transform: `translate(${leftTransform}em, ${topTransform}em)`,
-								width: '6.6em',
-								clipPath: 'polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%)'
-							}}
-							currentColour={currentColour}
-						/>
-					} else {
+					if (Object.keys(t).length !== 0 && t[0].tile_id !== newHexId) {
 						return <Hex
 							onClick={
-								!newHexId ?
 								(e) => {
 									if (document && window) {
 										if (!focusedHexId || (focusedHexId && focusedHexId !== t[0].tile_id)) {
@@ -230,8 +138,7 @@ const HexGrid = ({
 											window.history.pushState("", "", window.location.origin)
 										}
 									}
-								} :
-								undefined
+								}
 							}
 							ref={t[0].tile_id === focusedHexId ? focusedHex : undefined}
 							id={t[0].tile_id}
@@ -251,6 +158,7 @@ const HexGrid = ({
 					}
 				})}</Fragment>
 			})}
+			{children}
     </>
 	)
 }

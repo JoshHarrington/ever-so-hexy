@@ -1,10 +1,11 @@
 import React, { useRef, useState } from "react"
 import classNames from "classnames"
-import { splitIntoLayers, updateAllTrixelsFn } from "../utils"
+import { splitIntoLayers, updateAllTrixelsFn, zoomAndScroll } from "../utils"
 import HexGrid from "./HexGrid"
 import HexWrapper from "./HexWapper"
 import { Back } from "./Icons"
 import { Badge, TextBadge } from "./Badge"
+import DraggyHex from "./DraggyHex"
 
 const New = ({allHexes, currentDraftTileID, csrfToken}) => {
 
@@ -56,7 +57,7 @@ const New = ({allHexes, currentDraftTileID, csrfToken}) => {
 	}]
 
 	const [currentColour, updateCurrentColor] = useState(colours[0])
-	const newTileId = currentDraftTileID
+	const newHexId = currentDraftTileID
 	const tiles = splitIntoLayers(allHexes)
 
 	const [pageReady, setPageReady] = useState(false)
@@ -68,18 +69,47 @@ const New = ({allHexes, currentDraftTileID, csrfToken}) => {
 
 	const hexWrapperRef = useRef(null)
 
-	const [newTileTrixels, setNewTileTrixels] = useState(allHexes.filter(h => h[0].tile_id === newTileId)[0])
+	const [newTileTrixels, setNewTileTrixels] = useState(allHexes.filter(h => h[0].tile_id === newHexId)[0])
 	const publishAllowed = useRef(newTileTrixels.filter(t => t.colour !== "white" && t.colour !== "#fff").length > 5)
 
 
 	let setupFocusedHexId = null
-	if (newTileId) {
-		setupFocusedHexId = newTileId
+	if (newHexId) {
+		setupFocusedHexId = newHexId
 	} else if (window && window.location.hash.replace("#", "")) {
 		setupFocusedHexId = parseInt(window.location.hash.replace("#", ""))
 	}
 
 	const [focusedHexId, setFocusedHexId] = useState(setupFocusedHexId)
+	const focusedHex = useRef(null)
+
+
+
+	let leftTransform = 0
+	let topTransform = 0
+
+	const hexPosition = tiles.filter((l, li) => (
+		l.filter((t, ti) => {
+			if (t[0].tile_id === newHexId) {
+				leftTransform = (li * 7) - (ti * 3.5)
+				topTransform = ti * 6
+			}
+			return t[0].tile_id === newHexId
+		}).length > 0
+	))
+
+	useEffect(() => {
+		if (document && window && !!newHexId) {
+			zoomAndScroll({
+				elementProps: document.querySelector(`svg#id-${newHexId}`).getBoundingClientRect(),
+				hexSizePercentage: 70,
+				window,
+				zoomLevel: zoomLevelRef.current,
+				setPageReady,
+				setZoomLevel
+			})
+		}
+	}, [newHexId, setPageReady])
 
 	return (
 		<>
@@ -89,18 +119,34 @@ const New = ({allHexes, currentDraftTileID, csrfToken}) => {
 				minHeight={`${(LayerWithMostTiles.length - 1) * 6 + 14}em`}
 			>
 				<HexGrid
-					csrfToken={csrfToken}
 					tiles={tiles}
-					newHexId={newTileId}
-					currentColour={currentColour}
+					newHexId={newHexId}
 					setPageReady={setPageReady}
 					hexWrapperRef={hexWrapperRef}
-					newTileTrixels={newTileTrixels}
-					setNewTileTrixels={setNewTileTrixels}
-					publishAllowed={publishAllowed}
           focusedHexId={focusedHexId}
           setFocusedHexId={setFocusedHexId}
-				/>
+					focusedHex={focusedHex}
+				>
+					<DraggyHex
+						ref={newHexId === focusedHexId ? focusedHex : undefined}
+						focusedHexId={focusedHexId}
+						id={newHexId}
+						trixels={newTileTrixels}
+						setNewTileTrixels={setNewTileTrixels}
+						csrfToken={csrfToken}
+						publishAllowed={publishAllowed}
+						className={classNames(
+							`absolute transform`
+						)}
+						style={{
+							transform: `translate(${leftTransform}em, ${topTransform}em)`,
+							width: '6.6em',
+							clipPath: 'polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%)'
+						}}
+						currentColour={currentColour}
+					/>
+
+				</HexGrid>
 			</HexWrapper>
 			<div
 				className={classNames(
@@ -143,7 +189,7 @@ const New = ({allHexes, currentDraftTileID, csrfToken}) => {
 							updateAllTrixelsFn({
 								trixels: newTileTrixels,
 								setNewTileTrixels,
-								id: newTileId,
+								id: newHexId,
 								colour: currentColour.hex,
 								csrfToken
 							})
@@ -161,7 +207,7 @@ const New = ({allHexes, currentDraftTileID, csrfToken}) => {
 							updateAllTrixelsFn({
 								trixels: newTileTrixels,
 								setNewTileTrixels,
-								id: newTileId,
+								id: newHexId,
 								colour: "white",
 								csrfToken
 							})
@@ -181,7 +227,7 @@ const New = ({allHexes, currentDraftTileID, csrfToken}) => {
 				{publishAllowed.current &&
 					<form
 						className="mr-auto -ml-10"
-						action={`/tiles/${newTileId}/publish`}
+						action={`/tiles/${newHexId}/publish`}
 						method="get"
 					>
 						<TextBadge>Save and add to grid</TextBadge>
