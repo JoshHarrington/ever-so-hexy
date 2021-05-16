@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react"
+import React, { useRef, useState, useEffect } from "react"
 import classNames from "classnames"
 import { splitIntoLayers, updateAllTrixelsFn, zoomAndScroll } from "../utils"
 import HexGrid from "./HexGrid"
@@ -6,6 +6,7 @@ import HexWrapper from "./HexWapper"
 import { Back } from "./Icons"
 import { Badge, TextBadge } from "./Badge"
 import DraggyHex from "./DraggyHex"
+import { minZoomLevel } from "../constants"
 
 const New = ({allHexes, currentDraftTileID, csrfToken}) => {
 
@@ -60,6 +61,13 @@ const New = ({allHexes, currentDraftTileID, csrfToken}) => {
 	const newHexId = currentDraftTileID
 	const tiles = splitIntoLayers(allHexes)
 
+	const [zoomLevel, setZoomLevel] = useState(minZoomLevel)
+	const zoomLevelRef = useRef(zoomLevel)
+
+	useEffect(() => {
+		zoomLevelRef.current = zoomLevel
+	}, [zoomLevel])
+
 	const [pageReady, setPageReady] = useState(false)
 
   const NumberOfLayers = tiles.length
@@ -82,8 +90,6 @@ const New = ({allHexes, currentDraftTileID, csrfToken}) => {
 
 	const [focusedHexId, setFocusedHexId] = useState(setupFocusedHexId)
 	const focusedHex = useRef(null)
-
-
 
 	let leftTransform = 0
 	let topTransform = 0
@@ -126,6 +132,8 @@ const New = ({allHexes, currentDraftTileID, csrfToken}) => {
           focusedHexId={focusedHexId}
           setFocusedHexId={setFocusedHexId}
 					focusedHex={focusedHex}
+					zoomLevel={zoomLevel}
+					setZoomLevel={setZoomLevel}
 				>
 					<DraggyHex
 						ref={newHexId === focusedHexId ? focusedHex : undefined}

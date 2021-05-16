@@ -7,12 +7,15 @@ import HexGrid from './HexGrid'
 import HexWrapper from './HexWapper'
 import { Cross, Info, Plus } from './Icons'
 import { Badge, TextBadge } from './Badge'
+import { minZoomLevel } from '../constants'
 
 const Home = ({allHexes, lastTileId}) => {
 
   if (document && document.body) {
     document.body.classList.add("overflow-auto")
   }
+
+	const [zoomLevel, setZoomLevel] = useState(minZoomLevel)
 
 	const tiles = splitIntoLayers(allHexes)
 
@@ -52,6 +55,8 @@ const Home = ({allHexes, lastTileId}) => {
           hexWrapperRef={hexWrapperRef}
           focusedHexId={focusedHexId}
           setFocusedHexId={setFocusedHexId}
+					zoomLevel={zoomLevel}
+					setZoomLevel={setZoomLevel}
         />
       </HexWrapper>
       {infoBlockShown ?

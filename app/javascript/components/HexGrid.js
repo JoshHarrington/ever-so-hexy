@@ -15,6 +15,8 @@ const HexGrid = ({
 	focusedHexId,
 	setFocusedHexId,
 	focusedHex,
+	zoomLevel,
+	setZoomLevel,
 	children
 }) => {
 
@@ -24,7 +26,6 @@ const HexGrid = ({
 		}
 	},[]);
 
-  const [zoomLevel, setZoomLevel] = useState(minZoomLevel)
 	const zoomLevelRef = useRef(zoomLevel)
 
 	useEffect(() => {
