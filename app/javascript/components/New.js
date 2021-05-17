@@ -7,6 +7,8 @@ import { Back } from "./Icons"
 import { Badge, TextBadge } from "./Badge"
 import DraggyHex from "./DraggyHex"
 import { minZoomLevel } from "../constants"
+import { Modal } from "./Modal"
+import Portal from "./Portal"
 
 const New = ({allHexes, currentDraftTileID, csrfToken}) => {
 
@@ -117,6 +119,8 @@ const New = ({allHexes, currentDraftTileID, csrfToken}) => {
 		}
 	}, [newHexId, setPageReady])
 
+	const [draftModalOpen, setDraftModalOpen] = useState(false)
+
 	return (
 		<>
 			<HexWrapper
@@ -158,11 +162,11 @@ const New = ({allHexes, currentDraftTileID, csrfToken}) => {
 			</HexWrapper>
 			<div
 				className={classNames(
-					"fixed h-screen right-0 top-0 flex items-center z-10",
+					"fixed h-screen right-0 top-0 flex items-center z-10 pointer-events-none",
 					{"hidden": !pageReady}
 				)}
 			>
-				<div className="bg-white w-full p-8 pr-6 flex flex-col rounded-l-16xl shadow">
+				<div className="bg-white w-full p-8 pr-6 flex flex-col rounded-l-16xl shadow pointer-events-auto">
 					<div className="grid grid-cols-3 gap-2 pb-6 mb-6 border-0 border-b border-coolGray-200">
 						{colours.map((c, i) => <button
 							key={i}
@@ -230,8 +234,29 @@ const New = ({allHexes, currentDraftTileID, csrfToken}) => {
 					>Clear all</button>
 				</div>
 			</div>
-			<div className="fixed bottom-0 flex justify-center px-6 pb-8 text-lg z-10 w-full">
-				<Badge href="/" className="mr-auto"><Back className="w-6 h-6" /></Badge>
+			{draftModalOpen && <Portal><Modal dismiss={() => setDraftModalOpen(false)}>
+				<h3 className="text-3xl font-bold mb-3">Delete draft?</h3>
+				<p className="mb-5">This hexagon draft will be deleted</p>
+				<div className="flex items-center">
+					<TextBadge>Delete draft</TextBadge>
+					<TextBadge
+						hasWhiteBackground={true}
+						className="ml-3"
+						onClick={() => setDraftModalOpen(false)}
+					>
+						Continue editing
+					</TextBadge>
+				</div>
+			</Modal></Portal>}
+			<div className="fixed bottom-0 flex justify-center px-6 pb-8 text-lg z-10 w-full pointer-events-none">
+				<Badge
+					href="/"
+					className="mr-auto"
+					onClick={(e) => {
+						e.preventDefault()
+						setDraftModalOpen(true)
+					}}
+				><Back className="w-6 h-6" /></Badge>
 				{publishAllowed.current &&
 					<form
 						className="mr-auto -ml-10"
