@@ -32,6 +32,7 @@ const Home = ({allHexes, lastTileId}) => {
 	}
 
 	const [focusedHexId, setFocusedHexId] = useState(setupFocusedHexId)
+  const focusedHex = useRef(null)
 
   const [moreInfoShown, updateMoreInfoShown] = useState(false)
   const [infoBlockShown, setInfoBlockShown] = useState(!focusedHexId)
@@ -53,6 +54,7 @@ const Home = ({allHexes, lastTileId}) => {
           lastTileId={lastTileId}
           tiles={tiles}
           hexWrapperRef={hexWrapperRef}
+          focusedHex={focusedHex}
           focusedHexId={focusedHexId}
           setFocusedHexId={setFocusedHexId}
 					zoomLevel={zoomLevel}

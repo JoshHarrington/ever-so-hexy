@@ -106,7 +106,7 @@ const HexGrid = ({
 
 	useEffect(() => {
 		if (document && window && !!focusedHexId) {
-			const focusedHexEl = focusedHex.current || document.querySelector(`svg#id-${focusedHexId}`)
+			const focusedHexEl = focusedHex.current ? focusedHex.current : document.querySelector(`svg#id-${focusedHexId}`)
 			zoomAndScroll({
 				elementProps: focusedHexEl.getBoundingClientRect(),
 				hexSizePercentage: 50,
