@@ -9,7 +9,7 @@ import { Cross, Info, Plus } from './Icons'
 import { Badge, TextBadge } from './Badge'
 import { minZoomLevel } from '../constants'
 
-const Home = ({allHexes, lastTileId}) => {
+const Home = ({allHexes, lastTileOrderPosition}) => {
 
   if (document && document.body) {
     document.body.classList.add("overflow-auto")
@@ -17,7 +17,7 @@ const Home = ({allHexes, lastTileId}) => {
 
 	const [zoomLevel, setZoomLevel] = useState(minZoomLevel)
 
-	const tiles = splitIntoLayers(allHexes)
+	const tiles = splitIntoLayers([...allHexes])
 
   const NumberOfLayers = tiles.length
   const LayerWithMostTiles = [...tiles].sort((a,b) => (
@@ -26,22 +26,22 @@ const Home = ({allHexes, lastTileId}) => {
 
   const hexWrapperRef = useRef(null)
 
-	let setupFocusedHexId = null
+	let setupFocusedHexOrder = null
 	if (window && window.location.hash.replace("#", "")) {
-		setupFocusedHexId = parseInt(window.location.hash.replace("#", ""))
+		setupFocusedHexOrder = parseInt(window.location.hash.replace("#", ""))
 	}
 
-	const [focusedHexId, setFocusedHexId] = useState(setupFocusedHexId)
+	const [focusedHexOrder, setFocusedHexOrder] = useState(setupFocusedHexOrder)
   const focusedHex = useRef(null)
 
   const [moreInfoShown, updateMoreInfoShown] = useState(false)
-  const [infoBlockShown, setInfoBlockShown] = useState(!focusedHexId)
+  const [infoBlockShown, setInfoBlockShown] = useState(!focusedHexOrder)
 
   useEffect(() => {
-    if (!!focusedHexId) {
+    if (!!focusedHexOrder) {
       setInfoBlockShown(false)
     }
-  }, [focusedHexId])
+  }, [focusedHexOrder])
 
 	return (
     <>
@@ -51,12 +51,12 @@ const Home = ({allHexes, lastTileId}) => {
         minHeight={`${(LayerWithMostTiles.length - 1) * 6 + 14}em`}
       >
         <HexGrid
-          lastTileId={lastTileId}
+          lastTileOrderPosition={lastTileOrderPosition}
           tiles={tiles}
           hexWrapperRef={hexWrapperRef}
           focusedHex={focusedHex}
-          focusedHexId={focusedHexId}
-          setFocusedHexId={setFocusedHexId}
+          focusedHexOrder={focusedHexOrder}
+          setFocusedHexOrder={setFocusedHexOrder}
 					zoomLevel={zoomLevel}
 					setZoomLevel={setZoomLevel}
         />

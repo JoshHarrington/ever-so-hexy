@@ -8,19 +8,19 @@ import Hex from './Hex'
 
 const HexGrid = ({
 	tiles,
-	newHexId,
-	lastTileId,
+	newHexOrder,
+	lastTileOrderPosition,
 	setPageReady,
 	hexWrapperRef,
-	focusedHexId,
-	setFocusedHexId,
+	focusedHexOrder,
+	setFocusedHexOrder,
 	focusedHex,
 	zoomLevel,
 	setZoomLevel,
 	children
 }) => {
 
-	useEffect(()=>  {
+	useEffect(() =>  {
 		if ("scrollRestoration" in window.history) {
 			window.history.scrollRestoration = "manual"
 		}
@@ -92,9 +92,10 @@ const HexGrid = ({
 	}, [hexWrapperRef.current, zoomLevel, screenSizeZoomIncrease])
 
 	useEffect(() => {
-		if (document && window && !!lastTileId) {
+		if (document && window && !!lastTileOrderPosition) {
+			const lastTile = document.querySelector(`svg#id-${lastTileOrderPosition}`)
 			zoomAndScroll({
-				elementProps: document.querySelector(`svg#id-${lastTileId}`).getBoundingClientRect(),
+				elementProps: lastTile ? lastTile.getBoundingClientRect() : null,
 				hexSizePercentage: 20,
 				window,
 				zoomLevel: zoomLevelRef.current,
@@ -102,13 +103,13 @@ const HexGrid = ({
 				setZoomLevel
 			})
 		}
-	}, [lastTileId, setPageReady])
+	}, [lastTileOrderPosition, setPageReady])
 
 	useEffect(() => {
-		if (document && window && !!focusedHexId) {
-			const focusedHexEl = focusedHex.current ? focusedHex.current : document.querySelector(`svg#id-${focusedHexId}`)
+		if (document && window && !!focusedHexOrder) {
+			const focusedHexEl = focusedHex.current ? focusedHex.current : document.querySelector(`svg#id-${focusedHexOrder}`)
 			zoomAndScroll({
-				elementProps: focusedHexEl.getBoundingClientRect(),
+				elementProps: focusedHexEl ? focusedHexEl.getBoundingClientRect() : null,
 				hexSizePercentage: 50,
 				window,
 				zoomLevel: zoomLevelRef.current,
@@ -116,46 +117,43 @@ const HexGrid = ({
 				setZoomLevel
 			})
 		}
-	}, [focusedHexId, setPageReady])
+	}, [focusedHexOrder, setPageReady])
 
 	return (
 		<>
 			{tiles.map((l, li) => {
 				return <Fragment key={li}>{l.map((t, ti) => {
-					const leftTransform = (li * 7) - (ti * 3.5)
-					const topTransform = ti * 6
 
-					if (Object.keys(t).length !== 0 && t[0].tile_id !== newHexId) {
-						return <Hex
-							onClick={
-								(e) => {
-									if (document && window) {
-										if (!focusedHexId || (focusedHexId && focusedHexId !== t[0].tile_id)) {
-											setFocusedHexId(t[0].tile_id)
-											window.history.pushState("", "", window.location.origin + `#${t[0].tile_id}`)
-										} else {
-											setZoomLevel(minZoomLevel)
-											setFocusedHexId(null)
-											window.history.pushState("", "", window.location.origin)
+					if (Object.keys(t).length !== 0 && t.order !== newHexOrder) {
+						if (!t.draft && t.trixels !== null) {
+							return <Hex
+								onClick={
+									(e) => {
+										if (document && window) {
+											if (!focusedHexOrder || (focusedHexOrder && focusedHexOrder !== t.order)) {
+												setFocusedHexOrder(t.order)
+												window.history.pushState("", "", window.location.origin + `#${t.order}`)
+											} else {
+												setZoomLevel(minZoomLevel)
+												setFocusedHexOrder(null)
+												window.history.pushState("", "", window.location.origin)
+											}
 										}
 									}
 								}
-							}
-							ref={t[0].tile_id === focusedHexId ? focusedHex : undefined}
-							id={t[0].tile_id}
-							trixels={t}
-							focusedHexId={focusedHexId}
-							newHexPage={!!newHexId}
-							key={`${li}-${ti}`}
-							className={classNames(
-								`absolute transform`
-							)}
-							style={{
-								transform: `translate(${leftTransform}em, ${topTransform}em)`,
-								width: '6.6em',
-								clipPath: 'polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%)'
-							}}
-						/>
+								ref={t.order === focusedHexOrder ? focusedHex : undefined}
+								order={t.order}
+								trixels={t.trixels}
+								focusedHexOrder={focusedHexOrder}
+								newHexPage={!!newHexOrder}
+								key={`${li}-${ti}`}
+								className={classNames(
+									`absolute transform`
+								)}
+							/>
+						} else {
+							return <p>Draft</p>
+						}
 					}
 				})}</Fragment>
 			})}

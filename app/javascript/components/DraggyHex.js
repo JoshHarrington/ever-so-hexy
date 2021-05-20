@@ -1,5 +1,5 @@
 import React, { forwardRef, useRef, useState } from 'react'
-import { sendNewPaths, updatePathsFn } from '../utils'
+import { positionFromOrderNumber, sendNewPaths, updatePathsFn } from '../utils'
 
 var classNames = require('classnames')
 
@@ -21,9 +21,9 @@ const DraggyPath = ({
 
 const DraggyHex = forwardRef(({
 	className,
-	style,
-	focusedHexId,
+	focusedHexOrder,
 	id,
+	order,
 	trixels,
 	setNewTileTrixels,
 	currentColour,
@@ -31,15 +31,20 @@ const DraggyHex = forwardRef(({
 	publishAllowed
 }, ref) => {
 	const [currentPositionReference, updateCurrentPositionReference] = useState(null)
+	const posiFromOrder = positionFromOrderNumber(order)
 
   return (
 		<>
 			<svg
-				id={`id-${id}`}
+				id={`id-${order}`}
 				viewBox="0 0 156 180"
 				width="300px"
-				className={classNames(className, "z-10", {"opacity-50": focusedHexId && focusedHexId !== id})}
-				style={style ? style : {}}
+				className={classNames(className, "z-10", {"opacity-50": focusedHexOrder && focusedHexOrder !== order})}
+				style={{
+					transform: `translate(${posiFromOrder.leftTransform}em, ${posiFromOrder.topTransform}em)`,
+					width: '6.6em',
+					clipPath: 'polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%)'
+				}}
 				ref={ref}
 				onMouseLeave={() => {
 					if (currentPositionReference !== null) {
@@ -64,7 +69,6 @@ const DraggyHex = forwardRef(({
 							trixels,
 							setNewTileTrixels,
 							publishAllowed,
-							id,
 							currentColour
 						})
 					}
@@ -78,7 +82,6 @@ const DraggyHex = forwardRef(({
 								trixels,
 								setNewTileTrixels,
 								publishAllowed,
-								id,
 								currentColour
 							})
 							updateCurrentPositionReference(position)

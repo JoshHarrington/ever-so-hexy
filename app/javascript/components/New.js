@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect } from "react"
 import classNames from "classnames"
-import { splitIntoLayers, updateAllTrixelsFn, zoomAndScroll } from "../utils"
+import { isPublishingEnabled, splitIntoLayers, updateAllTrixelsFn, zoomAndScroll } from "../utils"
 import HexGrid from "./HexGrid"
 import HexWrapper from "./HexWapper"
 import { Back } from "./Icons"
@@ -10,7 +10,7 @@ import { minZoomLevel } from "../constants"
 import { Modal } from "./Modal"
 import Portal from "./Portal"
 
-const New = ({allHexes, currentDraftTileID, csrfToken}) => {
+const New = ({allHexes, currentDraftTileOrder, currentDraftTileId, csrfToken}) => {
 
 	const colours = [{
 		name: "red-400",
@@ -60,8 +60,7 @@ const New = ({allHexes, currentDraftTileID, csrfToken}) => {
 	}]
 
 	const [currentColour, updateCurrentColor] = useState(colours[0])
-	const newHexId = currentDraftTileID
-	const tiles = splitIntoLayers(allHexes)
+	const tiles = splitIntoLayers([...allHexes])
 
 	const [zoomLevel, setZoomLevel] = useState(minZoomLevel)
 	const zoomLevelRef = useRef(zoomLevel)
@@ -79,37 +78,27 @@ const New = ({allHexes, currentDraftTileID, csrfToken}) => {
 
 	const hexWrapperRef = useRef(null)
 
-	const [newTileTrixels, setNewTileTrixels] = useState(allHexes.filter(h => h[0].tile_id === newHexId)[0])
-	const publishAllowed = useRef(newTileTrixels.filter(t => t.colour !== "white" && t.colour !== "#fff").length > 5)
+	const [newTileTrixels, setNewTileTrixels] = useState([...allHexes].filter(h => h.order === currentDraftTileOrder)[0].trixels)
+	const publishAllowed = useRef(newTileTrixels ? isPublishingEnabled(newTileTrixels) : false)
 
 
-	let setupFocusedHexId = null
-	if (newHexId) {
-		setupFocusedHexId = newHexId
+	let setupFocusedHexOrder = null
+	if (currentDraftTileOrder) {
+		setupFocusedHexOrder = currentDraftTileOrder
 	} else if (window && window.location.hash.replace("#", "")) {
-		setupFocusedHexId = parseInt(window.location.hash.replace("#", ""))
+		setupFocusedHexOrder = parseInt(window.location.hash.replace("#", ""))
 	}
 
-	const [focusedHexId, setFocusedHexId] = useState(setupFocusedHexId)
+	const [focusedHexOrder, setFocusedHexOrder] = useState(setupFocusedHexOrder)
 	const focusedHex = useRef(null)
 
-	let leftTransform = 0
-	let topTransform = 0
-
-	const hexPosition = tiles.filter((l, li) => (
-		l.filter((t, ti) => {
-			if (t[0].tile_id === newHexId) {
-				leftTransform = (li * 7) - (ti * 3.5)
-				topTransform = ti * 6
-			}
-			return t[0].tile_id === newHexId
-		}).length > 0
-	))
-
 	useEffect(() => {
-		if (document && window && !!newHexId) {
+		if (document && window && !!currentDraftTileOrder) {
+
+			const newHex = document.querySelector(`svg#id-${currentDraftTileOrder}`)
+			console.log(currentDraftTileOrder, newHex)
 			zoomAndScroll({
-				elementProps: document.querySelector(`svg#id-${newHexId}`).getBoundingClientRect(),
+				elementProps: newHex ? newHex.getBoundingClientRect() : null,
 				hexSizePercentage: 70,
 				window,
 				zoomLevel: zoomLevelRef.current,
@@ -117,7 +106,7 @@ const New = ({allHexes, currentDraftTileID, csrfToken}) => {
 				setZoomLevel
 			})
 		}
-	}, [newHexId, setPageReady])
+	}, [currentDraftTileOrder, setPageReady])
 
 	const [draftModalOpen, setDraftModalOpen] = useState(false)
 
@@ -130,19 +119,20 @@ const New = ({allHexes, currentDraftTileID, csrfToken}) => {
 			>
 				<HexGrid
 					tiles={tiles}
-					newHexId={newHexId}
+					currentDraftTileOrder={currentDraftTileOrder}
 					setPageReady={setPageReady}
 					hexWrapperRef={hexWrapperRef}
-          focusedHexId={focusedHexId}
-          setFocusedHexId={setFocusedHexId}
+          focusedHexOrder={focusedHexOrder}
+          setFocusedHexOrder={setFocusedHexOrder}
 					focusedHex={focusedHex}
 					zoomLevel={zoomLevel}
 					setZoomLevel={setZoomLevel}
 				>
 					<DraggyHex
-						ref={newHexId === focusedHexId ? focusedHex : undefined}
-						focusedHexId={focusedHexId}
-						id={newHexId}
+						ref={currentDraftTileOrder === focusedHexOrder ? focusedHex : undefined}
+						focusedHexOrder={focusedHexOrder}
+						order={currentDraftTileOrder}
+						id={currentDraftTileId}
 						trixels={newTileTrixels}
 						setNewTileTrixels={setNewTileTrixels}
 						csrfToken={csrfToken}
@@ -150,11 +140,6 @@ const New = ({allHexes, currentDraftTileID, csrfToken}) => {
 						className={classNames(
 							`absolute transform`
 						)}
-						style={{
-							transform: `translate(${leftTransform}em, ${topTransform}em)`,
-							width: '6.6em',
-							clipPath: 'polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%)'
-						}}
 						currentColour={currentColour}
 					/>
 
@@ -201,7 +186,7 @@ const New = ({allHexes, currentDraftTileID, csrfToken}) => {
 							updateAllTrixelsFn({
 								trixels: newTileTrixels,
 								setNewTileTrixels,
-								id: newHexId,
+								id: currentDraftTileId,
 								colour: currentColour.hex,
 								csrfToken
 							})
@@ -219,7 +204,7 @@ const New = ({allHexes, currentDraftTileID, csrfToken}) => {
 							updateAllTrixelsFn({
 								trixels: newTileTrixels,
 								setNewTileTrixels,
-								id: newHexId,
+								id: currentDraftTileId,
 								colour: "white",
 								csrfToken
 							})
@@ -260,7 +245,7 @@ const New = ({allHexes, currentDraftTileID, csrfToken}) => {
 				{publishAllowed.current &&
 					<form
 						className="mr-auto -ml-10"
-						action={`/tiles/${newHexId}/publish`}
+						action={`/tiles/${currentDraftTileId}/publish`}
 						method="get"
 					>
 						<TextBadge>Save and add to grid</TextBadge>
