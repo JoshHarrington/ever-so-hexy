@@ -3,18 +3,40 @@ import { useEffect, useRef } from 'react'
 const splitIntoLayers = (items) => {
 
 	let itemsInLayers = []
+	let chunkSize = 1
 
-	const upperLimitLayerLength = 10
-
-	for(var i = 1; i < items.length; i++) {
-
-		const sliceStart = i < upperLimitLayerLength ? i * ((i - 1) * 0.5) : ((i - upperLimitLayerLength) * upperLimitLayerLength) + 45
-		const sliceEnd = i < upperLimitLayerLength ? sliceStart + i : sliceStart + upperLimitLayerLength
-		itemsInLayers.push(items.slice(sliceStart, sliceEnd))
-
-		if (itemsInLayers.flat().length >= items.length) {
-			return itemsInLayers
+	while (items.length) {
+		itemsInLayers.push(items.splice(0, chunkSize));
+		if (chunkSize < 10){
+			chunkSize++
 		}
+	}
+
+	return itemsInLayers
+
+}
+
+const positionFromOrderNumber = (currentOrderPosition) => {
+
+	const orderNumbers = Array.from({length: currentOrderPosition}, (x, i) => i+1)
+	const orderNumbersIntoLayers = splitIntoLayers(orderNumbers)
+
+	let currentOrderLayerIndex = 0
+	let currentOrderTileIndex = 0
+
+	orderNumbersIntoLayers.filter((layer, layerIndex) => {
+		if (layer.indexOf(currentOrderPosition) !== -1) {
+			currentOrderLayerIndex = layerIndex
+			currentOrderTileIndex = layer.indexOf(currentOrderPosition)
+			return true
+		} else {
+			return false
+		}
+	})
+
+	return {
+		leftTransform: (currentOrderLayerIndex * 7) - (currentOrderTileIndex * 3.5),
+		topTransform: currentOrderTileIndex * 6
 	}
 
 }
@@ -49,7 +71,7 @@ const sendNewPaths = ({id, trixels, setNewTileTrixels, csrfToken}) => {
 			"X-CSRF-Token": csrfToken,
 			'Content-Type': 'application/json',
 		},
-		body: JSON.stringify(trixels)
+		body: JSON.stringify({id, trixels})
 	})
 	.then(response => response.json())
 	.then(data => {
@@ -62,13 +84,19 @@ const sendNewPaths = ({id, trixels, setNewTileTrixels, csrfToken}) => {
 	})
 }
 
-const updatePathsFn = ({pathPosition, trixels, setNewTileTrixels, publishAllowed, id, currentColour}) => {
+const isPublishingEnabled = (trixels) => {
+	const colours = trixels.map(t => t.colour)
+	const publishAllowed = new Set(colours).size > 2
+	return publishAllowed
+}
+
+
+const updatePathsFn = ({pathPosition, trixels, setNewTileTrixels, publishAllowed, currentColour}) => {
 	const updatedPaths = trixels.map(p => {
 		if (p.position !== pathPosition) {
 			return p
 		} else {
 			return {
-				tile_id: id,
 				colour: currentColour.hex,
 				position: p.position,
 				d: p.d
@@ -76,13 +104,12 @@ const updatePathsFn = ({pathPosition, trixels, setNewTileTrixels, publishAllowed
 		}
 	})
 	setNewTileTrixels(updatedPaths)
-	publishAllowed.current = trixels.filter(t => t.colour !== "white" && t.colour !== "#fff").length > 5
+	publishAllowed.current = isPublishingEnabled(trixels)
 }
 
 const updateAllTrixelsFn = ({trixels, setNewTileTrixels, id, colour, csrfToken}) => {
 	const updatedTrixels = trixels.map(p => {
 		return {
-			tile_id: id,
 			colour,
 			position: p.position,
 			d: p.d
@@ -100,6 +127,9 @@ const zoomAndScroll = ({
 	setPageReady,
 	setZoomLevel
 }) => {
+	if (!elementProps) {
+		return null
+	}
 	const svgWidth = elementProps.width
 	const svgHeight = elementProps.height
 
@@ -142,10 +172,12 @@ const zoomAndScroll = ({
 
 export {
 	splitIntoLayers,
+	positionFromOrderNumber,
 	debounce,
 	usePrevious,
 	sendNewPaths,
 	updatePathsFn,
 	updateAllTrixelsFn,
-	zoomAndScroll
+	zoomAndScroll,
+	isPublishingEnabled
 }
