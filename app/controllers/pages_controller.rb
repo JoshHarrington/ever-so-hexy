@@ -1,24 +1,14 @@
 class PagesController < ApplicationController
+  include PagesHelper
   def home
     p "request.remote_ip"
     p request.remote_ip
 
-    all_tiles = Tile.all.order(created_at: :asc)
+    all_tiles = Tile.all.order(:order)
 
-    @tiles = all_tiles.map{ |t|
-      if t.draft == true
-        helpers.basicTile(tile_id: t.id, colour: "#8e8e8e")
-      else
-        t.trixels.map{|tr| {
-          tile_id: tr.tile_id,
-          colour: tr.colour,
-          position: tr.position,
-          d: tr.d
-        }}
-      end
-    }
+    @tiles = clean_tile_array(tiles: all_tiles)
 
-    @last_tile_id = all_tiles.where(draft: false).last.id
+    @last_tile_order_position = all_tiles.where(draft: false).last.order
 
   end
   def new
@@ -26,34 +16,26 @@ class PagesController < ApplicationController
     draft_tile = Tile.find_or_create_by(id: session[:current_draft_tile_id])
     session[:current_draft_tile_id] = draft_tile.id
 
-    @tiles = Tile.all.order(created_at: :asc).map{ |t|
-      if t.draft == true && t.id != draft_tile.id
-        helpers.basicTile(tile_id: t.id, colour: "#8e8e8e")
-      else
-        t.trixels.map{|tr| {
-          tile_id: tr.tile_id,
-          colour: tr.colour,
-          position: tr.position,
-          d: tr.d
-        }}
-      end
-    }
 
+    all_tiles = Tile.all.order(:order)
+
+    @tiles = clean_tile_array(tiles: all_tiles, is_in_editing_mode: true)
+
+    @current_draft_tile_order_position = draft_tile.order
     @current_draft_tile_id = draft_tile.id
-
 
   end
 
   def update
 
-    json_data = params["_json"]
-    tile_id = json_data[0]["tile_id"]
+    tile_id = params["id"]
+    trixels = params["trixels"]
 
     tile = Tile.find(tile_id)
 
     session[:current_draft_tile_id] = tile.id
 
-    json_data.each do |t|
+    trixels.each do |t|
       Trixel.find_by(tile_id: tile.id, position: t["position"]).update(colour: t["colour"])
     end
 

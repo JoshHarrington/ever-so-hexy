@@ -1,8 +1,24 @@
 class Tile < ApplicationRecord
 	has_many :trixels, dependent: :destroy
-	after_create :create_trixels
+	after_create :create_trixels, :add_order
+
+	validates :order, uniqueness: true
 
 	private
+
+		def add_order
+
+			order_for_tile = 0
+
+			Tile.count.times.each do |x|
+				if not Tile.exists?(order: x + 1)
+					order_for_tile = x + 1
+					break
+				end
+			end
+			self.update(order: order_for_tile)
+		end
+
 		def create_trixels
 			self.trixels.create([
 				{
