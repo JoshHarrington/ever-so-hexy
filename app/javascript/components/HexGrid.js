@@ -5,6 +5,7 @@ import { maxZoomLevel, minZoomLevel } from '../constants'
 import { debounce, zoomAndScroll } from '../utils'
 
 import Hex from './Hex'
+import DraftHex from './DraftHex'
 
 const HexGrid = ({
 	tiles,
@@ -152,7 +153,10 @@ const HexGrid = ({
 								)}
 							/>
 						} else {
-							return <p>Draft</p>
+							return <DraftHex
+								key={`${li}-${ti}`}
+								order={t.order}
+							/>
 						}
 					}
 				})}</Fragment>

@@ -1,7 +1,7 @@
-import React, { forwardRef } from 'react';
-import { positionFromOrderNumber } from '../utils';
+import React, { forwardRef } from 'react'
+import { positionFromOrderNumber } from '../utils'
 
-var classNames = require('classnames');
+var classNames = require('classnames')
 
 const Hex = forwardRef(({className, focusedHexOrder, onClick, order, trixels, newHexPage}, ref) => {
   const hexIsFocusedHex = focusedHexOrder && focusedHexOrder === order || !focusedHexOrder
