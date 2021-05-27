@@ -8,7 +8,7 @@ import HexOuter from './HexOuter'
 
 const HexGrid = ({
 	tiles,
-	newHexOrder,
+	currentDraftTileOrder,
 	lastTileOrderPosition,
 	setPageReady,
 	hexWrapperRef,
@@ -123,10 +123,10 @@ const HexGrid = ({
 		<>
 			{tiles.map((l, li) => {
 				return <Fragment key={li}>{l.map((t, ti) => {
-					if (Object.keys(t).length !== 0 && t.order !== newHexOrder) {
+					if (Object.keys(t).length !== 0 && t.order !== currentDraftTileOrder) {
 						return <HexOuter
 							onClick={
-								(e) => {
+								!currentDraftTileOrder ? (e) => {
 									if (document && window) {
 										if (!focusedHexOrder || (focusedHexOrder && focusedHexOrder !== t.order)) {
 											setFocusedHexOrder(t.order)
@@ -137,12 +137,12 @@ const HexGrid = ({
 											window.history.pushState("", "", window.location.origin)
 										}
 									}
-								}
+								} : undefined
 							}
 							ref={t.order === focusedHexOrder ? focusedHex : undefined}
 							order={t.order}
 							focusedHexOrder={focusedHexOrder}
-							newHexPage={!!newHexOrder}
+							newHexPage={!!currentDraftTileOrder}
 							key={`${li}-${ti}`}
 							className={classNames(
 								`absolute transform`
