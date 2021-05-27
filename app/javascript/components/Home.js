@@ -62,8 +62,8 @@ const Home = ({allHexes, lastTileOrderPosition}) => {
         />
       </HexWrapper>
       {infoBlockShown ?
-        <div className="fixed bottom-0 right-0 bg-white shadow rounded-tl-16xl p-8 max-w-xs w-full">
-          <h1 className="text-2xl font-bold mb-2">Ever So Hexy</h1>
+        <div className="fixed bottom-0 right-0 text-blueGray-800 bg-white shadow rounded-tl-16xl p-8 max-w-xs w-full">
+          <h1 className="text-2xl font-black mb-2">Ever So Hexy</h1>
           <p className="mb-5">An experimental collaborative art project by <a href="#na" className="font-bold">@Josh_Harrington</a> and <a href="#na" className="font-bold">@samlester</a></p>
           { moreInfoShown ?
             <div>
