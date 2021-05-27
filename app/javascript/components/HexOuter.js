@@ -1,9 +1,16 @@
 import React, { forwardRef } from 'react'
+import classNames from 'classnames'
+
 import { positionFromOrderNumber } from '../utils'
 
-var classNames = require('classnames')
-
-const Hex = forwardRef(({className, focusedHexOrder, onClick, order, trixels, newHexPage}, ref) => {
+const HexOuter = forwardRef(({
+  className,
+  focusedHexOrder,
+  onClick,
+  order,
+  newHexPage,
+  children
+}, ref) => {
   const hexIsFocusedHex = focusedHexOrder && focusedHexOrder === order || !focusedHexOrder
   const posiFromOrder = positionFromOrderNumber(order)
   return (
@@ -25,13 +32,9 @@ const Hex = forwardRef(({className, focusedHexOrder, onClick, order, trixels, ne
       onClick={onClick}
       ref={ref}
     >
-      {trixels.map((t, i) => <path
-        fill={t.colour}
-        d={t.d}
-        key={i}
-      ></path>)}
+      {children}
     </svg>
   )
 })
 
-export default Hex
+export default HexOuter
