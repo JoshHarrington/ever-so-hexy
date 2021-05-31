@@ -50,14 +50,14 @@ const DraggyHex = forwardRef(({
 					if (currentPositionReference !== null) {
 						updateCurrentPositionReference(null)
 						if (publishAllowed.current) {
-							sendNewPaths({id, trixels, setNewTileTrixels, csrfToken})
+							sendNewPaths({id, trixels, csrfToken})
 						}
 					}
 				}}
 				onMouseUp={() => {
 					updateCurrentPositionReference(null)
 					if (publishAllowed.current) {
-						sendNewPaths({id, trixels, setNewTileTrixels, csrfToken})
+						sendNewPaths({id, trixels, csrfToken})
 					}
 				}}
 				onMouseDown={(e) => {
