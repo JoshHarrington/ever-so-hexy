@@ -64,7 +64,7 @@ function usePrevious(value) {
   return ref.current
 }
 
-const sendNewPaths = ({id, trixels, setNewTileTrixels, csrfToken}) => {
+const sendNewPaths = ({id, trixels, csrfToken}) => {
 	fetch(`/tiles/${id}`, {
 		method: 'POST',
 		headers: {
@@ -73,10 +73,18 @@ const sendNewPaths = ({id, trixels, setNewTileTrixels, csrfToken}) => {
 		},
 		body: JSON.stringify({id, trixels})
 	})
-	.then(response => response.json())
+	.then(response => {
+		if (response.status > 199 && response.status < 300){
+			return response.json()
+		} else {
+			window.alert('Something went wrong, please refresh the page')
+		}
+	})
 	.then(data => {
-		if (setNewTileTrixels) {
-			setNewTileTrixels(data)
+		if (data.status === 'success') {
+			console.log('Successful server update')
+		} else {
+			window.alert('Something went wrong, please refresh the page')
 		}
 	})
 	.catch((error) => {

@@ -35,18 +35,18 @@ class PagesController < ApplicationController
 
     session[:current_draft_tile_id] = tile.id
 
+    update_statuses_set = Set[]
     trixels.each do |t|
-      Trixel.find_by(tile_id: tile.id, position: t["position"]).update(colour: t["colour"])
+      if Trixel.find_by(tile_id: tile.id, position: t["position"]).update(colour: t["colour"])
+        update_statuses_set.add(true)
+      else
+        update_statuses_set.add(false)
+      end
     end
 
-    tile_trixels = Tile.find(tile.id).trixels.map{|tr|{
-      tile_id: tr["tile_id"],
-      colour: tr["colour"],
-      position: tr["position"],
-      d: tr["d"]
-    }}
     respond_to do |format|
-      format.json { render json: tile_trixels }
+      format.json { render json: {status: update_statuses_set.include?(false) ? 'fail' : 'success'} }
+      format.html { redirect_to(new_path) }
     end
   end
 
