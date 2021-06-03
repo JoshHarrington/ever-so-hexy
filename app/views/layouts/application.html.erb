@@ -18,6 +18,17 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
     <%= stylesheet_packs_with_chunks_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
     <%= javascript_packs_with_chunks_tag 'application', 'data-turbolinks-track': 'reload' %>
+
+    <link rel=”shortcut icon” href="<%= asset_pack_path('media/images/favicon.ico') %>">
+    <link rel="apple-touch-icon" sizes="180x180" href="<%= asset_pack_path('media/images/apple-touch-icon.png') %>">
+    <link rel="icon" type="image/png" sizes="32x32" href="<%= asset_pack_path('media/images/favicon-32x32.png') %>">
+    <link rel="icon" type="image/png" sizes="16x16" href="<%= asset_pack_path('media/images/favicon-16x16.png') %>">
+    <%# <link rel="manifest" href="./site.webmanifest"> %>
+    <link rel="mask-icon" href="<%= asset_pack_path('media/images/safari-pinned-tab.svg') %>" color="#10b981">
+    <meta name="apple-mobile-web-app-title" content="Ever So Hexy">
+    <meta name="application-name" content="Ever So Hexy">
+    <meta name="msapplication-TileColor" content="#10b981">
+    <meta name="theme-color" content="#10b981">
   </head>
 
   <body class="font-sans">
