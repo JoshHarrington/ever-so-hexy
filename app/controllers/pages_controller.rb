@@ -28,10 +28,10 @@ class PagesController < ApplicationController
 
   def update
 
-    tile_id = params["id"]
+    tile_order = params["order"]
     trixels = params["trixels"]
 
-    tile = Tile.find(tile_id)
+    tile = Tile.find_by(order: tile_order)
 
     session[:current_draft_tile_id] = tile.id
 

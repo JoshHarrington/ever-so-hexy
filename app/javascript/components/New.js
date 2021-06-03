@@ -10,7 +10,7 @@ import { minZoomLevel } from "../constants"
 import { Modal } from "./Modal"
 import Portal from "./Portal"
 
-const New = ({allHexes, currentDraftTileOrder, currentDraftTileId, csrfToken}) => {
+const New = ({allHexes, currentDraftTileOrder, csrfToken}) => {
 
 	const colours = [{
 		name: "red-400",
@@ -131,7 +131,6 @@ const New = ({allHexes, currentDraftTileOrder, currentDraftTileId, csrfToken}) =
 						ref={currentDraftTileOrder === focusedHexOrder ? focusedHex : undefined}
 						focusedHexOrder={focusedHexOrder}
 						order={currentDraftTileOrder}
-						id={currentDraftTileId}
 						trixels={newTileTrixels}
 						setNewTileTrixels={setNewTileTrixels}
 						csrfToken={csrfToken}
@@ -185,7 +184,7 @@ const New = ({allHexes, currentDraftTileOrder, currentDraftTileId, csrfToken}) =
 							updateAllTrixelsFn({
 								trixels: newTileTrixels,
 								setNewTileTrixels,
-								id: currentDraftTileId,
+								order: currentDraftTileOrder,
 								colour: currentColour.hex,
 								csrfToken
 							})
@@ -203,7 +202,7 @@ const New = ({allHexes, currentDraftTileOrder, currentDraftTileId, csrfToken}) =
 							updateAllTrixelsFn({
 								trixels: newTileTrixels,
 								setNewTileTrixels,
-								id: currentDraftTileId,
+								order: currentDraftTileOrder,
 								colour: "white",
 								csrfToken
 							})
