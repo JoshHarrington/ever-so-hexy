@@ -260,7 +260,7 @@ const New = ({allHexes, currentDraftTileOrder, currentDraftTileId, csrfToken}) =
 				{publishAllowed.current &&
 					<form
 						className="mr-auto -ml-10"
-						action={`/tiles/${currentDraftTileId}/publish`}
+						action={`/tiles/${currentDraftTileOrder}/publish`}
 						method="get"
 					>
 						<TextBadge>Save and add to grid</TextBadge>

@@ -51,12 +51,12 @@ class PagesController < ApplicationController
   end
 
   def publish
-    if params["id"] == nil
-      redirect_to new_path
-    else
-      Tile.find(params["id"]).update(draft: false)
+    if Tile.exists?(order: params["order"]) && Tile.find_by(order: params["order"]).id == session[:current_draft_tile_id]
+      Tile.find_by(order: params["order"]).update(draft: false)
       session[:current_draft_tile_id] = nil
       redirect_to root_path
+    else
+      redirect_to new_path
     end
   end
 
