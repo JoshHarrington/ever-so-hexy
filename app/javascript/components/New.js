@@ -96,7 +96,6 @@ const New = ({allHexes, currentDraftTileOrder, currentDraftTileId, csrfToken}) =
 		if (document && window && !!currentDraftTileOrder) {
 
 			const newHex = document.querySelector(`svg#id-${currentDraftTileOrder}`)
-			console.log(currentDraftTileOrder, newHex)
 			zoomAndScroll({
 				elementProps: newHex ? newHex.getBoundingClientRect() : null,
 				hexSizePercentage: 70,
