@@ -22,7 +22,6 @@ const DraggyPath = ({
 const DraggyHex = forwardRef(({
 	className,
 	focusedHexOrder,
-	id,
 	order,
 	trixels,
 	setNewTileTrixels,
@@ -50,14 +49,14 @@ const DraggyHex = forwardRef(({
 					if (currentPositionReference !== null) {
 						updateCurrentPositionReference(null)
 						if (publishAllowed.current) {
-							sendNewPaths({id, trixels, csrfToken})
+							sendNewPaths({order, trixels, csrfToken})
 						}
 					}
 				}}
 				onMouseUp={() => {
 					updateCurrentPositionReference(null)
 					if (publishAllowed.current) {
-						sendNewPaths({id, trixels, csrfToken})
+						sendNewPaths({order, trixels, csrfToken})
 					}
 				}}
 				onMouseDown={(e) => {

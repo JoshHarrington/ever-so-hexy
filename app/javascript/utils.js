@@ -64,14 +64,14 @@ function usePrevious(value) {
   return ref.current
 }
 
-const sendNewPaths = ({id, trixels, csrfToken}) => {
-	fetch(`/tiles/${id}`, {
+const sendNewPaths = ({order, trixels, csrfToken}) => {
+	fetch(`/tiles/${order}`, {
 		method: 'POST',
 		headers: {
 			"X-CSRF-Token": csrfToken,
 			'Content-Type': 'application/json',
 		},
-		body: JSON.stringify({id, trixels})
+		body: JSON.stringify({order, trixels})
 	})
 	.then(response => {
 		if (response.status > 199 && response.status < 300){
@@ -115,7 +115,7 @@ const updatePathsFn = ({pathPosition, trixels, setNewTileTrixels, publishAllowed
 	publishAllowed.current = isPublishingEnabled(trixels)
 }
 
-const updateAllTrixelsFn = ({trixels, setNewTileTrixels, id, colour, csrfToken}) => {
+const updateAllTrixelsFn = ({trixels, setNewTileTrixels, order, colour, csrfToken}) => {
 	const updatedTrixels = trixels.map(p => {
 		return {
 			colour,
@@ -124,7 +124,7 @@ const updateAllTrixelsFn = ({trixels, setNewTileTrixels, id, colour, csrfToken})
 		}
 	})
 	setNewTileTrixels(updatedTrixels)
-	sendNewPaths({id, trixels: updatedTrixels, csrfToken})
+	sendNewPaths({order, trixels: updatedTrixels, csrfToken})
 }
 
 const zoomAndScroll = ({
