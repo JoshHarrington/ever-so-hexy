@@ -9,7 +9,9 @@ module PagesHelper
 					colour: tr.colour,
 					position: tr.position,
 					d: tr.d
-				}} : nil
+				}} : nil,
+				country_code: t.country_code,
+				created_at: t.created_at
 			}
     }
 	end
