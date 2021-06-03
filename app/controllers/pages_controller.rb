@@ -1,9 +1,6 @@
 class PagesController < ApplicationController
   include PagesHelper
   def home
-    p "request.remote_ip"
-    p request.remote_ip
-
     all_tiles = Tile.all.order(:order)
 
     @tiles = clean_tile_array(tiles: all_tiles)
@@ -12,10 +9,13 @@ class PagesController < ApplicationController
 
   end
   def new
+    p request.remote_ip
 
-    draft_tile = Tile.find_or_create_by(id: session[:current_draft_tile_id])
+    draft_tile = Tile.where(:id => session[:current_draft_tile_id]).first_or_create do |tile|
+      tile.ip_address = request.remote_ip
+    end
+
     session[:current_draft_tile_id] = draft_tile.id
-
 
     all_tiles = Tile.all.order(:order)
 

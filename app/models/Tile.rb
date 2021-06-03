@@ -1,6 +1,6 @@
 class Tile < ApplicationRecord
 	has_many :trixels, dependent: :destroy
-	after_create :create_trixels, :add_order
+	after_create :create_trixels, :add_order, :find_country_code
 
 	validates :order, uniqueness: true
 
@@ -195,5 +195,19 @@ class Tile < ApplicationRecord
 					d: "M156 105L155.99 135L130 120.008L156 105Z"
 				}
 			])
+		end
+
+		def find_country_code
+
+			require 'net/http'
+			require 'json'
+
+			url = 'https://api.ipgeolocationapi.com/geolocate/184.149.48.32'
+			uri = URI(url)
+			response = Net::HTTP.get(uri)
+			data = JSON.parse(response)
+
+        	self.update(country_code: data['alpha2'])
+
 		end
 end
