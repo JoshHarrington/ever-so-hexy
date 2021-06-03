@@ -5,6 +5,7 @@ import { splitIntoLayers } from '../utils'
 
 import HexGrid from './HexGrid'
 import HexWrapper from './HexWapper'
+import HexLabel from './HexLabel'
 import { Cross, Info, Plus } from './Icons'
 import { Badge, TextBadge } from './Badge'
 import { minZoomLevel } from '../constants'
@@ -33,6 +34,8 @@ const Home = ({allHexes, lastTileOrderPosition}) => {
 
 	const [focusedHexOrder, setFocusedHexOrder] = useState(setupFocusedHexOrder)
   const focusedHex = useRef(null)
+
+  const focusedHexInfo = allHexes.find(hex => hex.order === focusedHexOrder);
 
   const [moreInfoShown, updateMoreInfoShown] = useState(false)
   const [infoBlockShown, setInfoBlockShown] = useState(!focusedHexOrder)
@@ -96,6 +99,7 @@ const Home = ({allHexes, lastTileOrderPosition}) => {
           </Badge>
         </div>
       }
+      <HexLabel focusedHexInfo={focusedHexInfo}/>
     </>
 	)
 }
