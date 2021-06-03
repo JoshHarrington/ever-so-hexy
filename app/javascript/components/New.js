@@ -222,7 +222,23 @@ const New = ({allHexes, currentDraftTileOrder, currentDraftTileId, csrfToken}) =
 				<h3 className="text-3xl font-bold mb-3">Delete draft?</h3>
 				<p className="mb-5">This hexagon draft will be deleted</p>
 				<div className="flex items-center">
-					<TextBadge>Delete draft</TextBadge>
+					<TextBadge
+						onClick={() => {
+							fetch(`/tiles/${currentDraftTileOrder}`, {
+								method: 'delete',
+								headers: {
+									"X-CSRF-Token": csrfToken,
+									'Content-Type': 'application/json'
+								}
+							})
+							.then(response => response.json())
+							.then(data => {
+								if (data.status === 302) {
+									window.location.href = data.redirect_to
+								}
+							})
+						}}
+					>Delete draft</TextBadge>
 					<TextBadge
 						hasWhiteBackground={true}
 						className="ml-3"

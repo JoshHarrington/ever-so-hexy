@@ -59,4 +59,18 @@ class PagesController < ApplicationController
       redirect_to root_path
     end
   end
+
+  def destroy
+    if Tile.exists?(order: params["order"]) && Tile.find_by(order: params["order"]).id == session[:current_draft_tile_id]
+      Tile.find_by(order: params["order"]).destroy
+      session[:current_draft_tile_id] = nil
+
+      respond_to do |format|
+        format.json { render json: {status: 302, redirect_to: root_path} }
+        format.html { redirect_to(root_path) }
+      end
+    else
+      redirect_to new_path
+    end
+  end
 end

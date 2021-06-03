@@ -4,4 +4,5 @@ Rails.application.routes.draw do
   get '/new', to: 'pages#new'
   post '/tiles/:id', to: 'pages#update'
   get '/tiles/:id/publish', to: 'pages#publish'
+  delete '/tiles/:order', to: 'pages#destroy'
 end
