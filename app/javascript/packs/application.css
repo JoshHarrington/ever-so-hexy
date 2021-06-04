@@ -5,3 +5,12 @@
 .profiler-results {
 	display: none;
 }
+
+.bullet-seperator li:before {
+	content: "\2022";
+	@apply px-2;
+}
+
+.bullet-seperator li:first-child:before {
+	display: none;
+}
