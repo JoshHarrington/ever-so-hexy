@@ -202,12 +202,20 @@ class Tile < ApplicationRecord
 			require 'net/http'
 			require 'json'
 
-			url = 'https://api.ipgeolocationapi.com/geolocate/184.149.48.32'
-			uri = URI(url)
-			response = Net::HTTP.get(uri)
-			data = JSON.parse(response)
+			if self.ip_address == "::1"
+				ip_address = "185.192.69.232" # ExpressVPN
+			else
+				ip_address = self.ip_address
+			end
 
-        	self.update(country_code: data['alpha2'])
+			if ip_address.present?
+				url = "https://api.ipgeolocationapi.com/geolocate/#{ip_address}"
+				uri = URI(url)
+				response = Net::HTTP.get(uri)
+				data = JSON.parse(response)
+
+        		self.update(country_code: data['alpha2'])
+			end
 
 		end
 end
