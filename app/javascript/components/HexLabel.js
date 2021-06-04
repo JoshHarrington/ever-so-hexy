@@ -14,21 +14,17 @@ const HexLabel = ({focusedHexInfo}) => {
 
 	return (
     <>
-      {focusedHexInfo ?
+      {focusedHexInfo &&
         <ul className="fixed bottom-8 left-8 text-blueGray-800 bg-white shadow rounded-16xl py-4 px-6 font-bold">
           <li className="inline-block">#{focusedHexInfo.order}</li>
           <li className="inline-block pl-4">{moment(focusedHexInfo.created_at).fromNow()}</li>
-          {focusedHexInfo.country_code ?
+          {focusedHexInfo.country_code &&
             <li className="inline-block pl-4">
               {countries[focusedHexInfo.country_code].name}
               <span className="pl-2 text-xl leading-none relative top-0.5">{getFlagEmoji(focusedHexInfo.country_code)}</span>
             </li>
-            :
-            null
           }
         </ul>
-        :
-        <div>No Hex</div>
       }
     </>
 	)
