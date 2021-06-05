@@ -4,7 +4,7 @@ const HexWrapper = forwardRef(({minWidth, minHeight, children}, ref) => {
 	return (
 		<main
 			ref={ref}
-			className="h-screen bg-gray-100 w-full flex overflow-visible relative"
+			className="h-screen bg-gray-100 w-full flex overflow-visible relative box-content"
 			style={{
 				minHeight: minHeight,
 				minWidth: minWidth,
