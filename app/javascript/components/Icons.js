@@ -30,9 +30,20 @@ const Plus = ({className, size}) => (
 	</svg>
 )
 
+const ZoomOut = ({className, size}) => (
+	<svg width={size} height={size} className={className} viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+		<path d="M5.33325 18.6665H13.3333V26.6665" stroke="currentColor" strokeWidth="2.66667" strokeLinecap="round" strokeLinejoin="round"/>
+		<path d="M26.6667 13.3335H18.6667V5.3335" stroke="currentColor" strokeWidth="2.66667" strokeLinecap="round" strokeLinejoin="round"/>
+		<path d="M18.6667 13.3333L28.0001 4" stroke="currentColor" strokeWidth="2.66667" strokeLinecap="round" strokeLinejoin="round"/>
+		<path d="M4 27.9998L13.3333 18.6665" stroke="currentColor" strokeWidth="2.66667" strokeLinecap="round" strokeLinejoin="round"/>
+	</svg>
+)
+
+
 export {
 	Back,
 	Cross,
 	Info,
-	Plus
+	Plus,
+	ZoomOut
 }

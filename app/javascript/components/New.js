@@ -9,6 +9,7 @@ import DraggyHex from "./DraggyHex"
 import { minZoomLevel } from "../constants"
 import { Modal } from "./Modal"
 import Portal from "./Portal"
+import Tooltip from "./Tooltip"
 
 const New = ({allHexes, currentDraftTileOrder, csrfToken}) => {
 
@@ -248,14 +249,16 @@ const New = ({allHexes, currentDraftTileOrder, csrfToken}) => {
 				</div>
 			</Modal></Portal>}
 			<div className="fixed bottom-0 flex justify-center px-6 pb-8 text-lg z-10 w-full pointer-events-none">
-				<Badge
-					href="/"
-					className="mr-auto"
-					onClick={(e) => {
-						e.preventDefault()
-						setDraftModalOpen(true)
-					}}
-				><Back className="w-6 h-6" /></Badge>
+				<Tooltip content="Back">
+					<Badge
+						href="/"
+						className="mr-auto"
+						onClick={(e) => {
+							e.preventDefault()
+							setDraftModalOpen(true)
+						}}
+					><Back className="w-6 h-6" /></Badge>
+				</Tooltip>
 				{publishAllowed.current &&
 					<form
 						className="mr-auto -ml-10"

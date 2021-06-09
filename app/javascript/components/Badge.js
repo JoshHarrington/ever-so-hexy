@@ -1,5 +1,5 @@
-import classNames from 'classnames'
 import React from 'react'
+import classNames from 'classnames'
 
 const Badge = ({href, onClick, className, children}) => {
 	const Tag = href ? `a` : `button`

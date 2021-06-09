@@ -1,14 +1,14 @@
 import React, { useEffect, useRef, useState } from 'react'
-import classNames from "classnames"
 
 import { splitIntoLayers } from '../utils'
 
 import HexGrid from './HexGrid'
 import HexWrapper from './HexWapper'
 import HexLabel from './HexLabel'
-import { Cross, Info, Plus } from './Icons'
+import { Cross, Info, Plus, ZoomOut } from './Icons'
 import { Badge, TextBadge } from './Badge'
 import { minZoomLevel } from '../constants'
+import Tooltip from './Tooltip'
 
 const Home = ({allHexes, lastTileOrderPosition}) => {
 
@@ -81,25 +81,51 @@ const Home = ({allHexes, lastTileOrderPosition}) => {
           <hr className="my-5" />
           <div className="flex items-center justify-between">
             <TextBadge href="/new"><Plus className="w-5 h-5 -ml-1 mr-2" /> Add a hexagon</TextBadge>
-            <Badge onClick={() => setInfoBlockShown(false)}>
-              <Cross className="w-6 h-6" />
-            </Badge>
+
+            <Tooltip content="Hide info">
+              <Badge
+                onClick={() => setInfoBlockShown(false)}
+              >
+                <Cross className="w-6 h-6" />
+              </Badge>
+            </Tooltip>
           </div>
         </div>
         :
-        <div className="fixed bottom-0 right-0 mb-8 mr-8 flex">
-          <Badge href="/new">
-            <Plus className="w-6 h-6" />
-          </Badge>
-          <Badge
-            className="ml-4"
-            onClick={() => setInfoBlockShown(true)}
-          >
-            <Info className="w-6 h-6" />
-          </Badge>
+        <div className="fixed bottom-0 w-full p-8 flex items-center justify-end">
+          {focusedHexInfo &&
+            <Tooltip content="Zoom out" >
+              <Badge
+                className="mr-auto"
+                onClick={() => {
+                  setZoomLevel(minZoomLevel)
+                  setFocusedHexOrder(null)
+                  window.history.pushState("", "", window.location.origin)
+                }}
+              >
+                <ZoomOut className="w-6 w-6" />
+              </Badge>
+            </Tooltip>
+          }
+          <HexLabel
+            focusedHexInfo={focusedHexInfo}
+          />
+          <div className="flex gap-x-4">
+            <Tooltip content="Create Hexagon">
+              <Badge href="/new">
+                <Plus className="w-6 h-6" />
+              </Badge>
+            </Tooltip>
+            <Tooltip content="Show info">
+              <Badge
+                onClick={() => setInfoBlockShown(true)}
+              >
+                <Info className="w-6 h-6" />
+              </Badge>
+            </Tooltip>
+          </div>
         </div>
       }
-      <HexLabel focusedHexInfo={focusedHexInfo}/>
     </>
 	)
 }
