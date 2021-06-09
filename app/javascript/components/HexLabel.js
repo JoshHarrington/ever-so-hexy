@@ -1,5 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
-import classNames from "classnames"
+import React from 'react'
 import moment from 'moment'
 import { countries } from 'country-data'
 
@@ -9,15 +8,13 @@ const HexLabel = ({focusedHexInfo}) => {
 
     const codePoints = countryCode.toUpperCase().split('').map(char =>  127397 + char.charCodeAt());
     return String.fromCodePoint(...codePoints);
-      
-  }
 
-  console.log(focusedHexInfo);
+  }
 
 	return (
     <>
       {focusedHexInfo &&
-        <ul className="bullet-seperator fixed bottom-8 left-8 text-blueGray-800 bg-white shadow rounded-16xl py-4 px-6 font-bold">
+        <ul className="bullet-seperator text-blueGray-800 bg-white shadow rounded-16xl py-4 px-6 font-bold mx-auto">
           {!focusedHexInfo.draft ?
             <>
               <li className="inline-block">#{focusedHexInfo.order}</li>
