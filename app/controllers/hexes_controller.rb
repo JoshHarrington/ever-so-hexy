@@ -1,5 +1,5 @@
-class PagesController < ApplicationController
-  include PagesHelper
+class HexesController < ApplicationController
+  include HexesHelper
   def home
     all_hexes = Hex.all.order(:order)
 
