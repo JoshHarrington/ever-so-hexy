@@ -1,4 +1,4 @@
 class Trixel < ApplicationRecord
-	belongs_to :tile
+	belongs_to :hex
 
 end

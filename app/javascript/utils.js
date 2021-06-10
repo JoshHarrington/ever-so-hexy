@@ -22,12 +22,12 @@ const positionFromOrderNumber = (currentOrderPosition) => {
 	const orderNumbersIntoLayers = splitIntoLayers(orderNumbers)
 
 	let currentOrderLayerIndex = 0
-	let currentOrderTileIndex = 0
+	let currentOrderHexIndex = 0
 
 	orderNumbersIntoLayers.filter((layer, layerIndex) => {
 		if (layer.indexOf(currentOrderPosition) !== -1) {
 			currentOrderLayerIndex = layerIndex
-			currentOrderTileIndex = layer.indexOf(currentOrderPosition)
+			currentOrderHexIndex = layer.indexOf(currentOrderPosition)
 			return true
 		} else {
 			return false
@@ -35,8 +35,8 @@ const positionFromOrderNumber = (currentOrderPosition) => {
 	})
 
 	return {
-		leftTransform: (currentOrderLayerIndex * 7) - (currentOrderTileIndex * 3.5),
-		topTransform: currentOrderTileIndex * 6
+		leftTransform: (currentOrderLayerIndex * 7) - (currentOrderHexIndex * 3.5),
+		topTransform: currentOrderHexIndex * 6
 	}
 
 }
@@ -64,14 +64,14 @@ function usePrevious(value) {
   return ref.current
 }
 
-const sendNewPaths = ({order, trixels, csrfToken}) => {
-	fetch(`/tiles/${order}`, {
+const sendNewPaths = ({order, hex, csrfToken}) => {
+	fetch(`/hexes/${order}`, {
 		method: 'POST',
 		headers: {
 			"X-CSRF-Token": csrfToken,
 			'Content-Type': 'application/json',
 		},
-		body: JSON.stringify({order, trixels})
+		body: JSON.stringify({order, hex})
 	})
 	.then(response => {
 		if (response.status > 199 && response.status < 300){
@@ -92,39 +92,34 @@ const sendNewPaths = ({order, trixels, csrfToken}) => {
 	})
 }
 
-const isPublishingEnabled = (trixels) => {
-	const colours = trixels.map(t => t.colour)
-	const publishAllowed = new Set(colours).size > 2
+const isPublishingEnabled = (hex) => {
+	const hexColorKeys = Object.keys(hex).filter(k => k.startsWith('trixel_colour'))
+	const colors = hexColorKeys.map(k => hex[`${k}`])
+	const publishAllowed = new Set(colors).size > 2
 	return publishAllowed
 }
 
 
-const updatePathsFn = ({pathPosition, trixels, setNewTileTrixels, publishAllowed, currentColour}) => {
-	const updatedPaths = trixels.map(p => {
-		if (p.position !== pathPosition) {
-			return p
-		} else {
-			return {
-				colour: currentColour.hex,
-				position: p.position,
-				d: p.d
-			}
-		}
-	})
-	setNewTileTrixels(updatedPaths)
-	publishAllowed.current = isPublishingEnabled(trixels)
+const updatePathsFn = ({pathPosition, newHex, setNewHex, publishAllowed, currentColour}) => {
+	const hexCopy = {...newHex}
+
+	hexCopy[`trixel_colour_${pathPosition}`] = currentColour.hex
+
+	setNewHex(hexCopy)
+	publishAllowed.current = isPublishingEnabled(hexCopy)
 }
 
-const updateAllTrixelsFn = ({trixels, setNewTileTrixels, order, colour, csrfToken}) => {
-	const updatedTrixels = trixels.map(p => {
-		return {
-			colour,
-			position: p.position,
-			d: p.d
-		}
+const updateAllTrixelsFn = ({newHex, setNewHex, order, colour, csrfToken}) => {
+	const hexCopy = {...newHex}
+	const hexColorKeys = Object.keys(hexCopy).filter(k => k.startsWith('trixel_colour'))
+
+	hexColorKeys.map(k => {
+		console.log(hexCopy[`${k}`])
+		hexCopy[`${k}`] = colour
 	})
-	setNewTileTrixels(updatedTrixels)
-	sendNewPaths({order, trixels: updatedTrixels, csrfToken})
+
+	setNewHex(hexCopy)
+	sendNewPaths({order, hex: hexCopy, csrfToken})
 }
 
 const zoomAndScroll = ({

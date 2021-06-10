@@ -10,7 +10,7 @@ import { Badge, TextBadge } from './Badge'
 import { minZoomLevel } from '../constants'
 import Tooltip from './Tooltip'
 
-const Home = ({allHexes, lastTileOrderPosition}) => {
+const Home = ({allHexes, lastHexOrderPosition}) => {
 
   if (document && document.body) {
     document.body.classList.add("overflow-auto")
@@ -18,10 +18,10 @@ const Home = ({allHexes, lastTileOrderPosition}) => {
 
 	const [zoomLevel, setZoomLevel] = useState(minZoomLevel)
 
-	const tiles = splitIntoLayers([...allHexes])
+	const hexes = splitIntoLayers([...allHexes])
 
-  const NumberOfLayers = tiles.length
-  const LayerWithMostTiles = [...tiles].sort((a,b) => (
+  const NumberOfLayers = hexes.length
+  const LayerWithMostHexes = [...hexes].sort((a,b) => (
     b.length - a.length
   ))[0]
 
@@ -51,11 +51,11 @@ const Home = ({allHexes, lastTileOrderPosition}) => {
       <HexWrapper
         ref={hexWrapperRef}
         minWidth={`${NumberOfLayers * 7 + 6}em`}
-        minHeight={`${(LayerWithMostTiles.length - 1) * 6 + 14}em`}
+        minHeight={`${(LayerWithMostHexes.length - 1) * 6 + 14}em`}
       >
         <HexGrid
-          lastTileOrderPosition={lastTileOrderPosition}
-          tiles={tiles}
+          lastHexOrderPosition={lastHexOrderPosition}
+          hexes={hexes}
           hexWrapperRef={hexWrapperRef}
           focusedHex={focusedHex}
           focusedHexOrder={focusedHexOrder}
