@@ -1,4 +1,4 @@
-module PagesHelper
+module HexesHelper
 
 	def clean_hex_array(hexes:, is_in_editing_mode: false, current_draft_hex_id: nil)
 		visible_hexes = hexes.select{|h| !h.draft || is_in_editing_mode && current_draft_hex_id && h.id == current_draft_hex_id}
