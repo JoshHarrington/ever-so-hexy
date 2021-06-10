@@ -173,6 +173,18 @@ const zoomAndScroll = ({
 	return () => clearTimeout(timeout)
 }
 
+const minPageWidth = (hexes) => {
+	return `${hexes.length * 7 + 6}em`
+}
+
+const minPageHeight = (hexes) => {
+	const numberOfHexesInLargestLayer = hexes.length ? [...hexes].sort((a,b) => (
+		b.length - a.length
+	))[0].length : 1
+
+	return `${(numberOfHexesInLargestLayer - 1) * 6 + 14}em`
+}
+
 export {
 	splitIntoLayers,
 	positionFromOrderNumber,
@@ -182,5 +194,7 @@ export {
 	updatePathsFn,
 	updateAllTrixelsFn,
 	zoomAndScroll,
-	isPublishingEnabled
+	isPublishingEnabled,
+	minPageWidth,
+	minPageHeight
 }

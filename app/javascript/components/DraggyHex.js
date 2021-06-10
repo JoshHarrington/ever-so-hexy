@@ -90,8 +90,6 @@ const DraggyHex = forwardRef(({
 	const [currentPositionReference, updateCurrentPositionReference] = useState(null)
 	const posiFromOrder = positionFromOrderNumber(order)
 
-	console.log(newHex)
-
   return (
 		<>
 			<svg

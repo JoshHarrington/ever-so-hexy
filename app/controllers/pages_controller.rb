@@ -9,9 +9,8 @@ class PagesController < ApplicationController
 
   end
   def new
-    p request.remote_ip
 
-    draft_hex = Hex.where(:id => session[:current_draft_hex_id]).first_or_create do |hex|
+    draft_hex = Hex.where(id: session[:current_draft_hex_id]).first_or_create do |hex|
       hex.ip_address = request.remote_ip
     end
 
@@ -19,7 +18,7 @@ class PagesController < ApplicationController
 
     all_hexes = Hex.all.order(:order)
 
-    @hexes = clean_hex_array(hexes: all_hexes, is_in_editing_mode: true)
+    @hexes = clean_hex_array(hexes: all_hexes, is_in_editing_mode: true, current_draft_hex_id: draft_hex.id)
 
     @current_draft_hex_order_position = draft_hex.order
     @current_draft_hex_id = draft_hex.id
@@ -37,7 +36,6 @@ class PagesController < ApplicationController
 
     update_statuses_set = Set[]
 
-    p hex_from_request
     if hex.update(
       trixel_colour_a1: hex_from_request["trixel_colour_a1"],
       trixel_colour_a2: hex_from_request["trixel_colour_a2"],
