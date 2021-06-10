@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 
-import { splitIntoLayers } from '../utils'
+import { minPageHeight, minPageWidth, splitIntoLayers } from '../utils'
 
 import HexGrid from './HexGrid'
 import HexWrapper from './HexWapper'
@@ -19,11 +19,6 @@ const Home = ({allHexes, lastHexOrderPosition}) => {
 	const [zoomLevel, setZoomLevel] = useState(minZoomLevel)
 
 	const hexes = splitIntoLayers([...allHexes])
-
-  const NumberOfLayers = hexes.length
-  const LayerWithMostHexes = [...hexes].sort((a,b) => (
-    b.length - a.length
-  ))[0]
 
   const hexWrapperRef = useRef(null)
 
@@ -50,8 +45,8 @@ const Home = ({allHexes, lastHexOrderPosition}) => {
     <>
       <HexWrapper
         ref={hexWrapperRef}
-        minWidth={`${NumberOfLayers * 7 + 6}em`}
-        minHeight={`${(LayerWithMostHexes.length - 1) * 6 + 14}em`}
+        minWidth={minPageWidth(hexes)}
+        minHeight={minPageHeight(hexes)}
       >
         <HexGrid
           lastHexOrderPosition={lastHexOrderPosition}

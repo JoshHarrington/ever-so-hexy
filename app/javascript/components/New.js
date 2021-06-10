@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect } from "react"
 import classNames from "classnames"
-import { isPublishingEnabled, splitIntoLayers, updateAllTrixelsFn, zoomAndScroll } from "../utils"
+import { isPublishingEnabled, minPageHeight, minPageWidth, splitIntoLayers, updateAllTrixelsFn, zoomAndScroll } from "../utils"
 import HexGrid from "./HexGrid"
 import HexWrapper from "./HexWapper"
 import { Back } from "./Icons"
@@ -72,11 +72,6 @@ const New = ({allHexes, currentDraftHexOrder, csrfToken}) => {
 
 	const [pageReady, setPageReady] = useState(false)
 
-  const NumberOfLayers = hexes.length
-  const LayerWithMostHexes = [...hexes].sort((a,b) => (
-    b.length - a.length
-  ))[0]
-
 	const hexWrapperRef = useRef(null)
 
 	const [newHex, setNewHex] = useState([...allHexes].filter(h => h.order === currentDraftHexOrder)[0])
@@ -114,8 +109,8 @@ const New = ({allHexes, currentDraftHexOrder, csrfToken}) => {
 		<>
 			<HexWrapper
 				ref={hexWrapperRef}
-				minWidth={`${NumberOfLayers * 7 + 6}em`}
-				minHeight={`${(LayerWithMostHexes.length - 1) * 6 + 14}em`}
+				minWidth={minPageWidth(hexes)}
+				minHeight={minPageHeight(hexes)}
 			>
 				<HexGrid
 					hexes={hexes}
