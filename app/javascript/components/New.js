@@ -243,8 +243,11 @@ const New = ({allHexes, currentDraftHexOrder, csrfToken}) => {
 					</TextBadge>
 				</div>
 			</Modal></Portal>}
-			<div className="fixed bottom-0 flex justify-center px-6 pb-8 text-lg z-10 w-full pointer-events-none">
-				<Tooltip content="Back">
+			<div className="fixed bottom-0 flex justify-between px-6 pb-8 text-lg z-10 w-full pointer-events-none">
+				<Tooltip
+					content="Back"
+					className="mr-auto"
+				>
 					<Badge
 						href="/"
 						className="mr-auto"
