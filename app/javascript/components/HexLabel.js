@@ -14,7 +14,7 @@ const HexLabel = ({focusedHexInfo}) => {
 	return (
     <>
       {focusedHexInfo &&
-        <ul className="bullet-seperator fixed text-blueGray-800 bg-white shadow py-4 px-6 font-bold bottom-0 w-full text-center sm:bottom-8 sm:left-8 sm:w-auto sm:rounded-16xl">
+        <ul className="bullet-seperator fixed text-blueGray-800 bg-white shadow py-4 px-6 font-bold left-0 bottom-0 w-full text-center sm:bottom-8 sm:left-8 sm:w-auto sm:rounded-16xl">
           {!focusedHexInfo.draft ?
             <>
               <li className="inline-block">#{focusedHexInfo.order}</li>

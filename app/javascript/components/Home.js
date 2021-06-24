@@ -41,6 +41,14 @@ const Home = ({allHexes, lastHexOrderPosition}) => {
     }
   }, [focusedHexOrder])
 
+  useEffect(() => {
+    if (infoBlockShown) {
+      setFocusedHexOrder(null)
+      setZoomLevel(minZoomLevel)
+      window.history.pushState("", "", window.location.origin)
+    }
+  }, [infoBlockShown])
+
 	return (
     <>
       <HexWrapper
@@ -60,7 +68,7 @@ const Home = ({allHexes, lastHexOrderPosition}) => {
         />
       </HexWrapper>
       {infoBlockShown ?
-        <div className="fixed bottom-0 right-0 text-blueGray-800 bg-white shadow rounded-tl-16xl p-8 max-w-xs w-full">
+        <div className="fixed bottom-0 right-0 text-blueGray-800 w-full bg-white shadow sm:rounded-tl-16xl p-8 sm:max-w-xs">
           <h1 className="text-2xl font-black mb-2">Ever So Hexy</h1>
           <p className="mb-5">An experimental collaborative art project by <a href="#na" className="font-bold">@Josh_Harrington</a> and <a href="#na" className="font-bold">@samlester</a></p>
           { moreInfoShown ?
@@ -74,7 +82,7 @@ const Home = ({allHexes, lastHexOrderPosition}) => {
             >More information</button>
           }
           <hr className="my-5" />
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between hidden sm:flex">
             <TextBadge href="/new"><Plus className="w-5 h-5 -ml-1 mr-2" /> Add a hexagon</TextBadge>
 
             <Tooltip content="Hide info">
@@ -85,9 +93,13 @@ const Home = ({allHexes, lastHexOrderPosition}) => {
               </Badge>
             </Tooltip>
           </div>
+          <div className="flex flex-wrap justify-center sm:hidden">
+            <TextBadge className="w-full text-center" onClick={() => setInfoBlockShown(false)}>View hexagons</TextBadge>
+            <p className="w-full text-center mt-4 w-3/4 text-sm text-gray-400">Add your own hexagon using a desktop browser</p>
+          </div>
         </div>
         :
-        <div className="fixed bottom-0 w-full p-8 flex items-center justify-end">
+        <div className="fixed top-0 p-8 w-full flex justify-between sm:justify-end sm:top-auto sm:bottom-0 sm:right-0">
           {focusedHexInfo &&
             <Tooltip content="Zoom out" >
               <Badge
@@ -107,12 +119,13 @@ const Home = ({allHexes, lastHexOrderPosition}) => {
           />
           <div className="flex gap-x-4">
             <Tooltip content="Create Hexagon">
-              <Badge href="/new">
+              <Badge href="/new" className="invisible sm:visible">
                 <Plus className="w-6 h-6" />
               </Badge>
             </Tooltip>
             <Tooltip content="Show info">
               <Badge
+                className="ml-4"
                 onClick={() => setInfoBlockShown(true)}
               >
                 <Info className="w-6 h-6" />
