@@ -31,14 +31,14 @@ class Hex < ApplicationRecord
 
 			if ip_address.present?
 				begin
-					url = "https://api.ipgeolocationapi.com/geolocate/#{ip_address}"
+					url = "https://api.ipapi.com/#{ip_address}?access_key=#{Rails.application.credentials.ipapi[:access_key]}"
 					uri = URI(url)
 					response = Net::HTTP.get(uri)
 
 					unless response.starts_with?("<!DOCTYPE html>")
 						data = JSON.parse(response)
 
-						self.update(country_code: data['alpha2'])
+						self.update(country_code: data['country_code'])
 					end
 				end
 			end
