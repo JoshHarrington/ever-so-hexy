@@ -54,8 +54,8 @@ jobs:
             bundle config set --local path 'vendor/bundle'
             bundle install
 
-      - node/install-yarn:
-          version: 1.22.4
+      - node/install:
+          install-yarn: true
       - run:
           name: Yarn Install
           command: yarn install
