@@ -129,7 +129,6 @@ const Home = ({allHexes, lastHexOrderPosition}) => {
             </Tooltip>
             <Tooltip content="Show info">
               <Badge
-                className="ml-4"
                 onClick={() => setInfoBlockShown(true)}
               >
                 <Info className="w-6 h-6" />
