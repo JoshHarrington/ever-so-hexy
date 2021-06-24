@@ -73,4 +73,4 @@ jobs:
       - run: bundle exec rake db:create db:schema:load
       - run:
           name: Run tests
-          command: bundle exec rspec
+          command: bundle exec rspec --format progress
