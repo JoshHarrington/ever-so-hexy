@@ -30,16 +30,17 @@ class Hex < ApplicationRecord
 			end
 
 			if ip_address.present?
-				url = "https://api.ipgeolocationapi.com/geolocate/#{ip_address}"
-				uri = URI(url)
-				response = Net::HTTP.get(uri)
+				begin
+					url = "https://api.ipgeolocationapi.com/geolocate/#{ip_address}"
+					uri = URI(url)
+					response = Net::HTTP.get(uri)
 
-				unless response.starts_with?("<!DOCTYPE html>")
-					data = JSON.parse(response)
+					unless response.starts_with?("<!DOCTYPE html>")
+						data = JSON.parse(response)
 
-					self.update(country_code: data['alpha2'])
+						self.update(country_code: data['alpha2'])
+					end
 				end
 			end
-
 		end
 end
