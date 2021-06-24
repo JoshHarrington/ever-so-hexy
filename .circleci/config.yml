@@ -40,6 +40,12 @@ jobs:
       - restore_cache:
           key: hexy-cache-yarn-{{ checksum "yarn.lock" }}
 
+      - run:
+          name: install dependencies
+          command: |
+            gem update --system
+            gem install bundler
+
       # Bundle install dependencies
       - run:
           name: Bundle Install
