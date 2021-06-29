@@ -103,21 +103,23 @@ const Home = ({allHexes, lastHexOrderPosition}) => {
           </div>
         </div>
         :
-        <div className="fixed top-0 p-8 w-full flex justify-between sm:justify-end sm:top-auto sm:bottom-0 sm:right-0">
-          {focusedHexInfo &&
-            <Tooltip content="Zoom out" >
-              <Badge
-                className="mr-auto"
-                onClick={() => {
-                  setZoomLevel(minZoomLevel)
-                  setFocusedHexOrder(null)
-                  window.history.pushState("", "", window.location.origin)
-                }}
-              >
-                <ZoomOut className="w-6 w-6" />
-              </Badge>
-            </Tooltip>
-          }
+        <div className="fixed top-0 p-8 w-full flex justify-between sm:top-auto sm:bottom-0 sm:right-0">
+          <div className="mr-16">
+            {focusedHexInfo &&
+              <Tooltip content="Zoom out" >
+                <Badge
+                  className="mr-auto"
+                  onClick={() => {
+                    setZoomLevel(minZoomLevel)
+                    setFocusedHexOrder(null)
+                    window.history.pushState("", "", window.location.origin)
+                  }}
+                >
+                  <ZoomOut className="w-6 w-6" />
+                </Badge>
+              </Tooltip>
+            }
+          </div>
           <HexLabel
             focusedHexInfo={focusedHexInfo}
           />
