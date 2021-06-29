@@ -78,6 +78,10 @@ const New = ({allHexes, currentDraftHexOrder, csrfToken}) => {
 	const publishAllowed = useRef(newHex ? isPublishingEnabled(newHex) : false)
 
 
+	useEffect(() => {
+		document.body.classList.add('overflow-hidden')
+	}, [])
+
 	let setupFocusedHexOrder = null
 	if (currentDraftHexOrder) {
 		setupFocusedHexOrder = currentDraftHexOrder
