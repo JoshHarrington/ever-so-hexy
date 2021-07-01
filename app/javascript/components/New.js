@@ -77,9 +77,10 @@ const New = ({allHexes, currentDraftHexOrder, csrfToken}) => {
 	const [newHex, setNewHex] = useState([...allHexes].filter(h => h.order === currentDraftHexOrder)[0])
 	const publishAllowed = useRef(newHex ? isPublishingEnabled(newHex) : false)
 
-
 	useEffect(() => {
-		document.body.classList.add('overflow-hidden')
+		if (document && document.body) {
+			document.body.classList.add('overflow-hidden')
+		}
 	}, [])
 
 	let setupFocusedHexOrder = null

@@ -1,7 +1,7 @@
 class HexesController < ApplicationController
   include HexesHelper
   def home
-    all_hexes = Hex.all.order(:order)
+    all_hexes = Hex.where.not(order: 0).order(:order)
 
     @hexes = clean_hex_array(hexes: all_hexes)
 
@@ -16,7 +16,7 @@ class HexesController < ApplicationController
 
     session[:current_draft_hex_id] = draft_hex.id
 
-    all_hexes = Hex.all.order(:order)
+    all_hexes = Hex.where.not(order: 0).order(:order)
 
     @hexes = clean_hex_array(hexes: all_hexes, is_in_editing_mode: true, current_draft_hex_id: draft_hex.id)
 

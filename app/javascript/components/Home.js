@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 
-import { minPageHeight, minPageWidth, splitIntoLayers } from '../utils'
+import { debounce, minPageHeight, minPageWidth, splitIntoLayers } from '../utils'
 
 import HexGrid from './HexGrid'
 import HexWrapper from './HexWapper'
@@ -12,9 +12,11 @@ import Tooltip from './Tooltip'
 
 const Home = ({allHexes, lastHexOrderPosition}) => {
 
-  if (document && document.body) {
-    document.body.classList.add("overflow-auto")
-  }
+  useEffect(() => {
+		if (document && document.body) {
+			document.body.classList.add('overflow-auto')
+		}
+	}, [])
 
 	const [zoomLevel, setZoomLevel] = useState(minZoomLevel)
 
@@ -68,7 +70,7 @@ const Home = ({allHexes, lastHexOrderPosition}) => {
         />
       </HexWrapper>
       {infoBlockShown ?
-        <div className="fixed top-0 left-0 max-h-screen overflow-scroll text-blueGray-800 w-full bg-white shadow sm:rounded-tl-16xl p-8 sm:max-w-xs sm:top-auto sm:left-auto sm:bottom-0 sm:right-0">
+        <div className="fixed top-0 left-0 max-h-screen overflow-scroll text-blueGray-800 w-screen bg-white shadow sm:rounded-tl-16xl p-8 sm:max-w-xs sm:top-auto sm:left-auto sm:bottom-0 sm:right-0">
           <h1 className="text-2xl font-black mb-2">Ever So Hexy</h1>
           <p className="mb-3">An experimental collaborative art project by <a href="#na" className="font-bold">@Josh_Harrington</a> and <a href="#na" className="font-bold">@samlester</a></p>
           { moreInfoShown ?
@@ -103,33 +105,33 @@ const Home = ({allHexes, lastHexOrderPosition}) => {
           </div>
         </div>
         :
-        <div className="fixed top-0 p-8 w-full flex justify-between sm:top-auto sm:bottom-0 sm:right-0">
-          <div className="mr-16">
+        <div className="fixed top-0 p-8 w-full flex justify-end sm:top-auto sm:bottom-0 sm:right-0 pointer-events-none">
             {focusedHexInfo &&
-              <Tooltip content="Zoom out" >
-                <Badge
-                  className="mr-auto"
-                  onClick={() => {
-                    setZoomLevel(minZoomLevel)
-                    setFocusedHexOrder(null)
-                    window.history.pushState("", "", window.location.origin)
-                  }}
-                >
-                  <ZoomOut className="w-6 w-6" />
-                </Badge>
-              </Tooltip>
+              <div className="mr-auto sm:mr-16">
+                <Tooltip className="pointer-events-auto" content="Zoom out">
+                  <Badge
+                    className="mr-auto"
+                    onClick={() => {
+                      setZoomLevel(minZoomLevel)
+                      setFocusedHexOrder(null)
+                      window.history.pushState("", "", window.location.origin)
+                    }}
+                  >
+                    <ZoomOut className="w-6 w-6" />
+                  </Badge>
+                </Tooltip>
+              </div>
             }
-          </div>
           <HexLabel
             focusedHexInfo={focusedHexInfo}
           />
           <div className="flex gap-x-4">
-            <Tooltip content="Create Hexagon">
-              <Badge href="/new" className="invisible sm:visible">
+            <Tooltip content="Create Hexagon" className="pointer-events-auto !hidden sm:flex">
+              <Badge href="/new">
                 <Plus className="w-6 h-6" />
               </Badge>
             </Tooltip>
-            <Tooltip content="Show info">
+            <Tooltip content="Show info" className="pointer-events-auto">
               <Badge
                 onClick={() => setInfoBlockShown(true)}
               >
