@@ -2,11 +2,17 @@ import { useEffect, useRef } from 'react'
 
 const splitIntoLayers = (items) => {
 
+	let itemsCopy = [...items].sort((a,b) => a.order - b.order)
+
 	let itemsInLayers = []
 	let chunkSize = 1
 
-	while (items.length) {
-		itemsInLayers.push(items.splice(0, chunkSize));
+	while (itemsCopy.length) {
+		const layerSize = .5 * chunkSize * (chunkSize + 1)
+		const itemsToMoveToLayers = itemsCopy.filter(i => i.order <= layerSize)
+		itemsCopy = itemsCopy.filter(i => i.order > layerSize)
+
+		itemsInLayers.push(itemsToMoveToLayers);
 		if (chunkSize < 10){
 			chunkSize++
 		}
@@ -18,16 +24,16 @@ const splitIntoLayers = (items) => {
 
 const positionFromOrderNumber = (currentOrderPosition) => {
 
-	const orderNumbers = Array.from({length: currentOrderPosition}, (x, i) => i+1)
+	const orderNumbers = Array.from({length: currentOrderPosition}, (x, i) => ({order: i + 1}))
 	const orderNumbersIntoLayers = splitIntoLayers(orderNumbers)
 
 	let currentOrderLayerIndex = 0
 	let currentOrderHexIndex = 0
 
 	orderNumbersIntoLayers.filter((layer, layerIndex) => {
-		if (layer.indexOf(currentOrderPosition) !== -1) {
+		if (layer.filter(t => t.order === currentOrderPosition).length > 0) {
 			currentOrderLayerIndex = layerIndex
-			currentOrderHexIndex = layer.indexOf(currentOrderPosition)
+			currentOrderHexIndex = layer.findIndex(t => t.order === currentOrderPosition)
 			return true
 		} else {
 			return false
@@ -174,7 +180,7 @@ const zoomAndScroll = ({
 }
 
 const minPageWidth = (hexes) => {
-	return `${hexes.length * 7 + 6}em`
+	return `${hexes.length * 6.6 + 7.2}em`
 }
 
 const minPageHeight = (hexes) => {
@@ -182,7 +188,7 @@ const minPageHeight = (hexes) => {
 		b.length - a.length
 	))[0].length : 1
 
-	return `${(numberOfHexesInLargestLayer - 1) * 6 + 14}em`
+	return `${numberOfHexesInLargestLayer * 7.65 + 2.9}em`
 }
 
 export {
