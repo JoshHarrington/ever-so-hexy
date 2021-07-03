@@ -7,15 +7,18 @@ class Hex < ApplicationRecord
 
 		def add_order
 
-			order_for_hex = 0
+			if self.order == 0
 
-			Hex.count.times.each do |x|
-				if not Hex.exists?(order: x + 1)
-					order_for_hex = x + 1
-					break
+				order_for_hex = 1
+
+				Hex.count.times.each do |index|
+					if not Hex.exists?(order: index + 1)
+						order_for_hex = index + 1
+						break
+					end
 				end
+				self.update(order: order_for_hex)
 			end
-			self.update(order: order_for_hex)
 		end
 
 		def find_country_code

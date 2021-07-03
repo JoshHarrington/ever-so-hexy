@@ -3,7 +3,7 @@ class HexesController < ApplicationController
   def home
     all_hexes = Hex.where.not(order: 0).order(:order)
 
-    @hexes = clean_hex_array(hexes: all_hexes)
+    @hexes = remove_non_public_hexes_data(hexes: all_hexes)
 
     @last_hex_order_position = all_hexes.where(draft: false).length > 0 ? all_hexes.where(draft: false).last.order : 1
 
@@ -18,7 +18,7 @@ class HexesController < ApplicationController
 
     all_hexes = Hex.where.not(order: 0).order(:order)
 
-    @hexes = clean_hex_array(hexes: all_hexes, is_in_editing_mode: true, current_draft_hex_id: draft_hex.id)
+    @hexes = remove_non_public_hexes_data(hexes: all_hexes, is_in_editing_mode: true, current_draft_hex_id: draft_hex.id)
 
     @current_draft_hex_order_position = draft_hex.order
     @current_draft_hex_id = draft_hex.id

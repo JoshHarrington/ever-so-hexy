@@ -1,8 +1,12 @@
 module HexesHelper
 
-	def clean_hex_array(hexes:, is_in_editing_mode: false, current_draft_hex_id: nil)
+	def remove_non_public_hexes_data(
+		hexes:,
+		is_in_editing_mode: false,
+		current_draft_hex_id: nil
+	)
 		visible_hexes = hexes.select{|h| !h.draft || is_in_editing_mode && current_draft_hex_id && h.id == current_draft_hex_id}
-		hidden_hexes = hexes.select{|h| h.draft && (is_in_editing_mode && current_draft_hex_id && h.id != current_draft_hex_id) || !is_in_editing_mode}
+		hidden_hexes = hexes.reject{|h| !h.draft || is_in_editing_mode && current_draft_hex_id && h.id == current_draft_hex_id}
 
 		processed_visible_hexes = visible_hexes.map{ |h| {
 			draft: h.draft,
@@ -69,7 +73,9 @@ module HexesHelper
 			order: h.order
 		}}
 
-		return processed_hidden_hexes + processed_visible_hexes
+		all_hexes = processed_hidden_hexes + processed_visible_hexes
+
+		return all_hexes.sort_by{|h|h[:order]}
 
 	end
 
