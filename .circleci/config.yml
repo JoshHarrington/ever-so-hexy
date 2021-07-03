@@ -70,7 +70,7 @@ jobs:
 
       - run:
           name: Run react jest tests
-          command: NODE_ENV=test yarn run jest-tests
+          command: NODE_ENV=test yarn run jest-tests app/javascript/tests/unit/utils.test.js
 
       - run:
           name: Run rails minitest test
