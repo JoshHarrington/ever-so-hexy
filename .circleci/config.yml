@@ -33,7 +33,7 @@ jobs:
           key: hexy-cache-yarn-{{ checksum "yarn.lock" }}
 
       - run:
-          name: install dependencies
+          name: Install bundler dependencies
           command: |
             gem update --system
             gem install bundler
@@ -65,8 +65,12 @@ jobs:
       - run: bundle exec rake db:create db:schema:load
 
       - run:
+          name: Precompiler webpacker assets
+          command: NODE_ENV=test bundle exec rails webpacker:compile
+
+      - run:
           name: Run react jest tests
-          command: yarn run jest-tests
+          command: NODE_ENV=test yarn run jest-tests
 
       - run:
           name: Run rails minitest test
