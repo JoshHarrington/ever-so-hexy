@@ -22,11 +22,9 @@ class HexesHelperTest < ActionView::TestCase
   end
 
 	test "check helper to remove non public hex data - when in editing mode, with correct current draft hex id" do
-		hexes = Hex.create([{draft: true, order: 3, id: 1},{draft: false, order: 1}, {draft: true, order: 2}])
+		hexes = Hex.create([{draft: true, order: 3},{draft: false, order: 1}, {draft: true, order: 2}])
 
-		assert Hex.find_by(order:3).id == 1
-
-		cleaned_hexes = remove_non_public_hexes_data(hexes: hexes, current_draft_hex_id: 1, is_in_editing_mode: true)
+		cleaned_hexes = remove_non_public_hexes_data(hexes: hexes, current_draft_hex_id: Hex.find_by(order:3).id, is_in_editing_mode: true)
 
 		# draft hex data for the current draft that the user is editing is sent down to page
 		assert cleaned_hexes.filter{|h| h[:order] == 3}.first[:trixel_colour_a2] == "#fff"
