@@ -7,18 +7,14 @@ const HexWrapper = forwardRef(({minWidth, minHeight, children}, ref) => {
 			ref={ref}
 			className={classNames(
 				"h-screen bg-gray-100 w-screen sm:w-full",
-				"flex relative",
+				"flex relative p-12",
 				"fixed sm:relative overflow-auto sm:overflow-visible")}
+			style={{
+				minHeight,
+				minWidth
+			}}
 		>
-			<div
-				className="p-12"
-				style={{
-					minHeight,
-					minWidth
-				}}
-			>
 			{children}
-			</div>
 		</main>
 	)
 })
