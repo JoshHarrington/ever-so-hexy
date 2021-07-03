@@ -62,7 +62,9 @@ jobs:
             - ~/.yarn-cache
 
       # Database setup
-      - run: bundle exec rake db:create db:schema:load
+      - run:
+          name: Setup database from schema
+          command: bundle exec rake db:create db:schema:load
 
       - run:
           name: Precompiler webpacker assets
