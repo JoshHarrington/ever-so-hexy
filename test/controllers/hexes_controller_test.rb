@@ -1,8 +1,10 @@
 require "test_helper"
 
 class HexesControllerTest < ActionDispatch::IntegrationTest
-  test "should get home" do
-    get hexes_home_url
-    assert_response :success
-  end
+  # fixtures :hexes
+
+  # def test_root_path
+  #   get "/"
+  #   assert_equal 200, status
+  # end
 end
