@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
+import classNames from 'classnames'
 
-import { debounce, minPageHeight, minPageWidth, splitIntoLayers } from '../utils'
+import { minPageHeight, minPageWidth, splitIntoLayers } from '../utils'
 
 import HexGrid from './HexGrid'
 import HexWrapper from './HexWapper'
@@ -70,9 +71,14 @@ const Home = ({allHexes, lastHexOrderPosition}) => {
         />
       </HexWrapper>
       {infoBlockShown ?
-        <div className="fixed top-0 left-0 max-h-screen overflow-scroll text-blueGray-800 w-screen bg-white shadow sm:rounded-tl-16xl p-8 sm:max-w-xs sm:top-auto sm:left-auto sm:bottom-0 sm:right-0">
+        <div className={classNames(
+          "fixed bottom-0 left-0",
+          "max-h-screen overflow-scroll",
+          "text-blueGray-800 w-screen",
+          "bg-white shadow sm:rounded-tl-16xl",
+          "p-8 sm:max-w-xs sm:top-auto sm:left-auto sm:right-0")}>
           <h1 className="text-2xl font-black mb-2">Ever So Hexy</h1>
-          <p className="mb-3">An experimental collaborative art project by <a href="#na" className="font-bold">@Josh_Harrington</a> and <a href="#na" className="font-bold">@samlester</a></p>
+          <p className="mb-3">An experimental collaborative art project by <a href="https://twitter.com/Josh_Harrington" className="font-bold">@Josh_Harrington</a> and <a href="https://twitter.com/samlester" className="font-bold">@samlester</a></p>
           { moreInfoShown ?
             <div>
               <p className="mb-3">This project is designed to be a more pleasant way of spending that spare couple of minutes in your day. It's meant to be a palette-cleanser for your mind!</p>
@@ -105,9 +111,9 @@ const Home = ({allHexes, lastHexOrderPosition}) => {
           </div>
         </div>
         :
-        <div className="fixed top-0 p-8 w-full flex justify-end sm:top-auto sm:bottom-0 sm:right-0 pointer-events-none">
+        <div className="fixed top-0 p-8 w-full flex justify-end sm:justify-between sm:top-auto sm:bottom-0 sm:right-0 pointer-events-none">
             {focusedHexInfo &&
-              <div className="mr-auto sm:mr-16">
+              <div className="sm:mr-16">
                 <Tooltip className="pointer-events-auto" content="Zoom out">
                   <Badge
                     className="mr-auto"
@@ -125,13 +131,13 @@ const Home = ({allHexes, lastHexOrderPosition}) => {
           <HexLabel
             focusedHexInfo={focusedHexInfo}
           />
-          <div className="flex gap-x-4">
-            <Tooltip content="Create Hexagon" className="pointer-events-auto !hidden sm:flex">
+          <div className="ml-auto flex gap-x-4">
+            <Tooltip content="Create Hexagon" className="pointer-events-auto !hidden sm:!flex">
               <Badge href="/new">
                 <Plus className="w-6 h-6" />
               </Badge>
             </Tooltip>
-            <Tooltip content="Show info" className="pointer-events-auto">
+            <Tooltip content="Show info" className="pointer-events-auto ml-auto">
               <Badge
                 onClick={() => setInfoBlockShown(true)}
               >
