@@ -1,6 +1,33 @@
 module HexesHelper
 
-	def remove_non_public_hexes_data(
+	def split_into_layers(hexes:)
+
+		hexes_copy = hexes.clone
+		layer_size = 1
+		items_in_layers = []
+
+		layer_size_limit = 10
+
+		while hexes_copy.length > 0
+
+			last_order_in_layer = layer_size < layer_size_limit ? (layer_size / 2.to_f) * (layer_size + 1) : last_order_in_layer + layer_size_limit
+
+			if layer_size < layer_size_limit
+				layer_size += 1
+			end
+
+			items_to_move_to_layers = hexes_copy.select{|h| h[:order] <= last_order_in_layer}
+			hexes_copy = hexes_copy.reject{|h| h[:order] <= last_order_in_layer}
+
+			items_in_layers.push(items_to_move_to_layers)
+
+		end
+
+		return items_in_layers.reject{|l| l.length == 0}
+
+	end
+
+	def hide_private_hex_data(
 		hexes:,
 		is_in_editing_mode: false,
 		current_draft_hex_id: nil
