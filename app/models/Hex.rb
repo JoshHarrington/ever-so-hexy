@@ -34,15 +34,13 @@ class Hex < ApplicationRecord
 
 			if ip_address.present?
 				begin
-					url = "https://api.ipapi.com/#{ip_address}?access_key=#{Rails.application.credentials.ipapi[:access_key]}"
+					url = "http://api.ipapi.com/#{ip_address}?access_key=#{Rails.application.credentials.ipapi[:access_key]}"
 					uri = URI(url)
+
 					response = Net::HTTP.get(uri)
+					data = JSON.parse(response)
 
-					unless response.starts_with?("<!DOCTYPE html>")
-						data = JSON.parse(response)
-
-						self.update(country_code: data['country_code'])
-					end
+					self.update(country_code: data['country_code'])
 				end
 			end
 		end
