@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import classNames from 'classnames'
 
-import { minPageHeight, minPageWidth, splitIntoLayers } from '../utils'
+import { minPageHeight, minPageWidth } from '../utils'
 
 import HexGrid from './HexGrid'
 import HexWrapper from './HexWapper'
@@ -21,7 +21,7 @@ const Home = ({allHexes, lastHexOrderPosition}) => {
 
 	const [zoomLevel, setZoomLevel] = useState(minZoomLevel)
 
-	const hexes = splitIntoLayers([...allHexes])
+	const hexes = [...allHexes]
 
   const hexWrapperRef = useRef(null)
 
@@ -73,10 +73,12 @@ const Home = ({allHexes, lastHexOrderPosition}) => {
       {infoBlockShown ?
         <div className={classNames(
           "fixed bottom-0 left-0",
-          "max-h-screen overflow-scroll",
+          "overflow-scroll",
           "text-blueGray-800 w-screen",
           "bg-white shadow sm:rounded-tl-16xl",
-          "p-8 sm:max-w-xs sm:top-auto sm:left-auto sm:right-0")}>
+          "p-8 sm:max-w-xs sm:top-auto sm:left-auto sm:right-0",
+          "max-h-screen"
+        )}>
           <h1 className="text-2xl font-black mb-2">Ever So Hexy</h1>
           <p className="mb-3">An experimental collaborative art project by <a href="https://twitter.com/Josh_Harrington" className="font-bold">@Josh_Harrington</a> and <a href="https://twitter.com/samlester" className="font-bold">@samlester</a></p>
           { moreInfoShown ?
@@ -111,7 +113,12 @@ const Home = ({allHexes, lastHexOrderPosition}) => {
           </div>
         </div>
         :
-        <div className="fixed top-0 p-8 w-full flex justify-end sm:justify-between sm:top-auto sm:bottom-0 sm:right-0 pointer-events-none">
+        <div className={classNames(
+          "fixed top-0 p-8 w-full",
+          "flex justify-end sm:justify-between",
+          "sm:top-auto sm:bottom-0 sm:right-0",
+          "pointer-events-none"
+        )}>
             {focusedHexInfo &&
               <div className="sm:mr-16">
                 <Tooltip className="pointer-events-auto" content="Zoom out">

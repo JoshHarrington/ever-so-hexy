@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect } from "react"
 import classNames from "classnames"
-import { isPublishingEnabled, minPageHeight, minPageWidth, splitIntoLayers, updateAllTrixelsFn, zoomAndScroll } from "../utils"
+import { isPublishingEnabled, minPageHeight, minPageWidth, updateAllTrixelsFn, zoomAndScroll } from "../utils"
 import HexGrid from "./HexGrid"
 import HexWrapper from "./HexWapper"
 import { Back } from "./Icons"
@@ -11,7 +11,7 @@ import { Modal } from "./Modal"
 import Portal from "./Portal"
 import Tooltip from "./Tooltip"
 
-const New = ({allHexes, currentDraftHexOrder, csrfToken}) => {
+const New = ({allHexes, currentDraftHex, csrfToken}) => {
 
 	const colours = [{
 		name: "red-400",
@@ -61,7 +61,7 @@ const New = ({allHexes, currentDraftHexOrder, csrfToken}) => {
 	}]
 
 	const [currentColour, updateCurrentColor] = useState(colours[0])
-	const hexes = splitIntoLayers([...allHexes])
+	const hexes = [...allHexes]
 
 	const [zoomLevel, setZoomLevel] = useState(minZoomLevel)
 	const zoomLevelRef = useRef(zoomLevel)
@@ -74,7 +74,7 @@ const New = ({allHexes, currentDraftHexOrder, csrfToken}) => {
 
 	const hexWrapperRef = useRef(null)
 
-	const [newHex, setNewHex] = useState([...allHexes].filter(h => h.order === currentDraftHexOrder)[0])
+	const [newHex, setNewHex] = useState(currentDraftHex)
 	const publishAllowed = useRef(newHex ? isPublishingEnabled(newHex) : false)
 
 	useEffect(() => {
@@ -84,8 +84,8 @@ const New = ({allHexes, currentDraftHexOrder, csrfToken}) => {
 	}, [])
 
 	let setupFocusedHexOrder = null
-	if (currentDraftHexOrder) {
-		setupFocusedHexOrder = currentDraftHexOrder
+	if (currentDraftHex) {
+		setupFocusedHexOrder = currentDraftHex.order
 	} else if (window && window.location.hash.replace("#", "")) {
 		setupFocusedHexOrder = parseInt(window.location.hash.replace("#", ""))
 	}
@@ -94,9 +94,9 @@ const New = ({allHexes, currentDraftHexOrder, csrfToken}) => {
 	const focusedHex = useRef(null)
 
 	useEffect(() => {
-		if (document && window && !!currentDraftHexOrder) {
+		if (document && window && !!currentDraftHex.order) {
 
-			const newHex = document.querySelector(`svg#id-${currentDraftHexOrder}`)
+			const newHex = document.querySelector(`svg#id-${currentDraftHex.order}`)
 			zoomAndScroll({
 				elementProps: newHex ? newHex.getBoundingClientRect() : null,
 				hexSizePercentage: 70,
@@ -106,7 +106,7 @@ const New = ({allHexes, currentDraftHexOrder, csrfToken}) => {
 				setZoomLevel
 			})
 		}
-	}, [currentDraftHexOrder, setPageReady])
+	}, [currentDraftHex, setPageReady])
 
 	const [draftModalOpen, setDraftModalOpen] = useState(false)
 
@@ -119,7 +119,7 @@ const New = ({allHexes, currentDraftHexOrder, csrfToken}) => {
 			>
 				<HexGrid
 					hexes={hexes}
-					currentDraftHexOrder={currentDraftHexOrder}
+					currentDraftHexOrder={currentDraftHex.order}
 					setPageReady={setPageReady}
 					hexWrapperRef={hexWrapperRef}
           focusedHexOrder={focusedHexOrder}
@@ -129,9 +129,9 @@ const New = ({allHexes, currentDraftHexOrder, csrfToken}) => {
 					setZoomLevel={setZoomLevel}
 				>
 					<DraggyHex
-						ref={currentDraftHexOrder === focusedHexOrder ? focusedHex : undefined}
+						ref={currentDraftHex.order === focusedHexOrder ? focusedHex : undefined}
 						focusedHexOrder={focusedHexOrder}
-						order={currentDraftHexOrder}
+						order={currentDraftHex.order}
 						newHex={newHex}
 						setNewHex={setNewHex}
 						csrfToken={csrfToken}
@@ -185,7 +185,7 @@ const New = ({allHexes, currentDraftHexOrder, csrfToken}) => {
 							updateAllTrixelsFn({
 								newHex,
 								setNewHex,
-								order: currentDraftHexOrder,
+								order: currentDraftHex.order,
 								colour: currentColour.hex,
 								csrfToken
 							})
@@ -203,7 +203,7 @@ const New = ({allHexes, currentDraftHexOrder, csrfToken}) => {
 							updateAllTrixelsFn({
 								newHex,
 								setNewHex,
-								order: currentDraftHexOrder,
+								order: currentDraftHex.order,
 								colour: "white",
 								csrfToken
 							})
@@ -224,7 +224,7 @@ const New = ({allHexes, currentDraftHexOrder, csrfToken}) => {
 				<div className="flex items-center">
 					<TextBadge
 						onClick={() => {
-							fetch(`/hexes/${currentDraftHexOrder}`, {
+							fetch(`/hexes/${currentDraftHex.order}`, {
 								method: 'delete',
 								headers: {
 									"X-CSRF-Token": csrfToken,
@@ -265,7 +265,7 @@ const New = ({allHexes, currentDraftHexOrder, csrfToken}) => {
 				{publishAllowed.current &&
 					<form
 						className="mr-auto -ml-10"
-						action={`/hexes/${currentDraftHexOrder}/publish`}
+						action={`/hexes/${currentDraftHex.order}/publish`}
 						method="get"
 					>
 						<TextBadge>Save and add to grid</TextBadge>
