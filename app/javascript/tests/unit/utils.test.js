@@ -1,6 +1,6 @@
-import { splitIntoLayers } from "../../utils";
+import { hexWrapperGutter } from "../../constants";
+import { marginsForFirst, splitIntoLayers } from "../../utils";
 import { listOfHexes } from "./test-helpers";
-
 
 test("check listOfHexes fn", () => {
 	const newListOfHexes = listOfHexes(5)
@@ -40,3 +40,80 @@ test("check splitting into layers fn, with large number of hexes", () => {
 	expect(hexesSplitIntoLayers[5]).toBe(undefined);
 
 });
+
+test("hexWrapperGutter is equal to 3", () => {
+	expect(hexWrapperGutter).toBe(3)
+})
+
+test("margins for first hex are set correctly - 1 hex", () => {
+
+	const lastOrder = 1
+
+	const currentListOfHexes = listOfHexes(lastOrder)
+	const hexesSplitIntoLayers = splitIntoLayers(currentListOfHexes)
+
+	expect(currentListOfHexes[0].order).toBe(lastOrder)
+
+	const marginsForFirstHex = marginsForFirst({hexesInLayers: hexesSplitIntoLayers})
+
+	expect(marginsForFirstHex.left).toBe(hexWrapperGutter)
+	expect(marginsForFirstHex.top).toBe(hexWrapperGutter)
+
+	expect(marginsForFirstHex.right).toBe(hexWrapperGutter)
+	expect(marginsForFirstHex.bottom).toBe(hexWrapperGutter)
+
+})
+
+test("margins for first hex are set correctly - 3 hexes", () => {
+
+	const lastOrder = 3
+
+	const currentListOfHexes = listOfHexes(lastOrder)
+	const hexesSplitIntoLayers = splitIntoLayers(currentListOfHexes)
+
+	const marginsForFirstHex = marginsForFirst({hexesInLayers: hexesSplitIntoLayers})
+
+	expect(marginsForFirstHex.left).toBe(hexWrapperGutter)
+	expect(marginsForFirstHex.top).toBe(hexWrapperGutter)
+
+	expect(marginsForFirstHex.right).toBe(10)
+	expect(marginsForFirstHex.bottom).toBe(9)
+
+})
+
+test("margins for first hex are set correctly - 9 hexes", () => {
+
+	const lastOrder = 9
+
+	const currentListOfHexes = listOfHexes(lastOrder)
+	const hexesSplitIntoLayers = splitIntoLayers(currentListOfHexes)
+
+	const marginsForFirstHex = marginsForFirst({hexesInLayers: hexesSplitIntoLayers})
+
+	expect(marginsForFirstHex.left).toBe(hexWrapperGutter)
+	expect(marginsForFirstHex.top).toBe(hexWrapperGutter)
+
+	expect(marginsForFirstHex.right).toBe(24)
+	expect(marginsForFirstHex.bottom).toBe(15)
+
+})
+
+test("margins for first hex are set correctly - 8 hexes, missing 6", () => {
+
+	const lastOrder = 8
+
+	const currentListOfHexes = listOfHexes(lastOrder).filter(h => h.order !== 6)
+
+	expect(currentListOfHexes.length).toBe(7)
+	const hexesSplitIntoLayers = splitIntoLayers(currentListOfHexes)
+
+	const marginsForFirstHex = marginsForFirst({hexesInLayers: hexesSplitIntoLayers})
+
+	expect(marginsForFirstHex.left).toBe(hexWrapperGutter)
+	expect(marginsForFirstHex.top).toBe(hexWrapperGutter)
+
+	expect(marginsForFirstHex.right).toBe(24)
+	expect(marginsForFirstHex.bottom).toBe(9)
+
+})
+

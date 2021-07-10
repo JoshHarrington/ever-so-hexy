@@ -2,7 +2,7 @@ import React, { useState, Fragment, useEffect, useRef } from 'react'
 import classNames from 'classnames'
 
 import { maxZoomLevel, minZoomLevel } from '../constants'
-import { debounce, zoomAndScroll } from '../utils'
+import { debounce, marginsForFirst, zoomAndScroll } from '../utils'
 
 import HexOuter from './HexOuter'
 
@@ -179,6 +179,8 @@ const HexGrid = ({
 		}
 	}, [focusedHexOrder, setPageReady])
 
+	const marginsForFirstHex = marginsForFirst({hexesInLayers: hexes})
+
 	return (
 		<>
 			{hexes.map((l, li) => {
@@ -205,8 +207,9 @@ const HexGrid = ({
 							newHexPage={!!currentDraftHexOrder}
 							key={`${li}-${ti}`}
 							className={classNames(
-								`absolute transform`
+								'transform'
 							)}
+							marginsForFirstHex={marginsForFirstHex}
 						>
 							{!h.draft ?
 								<Trixels hex={h} />

@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react'
+import { hexWrapperGutter, mobileBreakpoint } from './constants'
 
 const splitIntoLayers = (items) => {
 
@@ -41,10 +42,21 @@ const positionFromOrderNumber = (currentOrderPosition) => {
 	})
 
 	return {
-		leftTransform: (currentOrderLayerIndex * 7) - (currentOrderHexIndex * 3.5),
-		topTransform: currentOrderHexIndex * 6
+		leftTransform: (currentOrderLayerIndex * 7) - (currentOrderHexIndex * 3.5) + hexWrapperGutter,
+		topTransform: currentOrderHexIndex * 6 + hexWrapperGutter
 	}
+}
 
+const marginsForFirst = ({hexesInLayers}) => {
+
+	const numHexesInLargestLayer = hexesInLayers.length > 1 ? [...hexesInLayers].sort((a, b) => b.length - a.length)[0].length : 1
+
+	return {
+		top: hexWrapperGutter,
+		right: (hexesInLayers.length - 1) * 7 + hexWrapperGutter,
+		bottom: (numHexesInLargestLayer - 1) * 6 + hexWrapperGutter,
+		left: hexWrapperGutter
+	}
 }
 
 function debounce(func, wait, immediate) {
@@ -163,11 +175,15 @@ const zoomAndScroll = ({
 	const svgHalfWidth = svgWidth / 2
 	const svgHalfHeight = svgHeight / 2
 
+	const isMobilePage = window.innerWidth <= mobileBreakpoint
+
 	const xScrollPosition = Math.round(((svgLeftOffset + svgHalfWidth + window.scrollX) * (newZoomLevel / zoomLevel) - (windowWidth / 2)))
 	const yScrollPosition = Math.round(((svgTopOffset + svgHalfHeight + window.scrollY) * (newZoomLevel / zoomLevel) - (windowHeight / 2)))
 
+	const scrollObject = isMobilePage ? window.document.querySelector('main') : window
+
 	const timeout = setTimeout(() => {
-		window.scrollTo({
+		scrollObject.scrollTo({
 			top: yScrollPosition,
 			left: xScrollPosition
 		})
@@ -194,6 +210,7 @@ const minPageHeight = (hexes) => {
 export {
 	splitIntoLayers,
 	positionFromOrderNumber,
+	marginsForFirst,
 	debounce,
 	usePrevious,
 	sendNewPaths,
