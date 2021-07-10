@@ -140,6 +140,68 @@ const updateAllTrixelsFn = ({newHex, setNewHex, order, colour, csrfToken}) => {
 	sendNewPaths({order, hex: hexCopy, csrfToken})
 }
 
+const roundToNDecimalPlaces = ({number, places = 0}) => {
+	if (typeof number === 'undefined' ) {
+		return null
+	}
+
+	const roundShiftingNumber = 10**places
+	return Math.round(number * roundShiftingNumber) / roundShiftingNumber
+}
+
+const finalScrollDetails = ({
+	currentZoomLevel,
+	object,
+	scrollContainer,
+	desiredObjectPercentage
+}) => {
+
+	if (!(('width' in object) &&
+				('height' in object) &&
+				('top' in object) &&
+				('left' in object) &&
+				('width' in scrollContainer) &&
+				('height' in scrollContainer) &&
+				(typeof desiredObjectPercentage === 'number') &&
+				(typeof currentZoomLevel === 'number'))) {
+		return false
+	}
+
+	const currentObjectToContainerWidthRatio = object.width / scrollContainer.width
+	const currentObjectToContainerHeightRatio = object.height / scrollContainer.height
+
+	const currentObjectRatio = currentObjectToContainerWidthRatio > currentObjectToContainerHeightRatio ? currentObjectToContainerWidthRatio : currentObjectToContainerHeightRatio
+	const currentObjectPercentage = currentObjectRatio * 100
+
+	const zoomChangeRatio = desiredObjectPercentage / currentObjectPercentage
+	//// need to multiply current object width with zoomChangeRatio to get to desired size
+	//// if currentObjectPercentage is 75 and desiredObjectPercentage is 100 then (100/75 = 1.333) so (75*1.333 = 100)
+
+	const finalZoomLevel = roundToNDecimalPlaces({number: currentZoomLevel * zoomChangeRatio, places:3})
+
+	const zoomedObjectSize = {
+		width: Math.round(object.width * zoomChangeRatio),
+		height: Math.round(object.height * zoomChangeRatio)
+	}
+
+	const zoomedObjectPosition = {
+		top: Math.round(object.top * zoomChangeRatio),
+		left: Math.round(object.left * zoomChangeRatio)
+	}
+
+	const calculatedObjectPosition = {
+		top: Math.round((zoomedObjectPosition.top) - (scrollContainer.height / 2) + zoomedObjectSize.height / 2),
+		left: Math.round((zoomedObjectPosition.left) - (scrollContainer.width / 2) + zoomedObjectSize.width / 2)
+	}
+
+	return {
+		top: calculatedObjectPosition.top,
+		left: calculatedObjectPosition.left,
+		finalZoomLevel,
+	}
+
+}
+
 const zoomAndScroll = ({
 	elementProps,
 	hexSizePercentage,
@@ -151,46 +213,47 @@ const zoomAndScroll = ({
 	if (!elementProps) {
 		return null
 	}
-	const svgWidth = elementProps.width
-	const svgHeight = elementProps.height
-
-	const windowWidth = window.innerWidth
-	const windowHeight = window.innerHeight
-
-	const widthRatio = svgWidth / windowWidth
-	/// get the decimal fraction of the width of the svg of the total width of the window
-	const heightRatio = svgHeight / windowHeight
-	/// get the decimal fraction of the height of the svg of the total height of the window
-
-	const orientationRatioToSizeOn = heightRatio >= widthRatio ? heightRatio : widthRatio
-
-	let percentageSizeOfHex = hexSizePercentage / 100
-
-	const newZoomLevel = zoomLevel * (percentageSizeOfHex / orientationRatioToSizeOn)
-	setZoomLevel(newZoomLevel)
-
-	const svgLeftOffset = elementProps.left
-	const svgTopOffset = elementProps.top
-
-	const svgHalfWidth = svgWidth / 2
-	const svgHalfHeight = svgHeight / 2
 
 	const isMobilePage = window.innerWidth <= mobileBreakpoint
-
-	const xScrollPosition = Math.round(((svgLeftOffset + svgHalfWidth + window.scrollX) * (newZoomLevel / zoomLevel) - (windowWidth / 2)))
-	const yScrollPosition = Math.round(((svgTopOffset + svgHalfHeight + window.scrollY) * (newZoomLevel / zoomLevel) - (windowHeight / 2)))
-
 	const scrollObject = isMobilePage ? window.document.querySelector('main') : window
 
-	const timeout = setTimeout(() => {
-		scrollObject.scrollTo({
-			top: yScrollPosition,
-			left: xScrollPosition
+	const scrollContainerDetails = isMobilePage ? {
+		width: scrollObject.offsetWidth,
+		height: scrollObject.offsetHeight
+	} : {
+		width: scrollObject.innerWidth,
+		height: scrollObject.innerHeight,
+	}
+
+	const newScrollDetails = finalScrollDetails({
+		currentZoomLevel: zoomLevel,
+		object: elementProps,
+		scrollContainer: scrollContainerDetails,
+		desiredObjectPercentage: hexSizePercentage
+	})
+
+	setZoomLevel(newScrollDetails.finalZoomLevel)
+
+	if (window.document.readyState === 'complete') {
+		scrollObject.scrollBy({
+			top: newScrollDetails.top,
+			left: newScrollDetails.left
 		})
 		if (setPageReady) {
 			setPageReady(true)
 		}
-	}, 1)
+	} else {
+		window.onload = () => {
+			scrollObject.scrollBy({
+				top: newScrollDetails.top,
+				left: newScrollDetails.left
+			})
+			if (setPageReady) {
+				setPageReady(true)
+			}
+		}
+	}
+
 
 	return () => clearTimeout(timeout)
 }
@@ -219,5 +282,7 @@ export {
 	zoomAndScroll,
 	isPublishingEnabled,
 	minPageWidth,
-	minPageHeight
+	minPageHeight,
+	finalScrollDetails,
+	roundToNDecimalPlaces
 }

@@ -152,32 +152,26 @@ const HexGrid = ({
 	}, [hexWrapperRef.current, zoomLevel, screenSizeZoomIncrease])
 
 	useEffect(() => {
-		if (document && window && !!lastHexOrderPosition) {
-			const lastHex = document.querySelector(`svg#id-${lastHexOrderPosition}`)
-			zoomAndScroll({
-				elementProps: lastHex ? lastHex.getBoundingClientRect() : null,
-				hexSizePercentage: 20,
-				window,
-				zoomLevel: zoomLevelRef.current,
-				setPageReady,
-				setZoomLevel
-			})
+		if (document && window && (!!focusedHexOrder || !!lastHexOrderPosition)) {
+			let hex
+			if (focusedHex.current) {
+				hex = focusedHex.current
+			} else if (focusedHexOrder) {
+				hex = document.querySelector(`svg#id-${focusedHexOrder}`)
+			} else if (lastHexOrderPosition) {
+				hex = document.querySelector(`svg#id-${lastHexOrderPosition}`)
 		}
-	}, [lastHexOrderPosition, setPageReady])
 
-	useEffect(() => {
-		if (document && window && !!focusedHexOrder) {
-			const focusedHexEl = focusedHex.current ? focusedHex.current : document.querySelector(`svg#id-${focusedHexOrder}`)
 			zoomAndScroll({
-				elementProps: focusedHexEl ? focusedHexEl.getBoundingClientRect() : null,
+				elementProps: hex ? hex.getBoundingClientRect() : null,
 				hexSizePercentage: 50,
 				window,
-				zoomLevel: zoomLevelRef.current,
+				zoomLevel,
 				setPageReady,
 				setZoomLevel
 			})
 		}
-	}, [focusedHexOrder, setPageReady])
+	}, [focusedHexOrder, lastHexOrderPosition, setPageReady])
 
 	const marginsForFirstHex = marginsForFirst({hexesInLayers: hexes})
 
