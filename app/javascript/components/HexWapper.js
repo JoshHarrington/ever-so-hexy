@@ -1,5 +1,6 @@
 import classNames from 'classnames'
 import React, { forwardRef, useEffect, useState } from 'react'
+import { mobileBreakpoint } from '../constants';
 import { debounce } from '../utils';
 
 const HexWrapper = forwardRef(({minWidth, minHeight, children}, ref) => {
@@ -10,7 +11,7 @@ const HexWrapper = forwardRef(({minWidth, minHeight, children}, ref) => {
   useEffect(() => {
     const handleResize = debounce(
       () => {
-        if (window.innerWidth > 639) {
+        if (window.innerWidth > mobileBreakpoint) {
 					updateMinWidth(minWidth)
 					updateMinHeight(minHeight)
         } else {
@@ -31,7 +32,7 @@ const HexWrapper = forwardRef(({minWidth, minHeight, children}, ref) => {
 			ref={ref}
 			className={classNames(
 				"h-screen bg-gray-100 w-screen sm:w-full",
-				"flex relative p-12 w-screen",
+				"flex w-screen",
 				"fixed sm:relative overflow-auto sm:overflow-visible")}
 			style={{
 				minHeight: minHeightState,
