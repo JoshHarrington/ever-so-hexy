@@ -234,14 +234,17 @@ const zoomAndScroll = ({
 
 	setZoomLevel(newScrollDetails.finalZoomLevel)
 
+	let timeout
 	if (window.document.readyState === 'complete') {
-		scrollObject.scrollBy({
-			top: newScrollDetails.top,
-			left: newScrollDetails.left
-		})
-		if (setPageReady) {
-			setPageReady(true)
-		}
+		timeout = window.setTimeout(() => {
+			scrollObject.scrollBy({
+				top: newScrollDetails.top,
+				left: newScrollDetails.left
+			})
+			if (setPageReady) {
+				setPageReady(true)
+			}
+		}, 150)
 	} else {
 		window.onload = () => {
 			scrollObject.scrollBy({
