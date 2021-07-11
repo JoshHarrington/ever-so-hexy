@@ -247,13 +247,15 @@ const zoomAndScroll = ({
 		}, 150)
 	} else {
 		window.onload = () => {
-			scrollObject.scrollBy({
-				top: newScrollDetails.top,
-				left: newScrollDetails.left
-			})
-			if (setPageReady) {
-				setPageReady(true)
-			}
+			timeout = window.setTimeout(() => {
+				scrollObject.scrollBy({
+					top: newScrollDetails.top,
+					left: newScrollDetails.left
+				})
+				if (setPageReady) {
+					setPageReady(true)
+				}
+			}, 100)
 		}
 	}
 
