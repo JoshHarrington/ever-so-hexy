@@ -164,7 +164,7 @@ const HexGrid = ({
 
 			zoomAndScroll({
 				elementProps: hex ? hex.getBoundingClientRect() : null,
-				hexSizePercentage: 50,
+				hexSizePercentage: focusedHexOrder ? 50 : 20,
 				window,
 				zoomLevel,
 				setPageReady,
