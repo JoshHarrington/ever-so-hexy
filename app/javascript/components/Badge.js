@@ -1,7 +1,7 @@
 import React from 'react'
 import classNames from 'classnames'
 
-const Badge = ({href, onClick, className, children}) => {
+const Badge = ({href, onClick, className, children, disabled}) => {
 	const Tag = href ? `a` : `button`
 	return (
 		<Tag
@@ -14,15 +14,17 @@ const Badge = ({href, onClick, className, children}) => {
 				"flex items-center justify-center pointer-events-auto",
 				"hover:ring hover:ring-teal-500-a25 focus:ring focus:ring-teal-500-a50"
 			)}
+			disabled={disabled}
 		>{children}</Tag>
 	)
 }
 
-const TextBadge = ({href, onClick, className, hasWhiteBackground, children}) => {
+const TextBadge = ({href, onClick, className, children, disabled, hasWhiteBackground}) => {
 	const Tag = href ? `a` : `button`
 	return (
 		<Tag
 			href={href}
+			onClick={onClick}
 			className={classNames(
 				className,
 				{"text-white shadow bg-teal-600 hover:bg-teal-700": !hasWhiteBackground},
@@ -32,7 +34,7 @@ const TextBadge = ({href, onClick, className, hasWhiteBackground, children}) => 
 				"flex items-center pointer-events-auto",
 				"hover:ring hover:ring-teal-500-a25 focus:ring focus:ring-teal-500-a50"
 			)}
-			onClick={onClick}
+			disabled={disabled}
 		>
 			{children}
 		</Tag>

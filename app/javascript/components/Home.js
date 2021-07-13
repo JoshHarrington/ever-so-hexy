@@ -40,6 +40,8 @@ const Home = ({allHexes, lastHexOrderPosition}) => {
   const [moreInfoShown, updateMoreInfoShown] = useState(false)
   const [infoBlockShown, setInfoBlockShown] = useState(!focusedHexOrder)
 
+  const [isDisabled, setDisabledState] = useState(false)
+
   useEffect(() => {
     if (!!focusedHexOrder) {
       setInfoBlockShown(false)
@@ -149,7 +151,14 @@ const Home = ({allHexes, lastHexOrderPosition}) => {
           }
           <hr className="my-5" />
           <div className="flex items-center justify-between hidden sm:flex">
-            <TextBadge href="/new"><Plus className="w-5 h-5 -ml-1 mr-2" /> Add a hexagon</TextBadge>
+            <TextBadge
+              href="/new"
+              disabled={isDisabled}
+              onClick={() => setDisabledState(true)}
+            >
+              <Plus className="w-5 h-5 -ml-1 mr-2" />
+              Add a hexagon
+            </TextBadge>
 
             <Tooltip content="Hide info">
               <Badge
@@ -195,7 +204,11 @@ const Home = ({allHexes, lastHexOrderPosition}) => {
           />
           <div className="ml-auto flex gap-x-4">
             <Tooltip content="Create Hexagon" className="pointer-events-auto !hidden sm:!flex">
-              <Badge href="/new">
+              <Badge
+                href="/new"
+                disabled={isDisabled}
+                onClick={() => setDisabledState(true)}
+              >
                 <Plus className="w-6 h-6" />
               </Badge>
             </Tooltip>
