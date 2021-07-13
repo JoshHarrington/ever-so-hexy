@@ -75,10 +75,6 @@ jobs:
           command: NODE_ENV=test yarn run jest-tests app/javascript/tests/unit/utils.test.js
 
       - run:
-          name: Run rails minitest test
-          command: bin/rails test
-
-      - run:
           name: Run Rspec tests
-          command: bundle exec rspec --format progress
+          command: bundle exec rspec
 
