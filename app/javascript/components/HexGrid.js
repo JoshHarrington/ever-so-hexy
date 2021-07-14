@@ -77,6 +77,7 @@ const HexGrid = ({
 	focusedHex,
 	zoomLevel,
 	setZoomLevel,
+	panzoom,
 	children
 }) => {
 
@@ -99,15 +100,18 @@ const HexGrid = ({
         if (e.ctrlKey || e.metaKey) {
           if (e.key === '-') {
             // Ctrl / Cmd + '-' (zoom out)
-            setZoomLevel((Math.floor(zoomLevel) - 1) > minZoomLevel ? Math.floor(zoomLevel) - 1 : minZoomLevel)
+            // setZoomLevel((Math.floor(zoomLevel) - 1) > minZoomLevel ? Math.floor(zoomLevel) - 1 : minZoomLevel)
+						panzoom.zoomOut()
           }
           if (e.key === '=') {
             // Ctrl / Cmd + '=' (zoom in)
-            setZoomLevel((Math.floor(zoomLevel) + 1) <= maxZoomLevel ? Math.floor(zoomLevel) + 1 : maxZoomLevel)
+            // setZoomLevel((Math.floor(zoomLevel) + 1) <= maxZoomLevel ? Math.floor(zoomLevel) + 1 : maxZoomLevel)
+						panzoom.zoomIn()
           }
           if (e.key === '0') {
             // Ctrl / Cmd + '0' (reset zoom)
-            setZoomLevel(minZoomLevel)
+            // setZoomLevel(minZoomLevel)
+						panzoom.reset()
           }
         }
       }, 100, true)
@@ -158,20 +162,54 @@ const HexGrid = ({
 				hex = focusedHex.current
 			} else if (focusedHexOrder) {
 				hex = document.querySelector(`svg#id-${focusedHexOrder}`)
-			} else if (lastHexOrderPosition) {
-				hex = document.querySelector(`svg#id-${lastHexOrderPosition}`)
-		}
+			}
 
-			zoomAndScroll({
-				elementProps: hex ? hex.getBoundingClientRect() : null,
-				hexSizePercentage: focusedHexOrder ? 50 : 20,
-				window,
-				zoomLevel,
-				setPageReady,
-				setZoomLevel
-			})
+			let lastHex
+			if (lastHexOrderPosition) {
+				lastHex = document.querySelector(`svg#id-${lastHexOrderPosition}`)
+			}
+
+			// zoomAndScroll({
+			// 	elementProps: hex ? hex.getBoundingClientRect() : null,
+			// 	hexSizePercentage: focusedHexOrder ? 50 : 20,
+			// 	window,
+			// 	zoomLevel,
+			// 	setPageReady,
+			// 	setZoomLevel
+			// })
+
+			if (panzoom) {
+
+				if (hex){
+
+					const scaleBeforeZoom = panzoom.getScale()
+
+					console.log("hex")
+					panzoom.zoomToPoint(3, {clientX: 0, clientY: 0})
+					setTimeout(() => {
+						const hexProps = hex.getBoundingClientRect()
+						const wrapperProps = hex.parentElement.getBoundingClientRect()
+						const currentScale = panzoom.getScale()
+
+						const scaleFactor =  scaleBeforeZoom != currentScale ? currentScale / scaleBeforeZoom : currentScale
+
+						const scrollProps = {
+							x: -(-wrapperProps.x + hexProps.x)/scaleFactor,
+							y: -(-wrapperProps.y + hexProps.y)/scaleFactor
+						}
+
+						panzoom.pan(scrollProps.x,scrollProps.y)
+					})
+
+					console.log(panzoom.getScale())
+				} else {
+					panzoom.reset()
+				}
+			}
+
+
 		}
-	}, [focusedHexOrder, lastHexOrderPosition, setPageReady])
+	}, [focusedHexOrder, lastHexOrderPosition, setPageReady, panzoom])
 
 	const marginsForFirstHex = marginsForFirst({hexesInLayers: hexes})
 
@@ -188,7 +226,6 @@ const HexGrid = ({
 											setFocusedHexOrder(h.order)
 											window.history.pushState("", "", window.location.origin + `#${h.order}`)
 										} else {
-											setZoomLevel(minZoomLevel)
 											setFocusedHexOrder(null)
 											window.history.pushState("", "", window.location.origin)
 										}
