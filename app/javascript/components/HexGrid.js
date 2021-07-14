@@ -1,8 +1,8 @@
 import React, { useState, Fragment, useEffect, useRef } from 'react'
 import classNames from 'classnames'
+import Panzoom from '@panzoom/panzoom'
 
-import { maxZoomLevel, minZoomLevel } from '../constants'
-import { debounce, marginsForFirst, zoomAndScroll } from '../utils'
+import { debounce, marginsForFirst } from '../utils'
 
 import HexOuter from './HexOuter'
 
@@ -75,8 +75,6 @@ const HexGrid = ({
 	focusedHexOrder,
 	setFocusedHexOrder,
 	focusedHex,
-	zoomLevel,
-	setZoomLevel,
 	panzoom,
 	children
 }) => {
@@ -87,75 +85,50 @@ const HexGrid = ({
 		}
 	},[]);
 
-	const zoomLevelRef = useRef(zoomLevel)
 
 	useEffect(() => {
-		zoomLevelRef.current = zoomLevel
-	}, [zoomLevel])
 
-  const [screenSizeZoomIncrease, changeScreenSizeZoomIncrease] = useState(window ? (window.innerWidth > 1200 ? 1.5 : 1) : 1)
+		const defaultZoomLevel = 1.4
+		const maxZoomLevel = 5
 
-  useEffect(() => {
-    const debouncedKeydownEventFn = debounce((e) => {
-        if (e.ctrlKey || e.metaKey) {
-          if (e.key === '-') {
-            // Ctrl / Cmd + '-' (zoom out)
-            // setZoomLevel((Math.floor(zoomLevel) - 1) > minZoomLevel ? Math.floor(zoomLevel) - 1 : minZoomLevel)
-						panzoom.zoomOut()
-          }
-          if (e.key === '=') {
-            // Ctrl / Cmd + '=' (zoom in)
-            // setZoomLevel((Math.floor(zoomLevel) + 1) <= maxZoomLevel ? Math.floor(zoomLevel) + 1 : maxZoomLevel)
-						panzoom.zoomIn()
-          }
-          if (e.key === '0') {
-            // Ctrl / Cmd + '0' (reset zoom)
-            // setZoomLevel(minZoomLevel)
-						panzoom.reset()
-          }
-        }
-      }, 100, true)
-    let keydownFnName = () => {}
-    window.addEventListener('keydown', keydownFnName = (e) => {
-      if ((e.ctrlKey || e.metaKey) &&
-          (e.key === '-' || e.key === '=' || e.key === '0')) {
-        e.preventDefault()
-      }
-      debouncedKeydownEventFn(e)
+		const panzoom = Panzoom(hexWrapperRef.current, {
+      minScale: 1,
+      maxScale: maxZoomLevel,
+      origin: '0 0'
     })
-    return () => window.removeEventListener('keydown', keydownFnName)
-  }, [zoomLevel]);
 
-  const windowWidth = useRef(window ? window.innerWidth : null)
-  const windowHeight = useRef(window ? window.innerHeight : null)
+    hexWrapperRef.current.parentElement.addEventListener('wheel', panzoom.zoomWithWheel)
 
-  useEffect(() => {
-    const handleResize = debounce(
-      () => {
-        const getWindowWidth = window.innerWidth
-        windowWidth.current = getWindowWidth
-        windowHeight.current = window.innerHeight
-        if (getWindowWidth > 1200) {
-          changeScreenSizeZoomIncrease(1.5)
-        } else {
-          changeScreenSizeZoomIncrease(1)
-        }
-      },
-      400,
-      false
-    )
-    window.addEventListener('resize', handleResize)
-    handleResize()
-    return () => window.removeEventListener('resize', handleResize)
-  }, []);
+		const debouncedKeydownEventFn = debounce((e) => {
+			if (e.ctrlKey || e.metaKey) {
+				if (e.key === '-') {
+					// Ctrl / Cmd + '-' (zoom out)
+					panzoom.zoomOut()
+				}
+				if (e.key === '=') {
+					// Ctrl / Cmd + '=' (zoom in)
+					panzoom.zoomIn()
+				}
+				if (e.key === '0') {
+					// Ctrl / Cmd + '0' (reset zoom)
+					panzoom.zoom(defaultZoomLevel)
+					setTimeout(() => {
+						panzoom.pan(0,0)
+					})
+					setFocusedHexOrder(null)
+					window.history.pushState("", "", window.location.origin)
+				}
+			}
+		}, 100, true)
+		let keydownFnName = () => {}
+		window.addEventListener('keydown', keydownFnName = (e) => {
+			if ((e.ctrlKey || e.metaKey) &&
+					(e.key === '-' || e.key === '=' || e.key === '0')) {
+				e.preventDefault()
+			}
+			debouncedKeydownEventFn(e)
+		})
 
-	useEffect(() => {
-		if (hexWrapperRef.current) {
-			hexWrapperRef.current.style.fontSize = `${zoomLevel * screenSizeZoomIncrease * 100}%`
-	}
-	}, [hexWrapperRef.current, zoomLevel, screenSizeZoomIncrease])
-
-	useEffect(() => {
 		if (document && window && (!!focusedHexOrder || !!lastHexOrderPosition)) {
 			let hex
 			if (focusedHex.current) {
@@ -169,47 +142,45 @@ const HexGrid = ({
 				lastHex = document.querySelector(`svg#id-${lastHexOrderPosition}`)
 			}
 
-			// zoomAndScroll({
-			// 	elementProps: hex ? hex.getBoundingClientRect() : null,
-			// 	hexSizePercentage: focusedHexOrder ? 50 : 20,
-			// 	window,
-			// 	zoomLevel,
-			// 	setPageReady,
-			// 	setZoomLevel
-			// })
-
 			if (panzoom) {
 
 				if (hex){
 
 					const scaleBeforeZoom = panzoom.getScale()
 
-					console.log("hex")
-					panzoom.zoomToPoint(3, {clientX: 0, clientY: 0})
+					panzoom.zoom(maxZoomLevel)
 					setTimeout(() => {
 						const hexProps = hex.getBoundingClientRect()
 						const wrapperProps = hex.parentElement.getBoundingClientRect()
+						const bodyProps = hex.closest('body').getBoundingClientRect()
+
 						const currentScale = panzoom.getScale()
 
 						const scaleFactor =  scaleBeforeZoom != currentScale ? currentScale / scaleBeforeZoom : currentScale
+						const centeringProps = {
+							x: bodyProps.width/2 - hexProps.width/2,
+							y: bodyProps.height/2 - hexProps.height/2
+						}
 
 						const scrollProps = {
-							x: -(-wrapperProps.x + hexProps.x)/scaleFactor,
-							y: -(-wrapperProps.y + hexProps.y)/scaleFactor
+							x: (-(-wrapperProps.x + hexProps.x) + centeringProps.x)/scaleFactor,
+							y: (-(-wrapperProps.y + hexProps.y) + centeringProps.y)/scaleFactor
 						}
 
 						panzoom.pan(scrollProps.x,scrollProps.y)
-					})
-
-					console.log(panzoom.getScale())
+					}, 50)
 				} else {
-					panzoom.reset()
+					panzoom.zoom(defaultZoomLevel)
+					setTimeout(() => {
+						panzoom.pan(0,0)
+					})
 				}
 			}
 
+			return () => window.removeEventListener('keydown', keydownFnName)
 
 		}
-	}, [focusedHexOrder, lastHexOrderPosition, setPageReady, panzoom])
+	}, [focusedHexOrder, lastHexOrderPosition, setPageReady])
 
 	const marginsForFirstHex = marginsForFirst({hexesInLayers: hexes})
 

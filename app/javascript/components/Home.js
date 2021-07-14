@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
 import classNames from 'classnames'
-import Panzoom from '@panzoom/panzoom'
 
 import { minPageHeight, minPageWidth } from '../utils'
 
@@ -56,17 +55,7 @@ const Home = ({allHexes, lastHexOrderPosition}) => {
   const [panzoom, setPanzoom] = useState(null)
 
   useEffect(() => {
-    const panzoomSetup = Panzoom(hexWrapperRef.current, {
-      minScale: 1,
-      maxScale: 3,
-      origin: '0 0'
-    })
-
-    hexWrapperRef.current.parentElement.addEventListener('wheel', panzoomSetup.zoomWithWheel)
-
     window.document.body.classList.add('bg-gray-100')
-    setPanzoom(panzoomSetup)
-
   }, [])
 
 	return (
@@ -83,8 +72,6 @@ const Home = ({allHexes, lastHexOrderPosition}) => {
           focusedHex={focusedHex}
           focusedHexOrder={focusedHexOrder}
           setFocusedHexOrder={setFocusedHexOrder}
-					zoomLevel={zoomLevel}
-					setZoomLevel={setZoomLevel}
           panzoom={panzoom}
         />
       </HexWrapper>
