@@ -1,6 +1,5 @@
 import React, { useState, Fragment, useEffect, useRef } from 'react'
 import classNames from 'classnames'
-import Panzoom from '@panzoom/panzoom'
 
 import { debounce, marginsForFirst } from '../utils'
 
@@ -88,17 +87,6 @@ const HexGrid = ({
 
 	useEffect(() => {
 
-		const defaultZoomLevel = 1.4
-		const maxZoomLevel = 5
-
-		const panzoom = Panzoom(hexWrapperRef.current, {
-      minScale: 1,
-      maxScale: maxZoomLevel,
-      origin: '0 0'
-    })
-
-    hexWrapperRef.current.parentElement.addEventListener('wheel', panzoom.zoomWithWheel)
-
 		const debouncedKeydownEventFn = debounce((e) => {
 			if (e.ctrlKey || e.metaKey) {
 				if (e.key === '-') {
@@ -129,57 +117,8 @@ const HexGrid = ({
 			debouncedKeydownEventFn(e)
 		})
 
-		if (document && window && (!!focusedHexOrder || !!lastHexOrderPosition)) {
-			let hex
-			if (focusedHex.current) {
-				hex = focusedHex.current
-			} else if (focusedHexOrder) {
-				hex = document.querySelector(`svg#id-${focusedHexOrder}`)
-			}
+		return () => window.removeEventListener('keydown', keydownFnName)
 
-			let lastHex
-			if (lastHexOrderPosition) {
-				lastHex = document.querySelector(`svg#id-${lastHexOrderPosition}`)
-			}
-
-			if (panzoom) {
-
-				if (hex){
-
-					const scaleBeforeZoom = panzoom.getScale()
-
-					panzoom.zoom(maxZoomLevel)
-					setTimeout(() => {
-						const hexProps = hex.getBoundingClientRect()
-						const wrapperProps = hex.parentElement.getBoundingClientRect()
-						const bodyProps = hex.closest('body').getBoundingClientRect()
-
-						const currentScale = panzoom.getScale()
-
-						const scaleFactor =  scaleBeforeZoom != currentScale ? currentScale / scaleBeforeZoom : currentScale
-						const centeringProps = {
-							x: bodyProps.width/2 - hexProps.width/2,
-							y: bodyProps.height/2 - hexProps.height/2
-						}
-
-						const scrollProps = {
-							x: (-(-wrapperProps.x + hexProps.x) + centeringProps.x)/scaleFactor,
-							y: (-(-wrapperProps.y + hexProps.y) + centeringProps.y)/scaleFactor
-						}
-
-						panzoom.pan(scrollProps.x,scrollProps.y)
-					}, 50)
-				} else {
-					panzoom.zoom(defaultZoomLevel)
-					setTimeout(() => {
-						panzoom.pan(0,0)
-					})
-				}
-			}
-
-			return () => window.removeEventListener('keydown', keydownFnName)
-
-		}
 	}, [focusedHexOrder, lastHexOrderPosition, setPageReady])
 
 	const marginsForFirstHex = marginsForFirst({hexesInLayers: hexes})

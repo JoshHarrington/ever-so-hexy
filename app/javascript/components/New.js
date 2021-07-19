@@ -1,12 +1,13 @@
 import React, { useRef, useState, useEffect } from "react"
 import classNames from "classnames"
-import { isPublishingEnabled, minPageHeight, minPageWidth, updateAllTrixelsFn, zoomAndScroll } from "../utils"
+import Panzoom from '@panzoom/panzoom'
+import { isPublishingEnabled, minPageHeight, minPageWidth, panScrollAndZoom, updateAllTrixelsFn } from "../utils"
 import HexGrid from "./HexGrid"
 import HexWrapper from "./HexWapper"
 import { Back } from "./Icons"
 import { Badge, TextBadge } from "./Badge"
 import DraggyHex from "./DraggyHex"
-import { minZoomLevel } from "../constants"
+import { maxZoomLevel, minZoomLevel } from "../constants"
 import { Modal } from "./Modal"
 import Portal from "./Portal"
 import Tooltip from "./Tooltip"
@@ -93,20 +94,45 @@ const New = ({allHexes, currentDraftHex, csrfToken}) => {
 	const [focusedHexOrder, setFocusedHexOrder] = useState(setupFocusedHexOrder)
 	const focusedHex = useRef(null)
 
-	useEffect(() => {
-		if (document && window && !!currentDraftHex.order) {
+	const [panzoom, setPanzoom] = useState(null)
 
-			const newHex = document.querySelector(`svg#id-${currentDraftHex.order}`)
-			zoomAndScroll({
-				elementProps: newHex ? newHex.getBoundingClientRect() : null,
-				hexSizePercentage: 70,
-				window,
-				zoomLevel: zoomLevelRef.current,
-				setPageReady,
-				setZoomLevel
+	const [pageReadyStats, updatePageReadyStats] = useState(null)
+
+	useEffect(() => {
+
+		if (document && window && (!!focusedHex || !!focusedHexOrder)) {
+			const panzoom = Panzoom(hexWrapperRef.current, {
+				minScale: minZoomLevel,
+				maxScale: maxZoomLevel,
+				origin: '0 0',
+				disablePan: true
 			})
+
+			setPanzoom(panzoom)
+
+			let hex
+			if (focusedHex.current) {
+				hex = focusedHex.current
+			} else if (focusedHexOrder) {
+				hex = document.querySelector(`svg#id-${focusedHexOrder}`)
+			}
+
+			if (panzoom) {
+
+				hexWrapperRef.current.addEventListener('panzoompan', () => {
+					setTimeout(() => {
+						panzoom.destroy()
+						hexWrapperRef.current.style.cursor = 'default'
+					}, 50)
+				})
+
+				if (hex){
+					panScrollAndZoom({panzoom, hex, setPageReady})
+				}
+			}
+
 		}
-	}, [currentDraftHex, setPageReady])
+	}, [focusedHex, focusedHexOrder, setPageReady])
 
 	const [draftModalOpen, setDraftModalOpen] = useState(false)
 
@@ -116,6 +142,7 @@ const New = ({allHexes, currentDraftHex, csrfToken}) => {
 				ref={hexWrapperRef}
 				minWidth={minPageWidth(hexes)}
 				minHeight={minPageHeight(hexes)}
+				updatePageReadyStats={updatePageReadyStats}
 			>
 				<HexGrid
 					hexes={hexes}
@@ -144,6 +171,18 @@ const New = ({allHexes, currentDraftHex, csrfToken}) => {
 
 				</HexGrid>
 			</HexWrapper>
+			{/* <TextBadge
+				className={classNames(
+					"fixed left-0 top-0 z-10",
+					// {"opacity-50 pointer-events-none": !canRecenter}
+				)}
+				onClick={() => {
+					// console.log('canRecenter', canRecenter)
+					// if (canRecenter) {
+					// 	panScrollAndZoom({panzoom, hex:focusedHex.current})
+					// }
+				}}
+			>Recenter</TextBadge> */}
 			<div
 				className={classNames(
 					"fixed h-screen right-0 top-0 flex items-center z-10 pointer-events-none",

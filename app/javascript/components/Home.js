@@ -1,14 +1,16 @@
 import React, { useEffect, useRef, useState } from 'react'
 import classNames from 'classnames'
 
-import { minPageHeight, minPageWidth } from '../utils'
+import Panzoom from '@panzoom/panzoom'
+
+import { minPageHeight, minPageWidth, panScrollAndZoom } from '../utils'
 
 import HexGrid from './HexGrid'
 import HexWrapper from './HexWapper'
 import HexLabel from './HexLabel'
 import { Cross, Info, Plus, ZoomOut } from './Icons'
 import { Badge, TextBadge } from './Badge'
-import { minZoomLevel } from '../constants'
+import { minZoomLevel, defaultZoomLevel, maxZoomLevel } from '../constants'
 import Tooltip from './Tooltip'
 
 const Home = ({allHexes, lastHexOrderPosition}) => {
@@ -44,15 +46,60 @@ const Home = ({allHexes, lastHexOrderPosition}) => {
     }
   }, [focusedHexOrder])
 
-  useEffect(() => {
-    if (infoBlockShown) {
-      setFocusedHexOrder(null)
-      setZoomLevel(minZoomLevel)
-      window.history.pushState("", "", window.location.origin)
-    }
-  }, [infoBlockShown])
-
   const [panzoom, setPanzoom] = useState(null)
+
+	useEffect(() => {
+
+    const panzoom = Panzoom(hexWrapperRef.current, {
+      minScale: 1,
+      maxScale: maxZoomLevel,
+      origin: '0 0'
+    })
+
+    hexWrapperRef.current.parentElement.addEventListener('wheel', panzoom.zoomWithWheel)
+
+    setPanzoom(panzoom)
+
+		if (document && window && (!!focusedHexOrder || !!lastHexOrderPosition)) {
+			let hex
+			if (focusedHex.current) {
+				hex = focusedHex.current
+			} else if (focusedHexOrder) {
+				hex = document.querySelector(`svg#id-${focusedHexOrder}`)
+			}
+
+			let lastHex
+			if (lastHexOrderPosition) {
+				lastHex = document.querySelector(`svg#id-${lastHexOrderPosition}`)
+			}
+
+			if (panzoom) {
+
+				if (hex){
+          panScrollAndZoom({panzoom, hex})
+				} else {
+					panzoom.zoom(defaultZoomLevel)
+					setTimeout(() => {
+						panzoom.pan(0,0)
+					})
+				}
+			}
+
+		}
+	}, [focusedHexOrder, lastHexOrderPosition])
+
+
+  useEffect(() => {
+    if (infoBlockShown && panzoom) {
+      setFocusedHexOrder(null)
+      window.history.pushState("", "", window.location.origin)
+      panzoom.zoom(defaultZoomLevel)
+      setTimeout(() => {
+        panzoom.pan(0,0)
+      })
+    }
+  }, [panzoom, infoBlockShown])
+
 
   useEffect(() => {
     window.document.body.classList.add('bg-gray-100')
