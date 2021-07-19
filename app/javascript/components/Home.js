@@ -177,7 +177,10 @@ const Home = ({allHexes, lastHexOrderPosition}) => {
                   <Badge
                     className="mr-auto"
                     onClick={() => {
-                      setZoomLevel(minZoomLevel)
+                      panzoom.zoom(defaultZoomLevel)
+                      setTimeout(() => {
+                        panzoom.pan(0,0)
+                      })
                       setFocusedHexOrder(null)
                       window.history.pushState("", "", window.location.origin)
                     }}

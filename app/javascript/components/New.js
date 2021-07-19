@@ -96,8 +96,6 @@ const New = ({allHexes, currentDraftHex, csrfToken}) => {
 
 	const [panzoom, setPanzoom] = useState(null)
 
-	const [pageReadyStats, updatePageReadyStats] = useState(null)
-
 	useEffect(() => {
 
 		if (document && window && (!!focusedHex || !!focusedHexOrder)) {
@@ -171,18 +169,6 @@ const New = ({allHexes, currentDraftHex, csrfToken}) => {
 
 				</HexGrid>
 			</HexWrapper>
-			{/* <TextBadge
-				className={classNames(
-					"fixed left-0 top-0 z-10",
-					// {"opacity-50 pointer-events-none": !canRecenter}
-				)}
-				onClick={() => {
-					// console.log('canRecenter', canRecenter)
-					// if (canRecenter) {
-					// 	panScrollAndZoom({panzoom, hex:focusedHex.current})
-					// }
-				}}
-			>Recenter</TextBadge> */}
 			<div
 				className={classNames(
 					"fixed h-screen right-0 top-0 flex items-center z-10 pointer-events-none",
