@@ -140,7 +140,6 @@ const New = ({allHexes, currentDraftHex, csrfToken}) => {
 				ref={hexWrapperRef}
 				minWidth={minPageWidth(hexes)}
 				minHeight={minPageHeight(hexes)}
-				updatePageReadyStats={updatePageReadyStats}
 			>
 				<HexGrid
 					hexes={hexes}
