@@ -33,7 +33,7 @@ const Home = ({allHexes, lastHexOrderPosition}) => {
 	const [focusedHexOrder, setFocusedHexOrder] = useState(setupFocusedHexOrder)
   const focusedHex = useRef(null)
 
-  const focusedHexInfo = allHexes.find(hex => hex.order === focusedHexOrder);
+  const focusedHexInfo = allHexes.flat().find(hex => hex.order === focusedHexOrder)
 
   const [moreInfoShown, updateMoreInfoShown] = useState(false)
   const [infoBlockShown, setInfoBlockShown] = useState(!focusedHexOrder)
