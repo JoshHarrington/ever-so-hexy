@@ -96,7 +96,7 @@ const DraggyHex = forwardRef(({
 				id={`id-${order}`}
 				viewBox="0 0 156 180"
 				width="300px"
-				className={classNames(className, "z-10", {"opacity-50": focusedHexOrder && focusedHexOrder !== order})}
+				className={classNames(className, "z-10 cursor-default", {"opacity-50": focusedHexOrder && focusedHexOrder !== order})}
 				style={{
 					transform: `translate(${posiFromOrder.leftTransform}em, ${posiFromOrder.topTransform}em)`,
 					width: '6.6em',

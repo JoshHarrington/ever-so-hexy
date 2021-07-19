@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react'
-import { hexWrapperGutter, mobileBreakpoint } from './constants'
+import { hexWrapperGutter, maxZoomLevel, mobileBreakpoint } from './constants'
 
 const splitIntoLayers = (items) => {
 
@@ -149,118 +149,37 @@ const roundToNDecimalPlaces = ({number, places = 0}) => {
 	return Math.round(number * roundShiftingNumber) / roundShiftingNumber
 }
 
-const finalScrollDetails = ({
-	currentZoomLevel,
-	object,
-	scrollContainer,
-	desiredObjectPercentage
-}) => {
 
-	if (!(('width' in object) &&
-				('height' in object) &&
-				('top' in object) &&
-				('left' in object) &&
-				('width' in scrollContainer) &&
-				('height' in scrollContainer) &&
-				(typeof desiredObjectPercentage === 'number') &&
-				(typeof currentZoomLevel === 'number'))) {
-		return false
-	}
+const panScrollAndZoom = ({panzoom, hex, setPageReady}) => {
 
-	const currentObjectToContainerWidthRatio = object.width / scrollContainer.width
-	const currentObjectToContainerHeightRatio = object.height / scrollContainer.height
+	const scaleBeforeZoom = panzoom.getScale()
 
-	const currentObjectRatio = currentObjectToContainerWidthRatio > currentObjectToContainerHeightRatio ? currentObjectToContainerWidthRatio : currentObjectToContainerHeightRatio
-	const currentObjectPercentage = currentObjectRatio * 100
+	panzoom.zoom(maxZoomLevel)
+	setTimeout(() => {
+		const hexProps = hex.getBoundingClientRect()
+		const wrapperProps = hex.parentElement.getBoundingClientRect()
+		const bodyProps = hex.closest('body').getBoundingClientRect()
 
-	const zoomChangeRatio = desiredObjectPercentage / currentObjectPercentage
-	//// need to multiply current object width with zoomChangeRatio to get to desired size
-	//// if currentObjectPercentage is 75 and desiredObjectPercentage is 100 then (100/75 = 1.333) so (75*1.333 = 100)
+		const currentScale = panzoom.getScale()
 
-	const finalZoomLevel = roundToNDecimalPlaces({number: currentZoomLevel * zoomChangeRatio, places:3})
-
-	const zoomedObjectSize = {
-		width: Math.round(object.width * zoomChangeRatio),
-		height: Math.round(object.height * zoomChangeRatio)
-	}
-
-	const zoomedObjectPosition = {
-		top: Math.round(object.top * zoomChangeRatio),
-		left: Math.round(object.left * zoomChangeRatio)
-	}
-
-	const calculatedObjectPosition = {
-		top: Math.round((zoomedObjectPosition.top) - (scrollContainer.height / 2) + zoomedObjectSize.height / 2),
-		left: Math.round((zoomedObjectPosition.left) - (scrollContainer.width / 2) + zoomedObjectSize.width / 2)
-	}
-
-	return {
-		top: calculatedObjectPosition.top,
-		left: calculatedObjectPosition.left,
-		finalZoomLevel,
-	}
-
-}
-
-const zoomAndScroll = ({
-	elementProps,
-	hexSizePercentage,
-	window,
-	zoomLevel,
-	setPageReady,
-	setZoomLevel
-}) => {
-	if (!elementProps) {
-		return null
-	}
-
-	const isMobilePage = window.innerWidth <= mobileBreakpoint
-	const scrollObject = isMobilePage ? window.document.querySelector('main') : window
-
-	const scrollContainerDetails = isMobilePage ? {
-		width: scrollObject.offsetWidth,
-		height: scrollObject.offsetHeight
-	} : {
-		width: scrollObject.innerWidth,
-		height: scrollObject.innerHeight,
-	}
-
-	const newScrollDetails = finalScrollDetails({
-		currentZoomLevel: zoomLevel,
-		object: elementProps,
-		scrollContainer: scrollContainerDetails,
-		desiredObjectPercentage: hexSizePercentage
-	})
-
-	setZoomLevel(newScrollDetails.finalZoomLevel)
-
-	let timeout
-	if (window.document.readyState === 'complete') {
-		timeout = window.setTimeout(() => {
-			scrollObject.scrollBy({
-				top: newScrollDetails.top,
-				left: newScrollDetails.left
-			})
-			if (setPageReady) {
-				setPageReady(true)
-			}
-		}, 150)
-	} else {
-		window.onload = () => {
-			timeout = window.setTimeout(() => {
-				scrollObject.scrollBy({
-					top: newScrollDetails.top,
-					left: newScrollDetails.left
-				})
-				if (setPageReady) {
-					setPageReady(true)
-				}
-			}, 100)
+		const scaleFactor =  scaleBeforeZoom != currentScale ? currentScale / scaleBeforeZoom : currentScale
+		const centeringProps = {
+			x: bodyProps.width/2 - hexProps.width/2,
+			y: bodyProps.height/2 - hexProps.height/2
 		}
-	}
 
+		const scrollProps = {
+			x: (-(-wrapperProps.x + hexProps.x) + centeringProps.x)/scaleFactor,
+			y: (-(-wrapperProps.y + hexProps.y) + centeringProps.y)/scaleFactor
+		}
 
-	return () => clearTimeout(timeout)
+		panzoom.pan(scrollProps.x, scrollProps.y, { force: true })
+
+		if (setPageReady) {
+			setPageReady(true)
+		}
+
+	}, 50)
 }
 
 const minPageWidth = (hexes) => {
@@ -284,10 +203,9 @@ export {
 	sendNewPaths,
 	updatePathsFn,
 	updateAllTrixelsFn,
-	zoomAndScroll,
 	isPublishingEnabled,
 	minPageWidth,
 	minPageHeight,
-	finalScrollDetails,
-	roundToNDecimalPlaces
+	roundToNDecimalPlaces,
+	panScrollAndZoom
 }
