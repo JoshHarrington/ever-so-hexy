@@ -4,14 +4,6 @@ import { countries } from 'country-data'
 import classNames from 'classnames'
 
 const HexLabel = ({focusedHexInfo}) => {
-
-  function getFlagEmoji(countryCode) {
-
-    const codePoints = countryCode.toUpperCase().split('').map(char =>  127397 + char.charCodeAt());
-    return String.fromCodePoint(...codePoints);
-
-  }
-
 	return (
     <>
       {focusedHexInfo &&
@@ -30,7 +22,7 @@ const HexLabel = ({focusedHexInfo}) => {
                 <li className="country block sm:inline-block">
                   {countries[focusedHexInfo.country_code].name}
                   <span className="pl-2 text-xl leading-none relative top-0.5">
-                    {getFlagEmoji(focusedHexInfo.country_code)}
+                    {countries[focusedHexInfo.country_code].emoji}
                     </span>
                 </li>
               }
