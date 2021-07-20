@@ -1,13 +1,13 @@
 import React, { useRef, useState, useEffect } from "react"
 import classNames from "classnames"
 import Panzoom from '@panzoom/panzoom'
-import { isPublishingEnabled, minPageHeight, minPageWidth, panScrollAndZoom, updateAllTrixelsFn } from "../utils"
+import { debounce, isPublishingEnabled, panScrollAndZoom, updateAllTrixelsFn } from "../utils"
 import HexGrid from "./HexGrid"
 import HexWrapper from "./HexWapper"
 import { Back } from "./Icons"
 import { Badge, TextBadge } from "./Badge"
 import DraggyHex from "./DraggyHex"
-import { maxZoomLevel, minZoomLevel } from "../constants"
+import { hexZoomLevel, maxZoomLevel, minZoomLevel, mobileBreakpoint, mobileHexZoomLevel } from "../constants"
 import { Modal } from "./Modal"
 import Portal from "./Portal"
 import Tooltip from "./Tooltip"
@@ -94,11 +94,9 @@ const New = ({allHexes, currentDraftHex, csrfToken}) => {
 	const [focusedHexOrder, setFocusedHexOrder] = useState(setupFocusedHexOrder)
 	const focusedHex = useRef(null)
 
-	const [panzoom, setPanzoom] = useState(null)
-
 	useEffect(() => {
 
-		if (document && window && (!!focusedHex || !!focusedHexOrder)) {
+		if (document && window && (!!focusedHex.current && !!focusedHexOrder)) {
 			const panzoom = Panzoom(hexWrapperRef.current, {
 				minScale: minZoomLevel,
 				maxScale: maxZoomLevel,
@@ -106,31 +104,34 @@ const New = ({allHexes, currentDraftHex, csrfToken}) => {
 				disablePan: true
 			})
 
-			setPanzoom(panzoom)
-
-			let hex
-			if (focusedHex.current) {
-				hex = focusedHex.current
-			} else if (focusedHexOrder) {
-				hex = document.querySelector(`svg#id-${focusedHexOrder}`)
+			const destroyPanzoom = () => {
+				setTimeout(() => {
+					panzoom.destroy()
+					hexWrapperRef.current.style.cursor = 'default'
+				}, 50)
 			}
+			hexWrapperRef.current.addEventListener('panzoompan', destroyPanzoom)
 
-			if (panzoom) {
+			const handleResize = debounce(
+				() => {
+					if (focusedHex.current) {
+						const desiredZoomLevel = window.innerWidth < mobileBreakpoint ? mobileHexZoomLevel : hexZoomLevel
+						panScrollAndZoom({panzoom, hex: focusedHex.current, setPageReady, desiredZoomLevel})
+					}
+				},
+				400,
+				false
+			)
 
-				hexWrapperRef.current.addEventListener('panzoompan', () => {
-					setTimeout(() => {
-						panzoom.destroy()
-						hexWrapperRef.current.style.cursor = 'default'
-					}, 50)
-				})
+			window.addEventListener('resize', handleResize)
+			handleResize()
 
-				if (hex){
-					panScrollAndZoom({panzoom, hex, setPageReady})
-				}
+			return () => {
+				window.removeEventListener('resize', handleResize)
+				hexWrapperRef.current.removeEventListener('panzoompan', destroyPanzoom)
 			}
-
 		}
-	}, [focusedHex, focusedHexOrder, setPageReady])
+	}, [focusedHexOrder, setPageReady])
 
 	const [draftModalOpen, setDraftModalOpen] = useState(false)
 
@@ -138,8 +139,6 @@ const New = ({allHexes, currentDraftHex, csrfToken}) => {
 		<>
 			<HexWrapper
 				ref={hexWrapperRef}
-				minWidth={minPageWidth(hexes)}
-				minHeight={minPageHeight(hexes)}
 			>
 				<HexGrid
 					hexes={hexes}

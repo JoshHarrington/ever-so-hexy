@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react'
-import { hexWrapperGutter, maxZoomLevel, mobileBreakpoint } from './constants'
+import { hexWrapperGutter } from './constants'
 
 const splitIntoLayers = (items) => {
 
@@ -150,36 +150,39 @@ const roundToNDecimalPlaces = ({number, places = 0}) => {
 }
 
 
-const panScrollAndZoom = ({panzoom, hex, setPageReady}) => {
+const panScrollAndZoom = ({panzoom, hex, setPageReady, desiredZoomLevel}) => {
 
-	const scaleBeforeZoom = panzoom.getScale()
+	panzoom.zoom(desiredZoomLevel)
 
-	panzoom.zoom(maxZoomLevel)
-	setTimeout(() => {
-		const hexProps = hex.getBoundingClientRect()
-		const wrapperProps = hex.parentElement.getBoundingClientRect()
+	if (hex) {
 		const bodyProps = hex.closest('body').getBoundingClientRect()
 
-		const currentScale = panzoom.getScale()
+		setTimeout(() => {
+			const hexProps = hex.getBoundingClientRect()
+			const wrapperProps = hex.parentElement.getBoundingClientRect()
 
-		const scaleFactor =  scaleBeforeZoom != currentScale ? currentScale / scaleBeforeZoom : currentScale
-		const centeringProps = {
-			x: bodyProps.width/2 - hexProps.width/2,
-			y: bodyProps.height/2 - hexProps.height/2
-		}
+			const centeringProps = {
+				x: bodyProps.width/2 - hexProps.width/2,
+				y: bodyProps.height/2 - hexProps.height/2
+			}
 
-		const scrollProps = {
-			x: (-(-wrapperProps.x + hexProps.x) + centeringProps.x)/scaleFactor,
-			y: (-(-wrapperProps.y + hexProps.y) + centeringProps.y)/scaleFactor
-		}
+			const scrollProps = {
+				x: (-(-wrapperProps.x + hexProps.x) + centeringProps.x)/desiredZoomLevel,
+				y: (-(-wrapperProps.y + hexProps.y) + centeringProps.y)/desiredZoomLevel
+			}
 
-		panzoom.pan(scrollProps.x, scrollProps.y, { force: true })
+			panzoom.pan(scrollProps.x, scrollProps.y, { force: true })
 
-		if (setPageReady) {
-			setPageReady(true)
-		}
+			if (setPageReady) {
+				setPageReady(true)
+			}
 
-	}, 50)
+		}, 50)
+	} else {
+		setTimeout(() => {
+			panzoom.pan(0,0)
+		})
+	}
 }
 
 const minPageWidth = (hexes) => {
