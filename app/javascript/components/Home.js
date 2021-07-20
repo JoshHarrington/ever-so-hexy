@@ -3,15 +3,27 @@ import classNames from 'classnames'
 
 import Panzoom from '@panzoom/panzoom'
 
-import { minPageHeight, minPageWidth, panScrollAndZoom } from '../utils'
+import { debounce, panScrollAndZoom } from '../utils'
 
 import HexGrid from './HexGrid'
 import HexWrapper from './HexWapper'
 import HexLabel from './HexLabel'
 import { Cross, Info, Plus, ZoomOut } from './Icons'
 import { Badge, TextBadge } from './Badge'
-import { minZoomLevel, defaultZoomLevel, maxZoomLevel } from '../constants'
+import { minZoomLevel, defaultZoomLevel, maxZoomLevel, mobileBreakpoint, mobileHexZoomLevel, hexZoomLevel } from '../constants'
 import Tooltip from './Tooltip'
+
+const resetZoomAndPan = ({panzoom, setFocusedHexOrder, window}) => {
+
+  const desiredZoomLevel = window.innerWidth < mobileBreakpoint ? minZoomLevel : defaultZoomLevel
+  panzoom.zoom(desiredZoomLevel)
+  setTimeout(() => {
+    panzoom.pan(0,0)
+  })
+
+  setFocusedHexOrder(null)
+  window.history.pushState("", "", window.location.origin)
+}
 
 const Home = ({allHexes, lastHexOrderPosition}) => {
 
@@ -20,8 +32,6 @@ const Home = ({allHexes, lastHexOrderPosition}) => {
 			document.body.classList.add('overflow-auto')
 		}
 	}, [])
-
-	const [zoomLevel, setZoomLevel] = useState(minZoomLevel)
 
 	const hexes = [...allHexes]
 
@@ -51,7 +61,7 @@ const Home = ({allHexes, lastHexOrderPosition}) => {
 	useEffect(() => {
 
     const panzoom = Panzoom(hexWrapperRef.current, {
-      minScale: 1,
+      minScale: minZoomLevel,
       maxScale: maxZoomLevel,
       origin: '0 0'
     })
@@ -60,45 +70,53 @@ const Home = ({allHexes, lastHexOrderPosition}) => {
 
     setPanzoom(panzoom)
 
-		if (document && window && (!!focusedHexOrder || !!lastHexOrderPosition)) {
-			let hex
-			if (focusedHex.current) {
-				hex = focusedHex.current
-			} else if (focusedHexOrder) {
-				hex = document.querySelector(`svg#id-${focusedHexOrder}`)
-			}
-
-			let lastHex
-			if (lastHexOrderPosition) {
-				lastHex = document.querySelector(`svg#id-${lastHexOrderPosition}`)
-			}
-
-			if (panzoom) {
-
-				if (hex){
-          panScrollAndZoom({panzoom, hex})
-				} else {
-					panzoom.zoom(defaultZoomLevel)
-					setTimeout(() => {
-						panzoom.pan(0,0)
-					})
-				}
-			}
-
+		if (document && window) {
+      if (!!focusedHexOrder && focusedHex.current) {
+        const desiredZoomLevel = window.innerWidth < mobileBreakpoint ? mobileHexZoomLevel : hexZoomLevel
+        panScrollAndZoom({panzoom, hex: focusedHex.current, desiredZoomLevel})
+      } else {
+        const desiredZoomLevel = window.innerWidth < mobileBreakpoint ? minZoomLevel : defaultZoomLevel
+        panzoom.zoom(desiredZoomLevel)
+      }
 		}
-	}, [focusedHexOrder, lastHexOrderPosition])
+	}, [focusedHexOrder])
 
+  const [showResetBtn, updateShownResetBtn] = useState(false)
 
   useEffect(() => {
-    if (infoBlockShown && panzoom) {
-      setFocusedHexOrder(null)
-      window.history.pushState("", "", window.location.origin)
-      panzoom.zoom(defaultZoomLevel)
-      setTimeout(() => {
-        panzoom.pan(0,0)
-      })
+    const panzoomZoomFn = (e) => {
+      if (e.detail.scale === defaultZoomLevel) {
+        updateShownResetBtn(false)
+      } else {
+        updateShownResetBtn(true)
+      }
     }
-  }, [panzoom, infoBlockShown])
+    if (hexWrapperRef && hexWrapperRef.current){
+      hexWrapperRef.current.addEventListener('panzoomzoom', (e) => panzoomZoomFn(e))
+    }
+    return hexWrapperRef.current.removeEventListener('panzoomzoom', panzoomZoomFn)
+
+  }, [hexWrapperRef, updateShownResetBtn])
+
+  useEffect(() => {
+    const handleResize = debounce(
+      () => {
+        if (focusedHex.current) {
+          panScrollAndZoom({panzoom, hex: focusedHex.current})
+        } else {
+          resetZoomAndPan({panzoom, setFocusedHexOrder, window})
+        }
+      },
+      400,
+      false
+    )
+    if (panzoom) {
+      window.addEventListener('resize', handleResize)
+      handleResize()
+    }
+
+    return () => window.removeEventListener('resize', handleResize)
+  }, [focusedHexOrder, panzoom, setFocusedHexOrder])
 
 
   useEffect(() => {
@@ -109,8 +127,6 @@ const Home = ({allHexes, lastHexOrderPosition}) => {
     <>
       <HexWrapper
         ref={hexWrapperRef}
-        minWidth={minPageWidth(hexes)}
-        minHeight={minPageHeight(hexes)}
       >
         <HexGrid
           lastHexOrderPosition={lastHexOrderPosition}
@@ -123,47 +139,59 @@ const Home = ({allHexes, lastHexOrderPosition}) => {
         />
       </HexWrapper>
       {infoBlockShown ?
-        <div className={classNames(
-          "fixed bottom-0 left-0",
-          "overflow-scroll",
-          "text-blueGray-800 w-screen",
-          "bg-white shadow sm:rounded-tl-16xl",
-          "p-8 sm:max-w-xs sm:top-auto sm:left-auto sm:right-0",
-          "max-h-screen"
-        )}>
-          <h1 className="text-2xl font-black mb-2">Ever So Hexy</h1>
-          <p className="mb-3">An experimental collaborative art project by <a href="https://twitter.com/Josh_Harrington" className="font-bold">@Josh_Harrington</a> and <a href="https://twitter.com/samlester" className="font-bold">@samlester</a></p>
-          { moreInfoShown ?
-            <div>
-              <p className="mb-3">This project is designed to be a more pleasant way of spending that spare couple of minutes in your day. It's meant to be a palette-cleanser for your mind!</p>
-
-              <p className="mb-3">Create your own interesting shapes and patterns. Get inspired by other people creating fun hexagon designs. Find ways to link designs together in ways their creators didn't imagine.</p>
-
-              <p>This is a calm and welcoming place to design whatever hexagon you want, bear in mind we'll be removing any hexagons which don't fit that mindset.</p>
-            </div>
-              :
-            <button
-              onClick={() => updateMoreInfoShown(true)}
-              className="text-teal-600 font-bold"
-            >More information</button>
-          }
-          <hr className="my-5" />
-          <div className="flex items-center justify-between hidden sm:flex">
-            <TextBadge href="/new"><Plus className="w-5 h-5 -ml-1 mr-2" /> Add a hexagon</TextBadge>
-
-            <Tooltip content="Hide info">
+        <>
+          {showResetBtn &&
+            <Tooltip content="Reset Zoom" className="!fixed bottom-0 left-0 ml-8 mb-8 !hidden !sm:inline-block">
               <Badge
-                onClick={() => setInfoBlockShown(false)}
-              >
-                <Cross className="w-6 h-6" />
+                className="mr-auto"
+                onClick={() => resetZoomAndPan({panzoom, setFocusedHexOrder, window})}
+                >
+                <ZoomOut className="w-6 w-6" />
               </Badge>
             </Tooltip>
+          }
+          <div className={classNames(
+            "fixed bottom-0 left-0",
+            "overflow-scroll",
+            "text-blueGray-800 w-screen",
+            "bg-white shadow sm:rounded-tl-16xl",
+            "p-8 sm:max-w-xs sm:top-auto sm:left-auto sm:right-0",
+            "max-h-screen"
+          )}>
+            <h1 className="text-2xl font-black mb-2">Ever So Hexy</h1>
+            <p className="mb-3">An experimental collaborative art project by <a href="https://twitter.com/Josh_Harrington" className="font-bold">@Josh_Harrington</a> and <a href="https://twitter.com/samlester" className="font-bold">@samlester</a></p>
+            { moreInfoShown ?
+              <div>
+                <p className="mb-3">This project is designed to be a more pleasant way of spending that spare couple of minutes in your day. It's meant to be a palette-cleanser for your mind!</p>
+
+                <p className="mb-3">Create your own interesting shapes and patterns. Get inspired by other people creating fun hexagon designs. Find ways to link designs together in ways their creators didn't imagine.</p>
+
+                <p>This is a calm and welcoming place to design whatever hexagon you want, bear in mind we'll be removing any hexagons which don't fit that mindset.</p>
+              </div>
+                :
+              <button
+                onClick={() => updateMoreInfoShown(true)}
+                className="text-teal-600 font-bold"
+              >More information</button>
+            }
+            <hr className="my-5" />
+            <div className="flex items-center justify-between hidden sm:flex">
+              <TextBadge href="/new"><Plus className="w-5 h-5 -ml-1 mr-2" /> Add a hexagon</TextBadge>
+
+              <Tooltip content="Hide info">
+                <Badge
+                  onClick={() => setInfoBlockShown(false)}
+                >
+                  <Cross className="w-6 h-6" />
+                </Badge>
+              </Tooltip>
+            </div>
+            <div className="flex flex-wrap justify-center sm:hidden">
+              <TextBadge className="w-full justify-center" onClick={() => setInfoBlockShown(false)}>View hexagons</TextBadge>
+              <p className="w-full text-center mt-4 w-3/4 text-sm text-gray-400">Add your own hexagon using a desktop browser</p>
+            </div>
           </div>
-          <div className="flex flex-wrap justify-center sm:hidden">
-            <TextBadge className="w-full justify-center" onClick={() => setInfoBlockShown(false)}>View hexagons</TextBadge>
-            <p className="w-full text-center mt-4 w-3/4 text-sm text-gray-400">Add your own hexagon using a desktop browser</p>
-          </div>
-        </div>
+        </>
         :
         <div className={classNames(
           "fixed top-0 p-8 w-full",
@@ -176,14 +204,7 @@ const Home = ({allHexes, lastHexOrderPosition}) => {
                 <Tooltip className="pointer-events-auto" content="Zoom out">
                   <Badge
                     className="mr-auto"
-                    onClick={() => {
-                      panzoom.zoom(defaultZoomLevel)
-                      setTimeout(() => {
-                        panzoom.pan(0,0)
-                      })
-                      setFocusedHexOrder(null)
-                      window.history.pushState("", "", window.location.origin)
-                    }}
+                    onClick={() => resetZoomAndPan({panzoom, setFocusedHexOrder, window})}
                   >
                     <ZoomOut className="w-6 w-6" />
                   </Badge>
@@ -201,7 +222,9 @@ const Home = ({allHexes, lastHexOrderPosition}) => {
             </Tooltip>
             <Tooltip content="Show info" className="pointer-events-auto ml-auto">
               <Badge
-                onClick={() => setInfoBlockShown(true)}
+                onClick={() => {
+                  setInfoBlockShown(true)
+                }}
               >
                 <Info className="w-6 h-6" />
               </Badge>
