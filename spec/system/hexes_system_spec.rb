@@ -4,7 +4,7 @@ RSpec.describe 'Hex zooming', :type => :system do
 	let!(:hexes) { create_list(:hex, 3, draft: false)}
 
   before do
-    driven_by(:selenium_chrome)
+    driven_by(:selenium_chrome_headless)
   end
 
   it 'can load the homepage and zoom to a hex' do

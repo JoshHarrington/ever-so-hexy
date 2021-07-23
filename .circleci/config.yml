@@ -3,6 +3,7 @@ version: 2.1
 orbs:
   heroku: circleci/heroku@1.0.1
   node: circleci/node@4.1.0
+  browser-tools: circleci/browser-tools@1.1.3
 
 workflows:
   heroku_deploy:
@@ -31,6 +32,14 @@ jobs:
 
       - restore_cache:
           key: hexy-cache-yarn-{{ checksum "yarn.lock" }}
+
+      - browser-tools/install-chrome
+      - browser-tools/install-chromedriver
+
+      - run:
+          name: "Check chromedriver is installed"
+          command: |
+            chromedriver --version
 
       - run:
           name: Install bundler dependencies
