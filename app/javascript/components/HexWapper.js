@@ -6,6 +6,7 @@ const HexWrapper = forwardRef(({children}, ref) => {
 	return (
 		<div
 			ref={ref}
+			data-testid="hex-wrapper"
 			className={classNames(
 				"h-screen w-full",
 				"flex",
