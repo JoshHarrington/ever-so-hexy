@@ -1,19 +1,7 @@
 require 'rails_helper'
 
-def select_selenium_chrome_type
-	if ENV["CI"]
-		driven_by(:selenium_chrome_headless)
-	else
-		driven_by(:selenium_chrome)
-	end
-end
-
 RSpec.describe 'Home page Hex zooming', type: :system do
 	let!(:hexes) { create_list(:hex, 3, draft: false)}
-
-  before do
-		select_selenium_chrome_type
-  end
 
   it 'can load the homepage and zoom to a hex' do
     visit '/'
@@ -54,7 +42,6 @@ RSpec.describe 'Mobile view hex zooming', type: :system do
 	let!(:hexes) {create_list(:hex, 6, draft: false)}
 
 	before do
-		select_selenium_chrome_type
 		Capybara.page.current_window.resize_to(411, 731) # Pixel 2 size window
 	end
 
@@ -89,11 +76,6 @@ end
 
 RSpec.describe 'New page view', type: :system do
 	let!(:hexes) { create_list(:hex, 3, draft: false)}
-
-  before do
-    select_selenium_chrome_type
-		Capybara.page.current_window.resize_to(1200, 710)
-  end
 
   it 'can load the new page and fill one trixel' do
     visit '/new'
