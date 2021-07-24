@@ -10,6 +10,14 @@ require 'capybara/rails'
 # Add additional requires below this line. Rails is not loaded until this point!
 require 'database_cleaner/active_record'
 
+def select_selenium_chrome_type
+	if ENV["CI"]
+		driven_by(:selenium_chrome_headless)
+	else
+		driven_by(:selenium_chrome)
+	end
+end
+
 # Requires supporting ruby files with custom matchers and macros, etc, in
 # spec/support/ and its subdirectories. Files matching `spec/**/*_spec.rb` are
 # run as spec files by default. This means that files in spec/support that end
@@ -52,6 +60,11 @@ RSpec.configure do |config|
 
   config.before(:all) do
     DatabaseCleaner.start
+  end
+
+  config.before(:all, type: :system) do
+    select_selenium_chrome_type
+    Capybara.page.current_window.resize_to(1200, 800)
   end
 
   config.after(:all) do
