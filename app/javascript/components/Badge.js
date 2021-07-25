@@ -18,11 +18,12 @@ const Badge = ({href, onClick, className, children}) => {
 	)
 }
 
-const TextBadge = ({href, onClick, className, hasWhiteBackground, children}) => {
+const TextBadge = ({href, onClick, className, testid, hasWhiteBackground, children}) => {
 	const Tag = href ? `a` : `button`
 	return (
 		<Tag
 			href={href}
+			data-testid={testid}
 			className={classNames(
 				className,
 				{"text-white shadow bg-teal-600 hover:bg-teal-700": !hasWhiteBackground},

@@ -173,7 +173,10 @@ const New = ({allHexes, currentDraftHex, csrfToken}) => {
 					{"hidden": !pageReady}
 				)}
 			>
-				<div className="bg-white w-full p-8 pr-6 flex flex-col rounded-l-16xl shadow pointer-events-auto">
+				<div
+					data-testid="palette-picker"
+					className="bg-white w-full p-8 pr-6 flex flex-col rounded-l-16xl shadow pointer-events-auto"
+				>
 					<div className="grid grid-cols-3 gap-2 pb-6 mb-6 border-0 border-b border-coolGray-200">
 						{colours.map((c, i) => <button
 							key={i}
@@ -291,7 +294,7 @@ const New = ({allHexes, currentDraftHex, csrfToken}) => {
 						action={`/hexes/${currentDraftHex.order}/publish`}
 						method="get"
 					>
-						<TextBadge>Save and add to grid</TextBadge>
+						<TextBadge testid="add-hex-button">Save and add to grid</TextBadge>
 					</form>
 				}
 			</div>
