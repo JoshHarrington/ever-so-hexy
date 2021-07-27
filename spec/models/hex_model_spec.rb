@@ -76,7 +76,7 @@ RSpec.describe Hex, :type => :model do
 
 	end
 
-	it "blank ip address leaves country code blank", :vcr do
+	it "blank ip address leaves country code blank" do
 
 		hex = Hex.create
 
@@ -84,7 +84,7 @@ RSpec.describe Hex, :type => :model do
 
 	end
 
-	it "local ip address sets country code to GB for testing", :vcr do
+	it "local ip address sets country code to GB for testing" do
 
 		hex = Hex.create(ip_address: "::1")
 

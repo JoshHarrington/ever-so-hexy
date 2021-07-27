@@ -27,7 +27,9 @@ class Hex < ApplicationRecord
 			require 'json'
 
 			if self.ip_address == "::1"
-				ip_address = "185.192.69.232" # ExpressVPN
+				self.update(country_code: "GB")
+
+				return
 			else
 				ip_address = self.ip_address
 			end
