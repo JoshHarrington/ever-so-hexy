@@ -127,5 +127,8 @@ RSpec.describe 'New page view', type: :system do
 
 		expect(page.current_url).not_to include('new')
 
+		expect(page).to have_selector('svg#id-4', visible:true)
+		expect(page.first('svg#id-4 path')[:fill]).to eql("#FB7185")
+
   end
 end
