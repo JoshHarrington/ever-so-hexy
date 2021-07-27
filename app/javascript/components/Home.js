@@ -3,7 +3,7 @@ import classNames from 'classnames'
 
 import Panzoom from '@panzoom/panzoom'
 
-import { minPageHeight, minPageWidth, panScrollAndZoom } from '../utils'
+import { minPageHeight, minPageWidth, panScrollAndZoom, removeHref } from '../utils'
 
 import HexGrid from './HexGrid'
 import HexWrapper from './HexWapper'
@@ -39,8 +39,6 @@ const Home = ({allHexes, lastHexOrderPosition}) => {
 
   const [moreInfoShown, updateMoreInfoShown] = useState(false)
   const [infoBlockShown, setInfoBlockShown] = useState(!focusedHexOrder)
-
-  const [isDisabled, setDisabledState] = useState(false)
 
   useEffect(() => {
     if (!!focusedHexOrder) {
@@ -153,8 +151,7 @@ const Home = ({allHexes, lastHexOrderPosition}) => {
           <div className="flex items-center justify-between hidden sm:flex">
             <TextBadge
               href="/new"
-              disabled={isDisabled}
-              onClick={() => setDisabledState(true)}
+              onClick={removeHref}
             >
               <Plus className="w-5 h-5 -ml-1 mr-2" />
               Add a hexagon
@@ -206,8 +203,7 @@ const Home = ({allHexes, lastHexOrderPosition}) => {
             <Tooltip content="Create Hexagon" className="pointer-events-auto !hidden sm:!flex">
               <Badge
                 href="/new"
-                disabled={isDisabled}
-                onClick={() => setDisabledState(true)}
+                onClick={removeHref}
               >
                 <Plus className="w-6 h-6" />
               </Badge>

@@ -1,7 +1,7 @@
 import React from 'react'
 import classNames from 'classnames'
 
-const Badge = ({href, onClick, className, children, disabled}) => {
+const Badge = ({href, onClick, className, children}) => {
 	const Tag = href ? `a` : `button`
 	return (
 		<Tag
@@ -14,7 +14,6 @@ const Badge = ({href, onClick, className, children, disabled}) => {
 				"flex items-center justify-center pointer-events-auto",
 				"hover:ring hover:ring-teal-500-a25 focus:ring focus:ring-teal-500-a50"
 			)}
-			disabled={disabled}
 		>{children}</Tag>
 	)
 }
@@ -34,7 +33,6 @@ const TextBadge = ({href, onClick, className, children, disabled, hasWhiteBackgr
 				"flex items-center pointer-events-auto",
 				"hover:ring hover:ring-teal-500-a25 focus:ring focus:ring-teal-500-a50"
 			)}
-			disabled={disabled}
 		>
 			{children}
 		</Tag>

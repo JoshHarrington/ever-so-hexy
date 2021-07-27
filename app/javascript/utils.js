@@ -194,6 +194,11 @@ const minPageHeight = (hexes) => {
 	return `${numberOfHexesInLargestLayer * 7.65 + 2.9}em`
 }
 
+const removeHref = event => {
+  window.location = event.target.href
+  event.target.href = ""
+}
+
 export {
 	splitIntoLayers,
 	positionFromOrderNumber,
@@ -207,5 +212,6 @@ export {
 	minPageWidth,
 	minPageHeight,
 	roundToNDecimalPlaces,
-	panScrollAndZoom
+	panScrollAndZoom,
+	removeHref
 }
