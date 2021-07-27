@@ -38,6 +38,7 @@ module HexesHelper
 		processed_visible_hexes = visible_hexes.map{ |h| {
 			draft: h.draft,
 			order: h.order,
+			created_at: h.created_at,
 			trixel_colour_a1: h.trixel_colour_a1,
 			trixel_colour_a2: h.trixel_colour_a2,
 			trixel_colour_a3: h.trixel_colour_a3,
