@@ -1,0 +1,58 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: http://api.ipapi.com/185.192.69.232?access_key=<API_KEY>
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+      Host:
+      - api.ipapi.com
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Tue, 27 Jul 2021 16:56:08 GMT
+      Content-Type:
+      - application/json; Charset=UTF-8
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
+      X-Apilayer-Transaction-Id:
+      - 8230fbed-357b-4db5-9932-27166fee68a7
+      Access-Control-Allow-Methods:
+      - GET, HEAD, POST, PUT, PATCH, DELETE, OPTIONS
+      Access-Control-Allow-Origin:
+      - "*"
+      X-Request-Time:
+      - '0.010'
+      Cf-Cache-Status:
+      - DYNAMIC
+      Report-To:
+      - '{"endpoints":[{"url":"https:\/\/a.nel.cloudflare.com\/report\/v3?s=qxuDMM1PsarfVYGh1TXd9VCZ1BrZC8GmKy5ni5ETvMKFFTk5ljtpw1H8999fbSL9V1i6q3%2BjVb5OP1gDbMtCKJuvLcEvO78NVfeJWnLEGpWv8OdBlS89jFsm4RrrpWyV"}],"group":"cf-nel","max_age":604800}'
+      Nel:
+      - '{"report_to":"cf-nel","max_age":604800}'
+      Server:
+      - cloudflare
+      Cf-Ray:
+      - 6757663e6d651d1e-CPH
+      Alt-Svc:
+      - h3-27=":443"; ma=86400, h3-28=":443"; ma=86400, h3-29=":443"; ma=86400, h3=":443";
+        ma=86400
+    body:
+      encoding: ASCII-8BIT
+      string: '{"ip":"185.192.69.232","type":"ipv4","continent_code":"EU","continent_name":"Europe","country_code":"GB","country_name":"United
+        Kingdom","region_code":"ENG","region_name":"England","city":"Woodford Green","zip":"E5","latitude":51.58330154418945,"longitude":-0.016599999740719795,"location":{"geoname_id":2633655,"capital":"London","languages":[{"code":"en","name":"English","native":"English"}],"country_flag":"http:\/\/assets.ipapi.com\/flags\/gb.svg","country_flag_emoji":"\ud83c\uddec\ud83c\udde7","country_flag_emoji_unicode":"U+1F1EC
+        U+1F1E7","calling_code":"44","is_eu":true}}'
+  recorded_at: Tue, 27 Jul 2021 16:56:08 GMT
+recorded_with: VCR 6.0.0

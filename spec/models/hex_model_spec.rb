@@ -58,7 +58,7 @@ RSpec.describe Hex, :type => :model do
 
 	end
 
-	it "valid ip addresses are translated to country code on save" do
+	it "valid ip addresses are translated to country code on save", :vcr do
 
 		england = Hex.create(ip_address: "185.192.69.232")
 		denmark = Hex.create(ip_address: "157.97.120.72")
@@ -68,7 +68,7 @@ RSpec.describe Hex, :type => :model do
 
 	end
 
-	it "invalid ip address leaves country code blank" do
+	it "invalid ip address leaves country code blank", :vcr do
 
 		hex = Hex.create(ip_address: "123")
 
@@ -76,7 +76,7 @@ RSpec.describe Hex, :type => :model do
 
 	end
 
-	it "blank ip address leaves country code blank" do
+	it "blank ip address leaves country code blank", :vcr do
 
 		hex = Hex.create
 
@@ -84,7 +84,7 @@ RSpec.describe Hex, :type => :model do
 
 	end
 
-	it "local ip address sets country code to GB for testing" do
+	it "local ip address sets country code to GB for testing", :vcr do
 
 		hex = Hex.create(ip_address: "::1")
 
