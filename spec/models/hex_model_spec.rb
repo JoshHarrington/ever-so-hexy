@@ -58,4 +58,38 @@ RSpec.describe Hex, :type => :model do
 
 	end
 
+	it "valid ip addresses are translated to country code on save" do
+
+		england = Hex.create(ip_address: "185.192.69.232")
+		denmark = Hex.create(ip_address: "157.97.120.72")
+
+		expect(england.country_code).to eql("GB")
+		expect(denmark.country_code).to eql("DK")
+
+	end
+
+	it "invalid ip address leaves country code blank" do
+
+		hex = Hex.create(ip_address: "123")
+
+		expect(hex.country_code).to be_nil
+
+	end
+
+	it "blank ip address leaves country code blank" do
+
+		hex = Hex.create
+
+		expect(hex.country_code).to be_nil
+
+	end
+
+	it "local ip address sets country code to GB for testing" do
+
+		hex = Hex.create(ip_address: "::1")
+
+		expect(hex.country_code).to eql("GB")
+
+	end
+
 end
