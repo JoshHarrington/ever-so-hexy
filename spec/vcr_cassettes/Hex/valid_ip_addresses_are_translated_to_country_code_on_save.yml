@@ -1,0 +1,113 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: http://api.ipapi.com/185.192.69.232?access_key=<API_KEY>
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+      Host:
+      - api.ipapi.com
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Tue, 27 Jul 2021 16:56:07 GMT
+      Content-Type:
+      - application/json; Charset=UTF-8
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
+      X-Apilayer-Transaction-Id:
+      - 11ac9d41-b842-4c12-908e-62cff38855f8
+      Access-Control-Allow-Methods:
+      - GET, HEAD, POST, PUT, PATCH, DELETE, OPTIONS
+      Access-Control-Allow-Origin:
+      - "*"
+      X-Request-Time:
+      - '0.011'
+      Cf-Cache-Status:
+      - DYNAMIC
+      Report-To:
+      - '{"endpoints":[{"url":"https:\/\/a.nel.cloudflare.com\/report\/v3?s=aI4pc594LIo06nzpoBoziEkxEI0%2F8ENIoB%2F67hVaN7%2BNNKPHBEHHSTt5XkpMkDRH0WcEHarbr52qIcUJ0kTuus0rj4XJFwZ7tm56mAVI2lvmn16DINVaEwYOdx84oMYJ"}],"group":"cf-nel","max_age":604800}'
+      Nel:
+      - '{"report_to":"cf-nel","max_age":604800}'
+      Server:
+      - cloudflare
+      Cf-Ray:
+      - 67576638cc5b1d02-CPH
+      Alt-Svc:
+      - h3-27=":443"; ma=86400, h3-28=":443"; ma=86400, h3-29=":443"; ma=86400, h3=":443";
+        ma=86400
+    body:
+      encoding: ASCII-8BIT
+      string: '{"ip":"185.192.69.232","type":"ipv4","continent_code":"EU","continent_name":"Europe","country_code":"GB","country_name":"United
+        Kingdom","region_code":"ENG","region_name":"England","city":"Woodford Green","zip":"E5","latitude":51.58330154418945,"longitude":-0.016599999740719795,"location":{"geoname_id":2633655,"capital":"London","languages":[{"code":"en","name":"English","native":"English"}],"country_flag":"http:\/\/assets.ipapi.com\/flags\/gb.svg","country_flag_emoji":"\ud83c\uddec\ud83c\udde7","country_flag_emoji_unicode":"U+1F1EC
+        U+1F1E7","calling_code":"44","is_eu":true}}'
+  recorded_at: Tue, 27 Jul 2021 16:56:08 GMT
+- request:
+    method: get
+    uri: http://api.ipapi.com/157.97.120.72?access_key=<API_KEY>
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+      Host:
+      - api.ipapi.com
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Tue, 27 Jul 2021 16:56:08 GMT
+      Content-Type:
+      - application/json; Charset=UTF-8
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
+      X-Apilayer-Transaction-Id:
+      - 74d9ac18-c1bf-4499-bba9-36335561b955
+      Access-Control-Allow-Methods:
+      - GET, HEAD, POST, PUT, PATCH, DELETE, OPTIONS
+      Access-Control-Allow-Origin:
+      - "*"
+      X-Request-Time:
+      - '0.012'
+      Cf-Cache-Status:
+      - DYNAMIC
+      Report-To:
+      - '{"endpoints":[{"url":"https:\/\/a.nel.cloudflare.com\/report\/v3?s=fCpttrb8XogWJRu4BEMx7S3SvEr8se5ISk5WXbRTvboLRtmhheASfgtzK2suxKK4TsKhSja5cmHJfJJjUXlrxH2tpfDq1iadtXZXQ4w2UK6t2gfOnBPfDmsTs9dYEKad"}],"group":"cf-nel","max_age":604800}'
+      Nel:
+      - '{"report_to":"cf-nel","max_age":604800}'
+      Server:
+      - cloudflare
+      Cf-Ray:
+      - 6757663a5ba17357-CPH
+      Alt-Svc:
+      - h3-27=":443"; ma=86400, h3-28=":443"; ma=86400, h3-29=":443"; ma=86400, h3=":443";
+        ma=86400
+    body:
+      encoding: ASCII-8BIT
+      string: '{"ip":"157.97.120.72","type":"ipv4","continent_code":"EU","continent_name":"Europe","country_code":"DK","country_name":"Denmark","region_code":"84","region_name":"Capital
+        Region","city":"Copenhagen","zip":"1050","latitude":55.680511474609375,"longitude":12.58782958984375,"location":{"geoname_id":2618425,"capital":"Copenhagen","languages":[{"code":"da","name":"Danish","native":"Dansk"}],"country_flag":"http:\/\/assets.ipapi.com\/flags\/dk.svg","country_flag_emoji":"\ud83c\udde9\ud83c\uddf0","country_flag_emoji_unicode":"U+1F1E9
+        U+1F1F0","calling_code":"45","is_eu":true}}'
+  recorded_at: Tue, 27 Jul 2021 16:56:08 GMT
+recorded_with: VCR 6.0.0

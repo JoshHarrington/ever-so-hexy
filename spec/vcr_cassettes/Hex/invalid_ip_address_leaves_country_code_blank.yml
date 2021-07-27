@@ -1,0 +1,56 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: http://api.ipapi.com/123?access_key=<API_KEY>
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+      Host:
+      - api.ipapi.com
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Tue, 27 Jul 2021 16:56:08 GMT
+      Content-Type:
+      - application/json; Charset=UTF-8
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
+      X-Apilayer-Transaction-Id:
+      - b67c8dcf-7b88-4feb-86ae-fa603d5702dc
+      Access-Control-Allow-Methods:
+      - GET, HEAD, POST, PUT, PATCH, DELETE, OPTIONS
+      Access-Control-Allow-Origin:
+      - "*"
+      X-Request-Time:
+      - '0.107'
+      Cf-Cache-Status:
+      - DYNAMIC
+      Report-To:
+      - '{"endpoints":[{"url":"https:\/\/a.nel.cloudflare.com\/report\/v3?s=ZTmH5eWagrsv3Wnv6JxmD%2Fyv8xMDFwpWXdY38RlRTihTMwO96hCd8goZrOQ9pzdZmoxPUvY7n%2BjhskKPRLTouztdbUEAfDrQlXA%2FRpk3o7QsoIXq5rBK2qF9XwYAIBbP"}],"group":"cf-nel","max_age":604800}'
+      Nel:
+      - '{"report_to":"cf-nel","max_age":604800}'
+      Server:
+      - cloudflare
+      Cf-Ray:
+      - 6757663c0f8010f3-CPH
+      Alt-Svc:
+      - h3-27=":443"; ma=86400, h3-28=":443"; ma=86400, h3-29=":443"; ma=86400, h3=":443";
+        ma=86400
+    body:
+      encoding: ASCII-8BIT
+      string: '{"ip":"123","type":null,"continent_code":null,"continent_name":null,"country_code":null,"country_name":null,"region_code":null,"region_name":null,"city":null,"zip":null,"latitude":null,"longitude":null,"location":{"geoname_id":null,"capital":null,"languages":null,"country_flag":null,"country_flag_emoji":null,"country_flag_emoji_unicode":null,"calling_code":null,"is_eu":null}}'
+  recorded_at: Tue, 27 Jul 2021 16:56:08 GMT
+recorded_with: VCR 6.0.0
