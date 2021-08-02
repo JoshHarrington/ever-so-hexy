@@ -288,15 +288,22 @@ const New = ({allHexes, currentDraftHex, csrfToken}) => {
 						}}
 					><Back className="w-6 h-6" /></Badge>
 				</Tooltip>
-				{publishAllowed.current &&
-					<form
-						className="mr-auto -ml-10"
-						action={`/hexes/${currentDraftHex.order}/publish`}
-						method="get"
-					>
+				<form
+					className="mr-auto -ml-10"
+					action={publishAllowed.current && `/hexes/${currentDraftHex.order}/publish`}
+					method={publishAllowed.current && "get"}
+				>
+					{publishAllowed.current ?
 						<TextBadge testid="add-hex-button">Save and add to grid</TextBadge>
-					</form>
-				}
+						: <Tooltip content="Use at least three colours to enable saving">
+							<TextBadge
+								testid="add-hex-button"
+								className={'bg-opacity-50 hover:bg-opacity-50 cursor-not-allowed hover:ring-0 hover:bg-teal-600'}
+								disabled={true}
+							>Save and add to grid</TextBadge>
+						</Tooltip>
+					}
+				</form>
 			</div>
 		</>
 	)

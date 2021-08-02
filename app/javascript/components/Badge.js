@@ -18,17 +18,18 @@ const Badge = ({href, onClick, className, children}) => {
 	)
 }
 
-const TextBadge = ({href, onClick, className, testid, hasWhiteBackground, children}) => {
+const TextBadge = ({href, onClick, className, testid, hasWhiteBackground, disabled, children}) => {
 	const Tag = href ? `a` : `button`
 	return (
 		<Tag
 			href={href}
 			data-testid={testid}
+			disabled={disabled}
 			className={classNames(
 				className,
 				{"text-white shadow bg-teal-600 hover:bg-teal-700": !hasWhiteBackground},
 				{"text-teal-600 bg-white": hasWhiteBackground},
-				"border-0 border-solid py-3.5 px-4 rounded-full font-bold	",
+				"border-0 border-solid py-3.5 px-4 rounded-full font-bold",
 				"focus:outline-none",
 				"flex items-center pointer-events-auto",
 				"hover:ring hover:ring-teal-500-a25 focus:ring focus:ring-teal-500-a50"

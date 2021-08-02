@@ -94,7 +94,10 @@ RSpec.describe 'New page view', type: :system do
 
 		expect(page).to have_selector('svg#id-4', visible: true)
 
-		expect(page).not_to have_selector('button[data-testid="add-hex-button"]', visible:true)
+		expect(page).to have_selector('button[data-testid="add-hex-button"][disabled]', visible:true)
+
+		page.driver.browser.action.move_to(page.find('button[data-testid="add-hex-button"][disabled]').native).perform
+		expect(page).to have_content("Use at least three colours to enable saving")
 
 		expect(page.first('svg#id-4 path')[:fill]).to eql("#fff")
 		page.first('svg#id-4 path').click
@@ -122,6 +125,7 @@ RSpec.describe 'New page view', type: :system do
 		expect(page.first('svg#id-4 path[data-position="f4"]')[:fill]).to eql("#10B981")
 
 		expect(page).to have_selector('button[data-testid="add-hex-button"]', visible:true)
+		expect(page).not_to have_content("Use at least three colours to enable saving")
 
 		page.first('button[data-testid="add-hex-button"]').click
 
