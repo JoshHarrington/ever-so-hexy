@@ -96,7 +96,7 @@ RSpec.describe 'New page view', type: :system do
 
 		expect(page).to have_selector('button[data-testid="add-hex-button"][disabled]', visible:true)
 
-		page.driver.browser.action.move_to(page.find('button[data-testid="add-hex-button"][disabled]').native).perform
+		find('button[data-testid="add-hex-button"][disabled]').hover
 		expect(page).to have_content("Use at least three colours to enable saving")
 
 		expect(page.first('svg#id-4 path')[:fill]).to eql("#fff")
