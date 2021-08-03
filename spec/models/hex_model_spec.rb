@@ -1,60 +1,64 @@
 require "rails_helper"
 
 RSpec.describe Hex, :type => :model do
-  it "can create a new hex" do
-    hex = Hex.new
-		expect(hex.save).to eql(true)
 
-		expect(Hex.count).to eql(1)
+	context "setup three live hexes" do
 
-		expect(hex.draft).to eql(true)
-		expect(hex.trixel_colour_a1).to eql("#fff")
-		expect(hex.trixel_colour_b1).to eql("#fff")
-		expect(hex.trixel_colour_f7).to eql("#fff")
-  end
+		let!(:hexes) { create_list(:hex, 3, draft: false)}
 
-	it "order of hexes matches expected" do
-		hexes = Hex.create([{},{},{}])
+	  it "can create a new draft hex" do
+			hex = Hex.new
+			expect(hex.save).to eql(true)
 
-		expect(Hex.count).to eql(3)
+			expect(Hex.count).to eql(4)
 
-		expect(hexes[0].order).to eql(1)
-		expect(hexes[1].order).to eql(2)
-		expect(hexes[2].order).to eql(3)
-	end
+			expect(hex.draft).to eql(true)
+			expect(hex.trixel_colour_a1).to eql("#fff")
+			expect(hex.trixel_colour_b1).to eql("#fff")
+			expect(hex.trixel_colour_f7).to eql("#fff")
+	  end
 
-	it "order of hexes matches defined" do
-		hexes = Hex.create([{order: 3},{order:1},{order:2}])
+		it "order of hexes increments as expected" do
+			expect(Hex.count).to eql(3)
 
-		expect(Hex.count).to eql(3)
-
-		expect(hexes[0].order).to eql(3)
-		expect(hexes[1].order).to eql(1)
-		expect(hexes[2].order).to eql(2)
-	end
-
-	it "new hex gets correct order" do
-		hexes = Hex.create([{order: 3},{order:2}])
-
-		expect(Hex.count).to eql(2)
-
-		new_hex = Hex.create()
-
-		expect(Hex.count).to eql(3)
-		expect(new_hex.order).to eql(1)
+			expect(hexes[0].order).to eql(1)
+			expect(hexes[1].order).to eql(2)
+			expect(hexes[2].order).to eql(3)
+		end
 
 	end
 
-	it "new hex with order matching an existing hex do not get created" do
-		hexes = Hex.create([{order: 3},{order:2}])
+	context "setup three hexes with specific order" do
 
-		expect(Hex.count).to eql(2)
+		let!(:hex_1) { create(:hex, draft: true, order: 4, id: 1)}
+		let!(:hex_2) { create(:hex, draft: false, order: 1, id: 2)}
+		let!(:hex_3) { create(:hex, draft: true, order: 2, id: 3)}
 
-		new_hex = Hex.create(order: 3)
+		it "order of hexes matches defined" do
+			hexes = Hex.all
 
-		expect(Hex.count).to eql(2)
+			expect(hexes.count).to eql(3)
 
-		expect(new_hex.id).to eql(nil)
+			expect(hexes[0].order).to eql(4)
+			expect(hexes[1].order).to eql(1)
+			expect(hexes[2].order).to eql(2)
+		end
+
+		it "new hex gets correct order" do
+			new_hex = Hex.create()
+
+			expect(Hex.count).to eql(4)
+			expect(new_hex.order).to eql(3)
+
+		end
+
+		it "new hex with order matching an existing hex do not get created" do
+			new_hex = Hex.create(order: 2)
+
+			expect(Hex.count).to eql(3)
+
+			expect(new_hex.id).to eql(nil)
+		end
 
 	end
 
