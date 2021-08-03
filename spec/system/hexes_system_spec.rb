@@ -97,6 +97,7 @@ RSpec.describe 'New page view', type: :system do
 		expect(page).to have_selector('button[data-testid="add-hex-button"][disabled]', visible:true)
 
 		find('button[data-testid="add-hex-button"][disabled]').hover
+		sleep 1
 		expect(page).to have_content("Use at least three colours to enable saving")
 
 		expect(page.first('svg#id-4 path')[:fill]).to eql("#fff")
