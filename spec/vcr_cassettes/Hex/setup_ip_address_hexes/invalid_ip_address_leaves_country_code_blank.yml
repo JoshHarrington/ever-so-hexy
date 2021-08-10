@@ -1,0 +1,189 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: http://api.ipapi.com/185.192.69.232?access_key=<API_KEY>
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+      Host:
+      - api.ipapi.com
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Tue, 10 Aug 2021 17:56:10 GMT
+      Content-Type:
+      - application/json
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
+      X-Apilayer-Transaction-Id:
+      - 998c2d69-725e-4022-9e4f-f6995ce14c87
+      Access-Control-Allow-Origin:
+      - "*"
+      Access-Control-Allow-Methods:
+      - GET, POST, HEAD, OPTIONS
+      Access-Control-Allow-Headers:
+      - "*"
+      X-Quota-Limit:
+      - '1000'
+      X-Quota-Remaining:
+      - '889'
+      X-Increment-Usage:
+      - '1'
+      X-Request-Time:
+      - '0.039'
+      Cf-Cache-Status:
+      - DYNAMIC
+      Report-To:
+      - '{"endpoints":[{"url":"https:\/\/a.nel.cloudflare.com\/report\/v3?s=UaClr%2FPMhpOtLD6mPGHIXY8VD2eev%2Ff5ySrnsq3fumcZ0LHhOBOM7YM1Xlgk2wQgJL%2BcUSNSdT6BT%2B9q87%2Fz7APPvNrWWj6m7NYVPLz%2FlR5h2Y4TSoTh6R56XEwTXxD7"}],"group":"cf-nel","max_age":604800}'
+      Nel:
+      - '{"success_fraction":0,"report_to":"cf-nel","max_age":604800}'
+      Server:
+      - cloudflare
+      Cf-Ray:
+      - 67cb196a9e374c91-AMS
+      Alt-Svc:
+      - h3-27=":443"; ma=86400, h3-28=":443"; ma=86400, h3-29=":443"; ma=86400, h3=":443";
+        ma=86400
+    body:
+      encoding: ASCII-8BIT
+      string: !binary |-
+        eyJpcCI6IjE4NS4xOTIuNjkuMjMyIiwidHlwZSI6ImlwdjQiLCJjb250aW5lbnRfY29kZSI6IkVVIiwiY29udGluZW50X25hbWUiOiJFdXJvcGUiLCJjb3VudHJ5X2NvZGUiOiJHQiIsImNvdW50cnlfbmFtZSI6IlVuaXRlZCBLaW5nZG9tIiwicmVnaW9uX2NvZGUiOiJFTkciLCJyZWdpb25fbmFtZSI6IkVuZ2xhbmQiLCJjaXR5IjoiV29vZGZvcmQgR3JlZW4iLCJ6aXAiOiJFNSIsImxhdGl0dWRlIjo1MS41ODMzMDE1NDQxODk0NSwibG9uZ2l0dWRlIjotMC4wMTY1OTk5OTk3NDA3MTk3OTUsImxvY2F0aW9uIjp7Imdlb25hbWVfaWQiOjI2MzM2NTUsImNhcGl0YWwiOiJMb25kb24iLCJsYW5ndWFnZXMiOlt7ImNvZGUiOiJlbiIsIm5hbWUiOiJFbmdsaXNoIiwibmF0aXZlIjoiRW5nbGlzaCJ9XSwiY291bnRyeV9mbGFnIjoiaHR0cHM6Ly9hc3NldHMuaXBzdGFjay5jb20vZmxhZ3MvZ2Iuc3ZnIiwiY291bnRyeV9mbGFnX2Vtb2ppIjoi8J+HrPCfh6ciLCJjb3VudHJ5X2ZsYWdfZW1vamlfdW5pY29kZSI6IlUrMUYxRUMgVSsxRjFFNyIsImNhbGxpbmdfY29kZSI6IjQ0IiwiaXNfZXUiOnRydWV9fQ==
+  recorded_at: Tue, 10 Aug 2021 17:56:10 GMT
+- request:
+    method: get
+    uri: http://api.ipapi.com/157.97.120.72?access_key=<API_KEY>
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+      Host:
+      - api.ipapi.com
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Tue, 10 Aug 2021 17:56:10 GMT
+      Content-Type:
+      - application/json
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
+      X-Apilayer-Transaction-Id:
+      - a8ee9bcb-1075-4b31-927b-1f13397d775b
+      Access-Control-Allow-Origin:
+      - "*"
+      Access-Control-Allow-Methods:
+      - GET, POST, HEAD, OPTIONS
+      Access-Control-Allow-Headers:
+      - "*"
+      X-Quota-Limit:
+      - '1000'
+      X-Quota-Remaining:
+      - '888'
+      X-Increment-Usage:
+      - '1'
+      X-Request-Time:
+      - '0.037'
+      Cf-Cache-Status:
+      - DYNAMIC
+      Report-To:
+      - '{"endpoints":[{"url":"https:\/\/a.nel.cloudflare.com\/report\/v3?s=lWFgvjQTobZ9j0r8XSLPLt31AchyxNBn3lZs8kez1hAUmjuTmzHtewE7Gzx2VRg%2FzB5NqsOnYDhH6kJ79gqprAHo0Nni3htBKd1EH58ov4aPXdMYbxQ0lBkkldQV0%2BTW"}],"group":"cf-nel","max_age":604800}'
+      Nel:
+      - '{"success_fraction":0,"report_to":"cf-nel","max_age":604800}'
+      Server:
+      - cloudflare
+      Cf-Ray:
+      - 67cb196c68244c3e-AMS
+      Alt-Svc:
+      - h3-27=":443"; ma=86400, h3-28=":443"; ma=86400, h3-29=":443"; ma=86400, h3=":443";
+        ma=86400
+    body:
+      encoding: ASCII-8BIT
+      string: !binary |-
+        eyJpcCI6IjE1Ny45Ny4xMjAuNzIiLCJ0eXBlIjoiaXB2NCIsImNvbnRpbmVudF9jb2RlIjoiRVUiLCJjb250aW5lbnRfbmFtZSI6IkV1cm9wZSIsImNvdW50cnlfY29kZSI6IkRLIiwiY291bnRyeV9uYW1lIjoiRGVubWFyayIsInJlZ2lvbl9jb2RlIjoiODQiLCJyZWdpb25fbmFtZSI6IkNhcGl0YWwgUmVnaW9uIiwiY2l0eSI6IkNvcGVuaGFnZW4iLCJ6aXAiOiIxMDUwIiwibGF0aXR1ZGUiOjU1LjY4MDUxMTQ3NDYwOTM3NSwibG9uZ2l0dWRlIjoxMi41ODc4Mjk1ODk4NDM3NSwibG9jYXRpb24iOnsiZ2VvbmFtZV9pZCI6MjYxODQyNSwiY2FwaXRhbCI6IkNvcGVuaGFnZW4iLCJsYW5ndWFnZXMiOlt7ImNvZGUiOiJkYSIsIm5hbWUiOiJEYW5pc2giLCJuYXRpdmUiOiJEYW5zayJ9XSwiY291bnRyeV9mbGFnIjoiaHR0cHM6Ly9hc3NldHMuaXBzdGFjay5jb20vZmxhZ3MvZGsuc3ZnIiwiY291bnRyeV9mbGFnX2Vtb2ppIjoi8J+HqfCfh7AiLCJjb3VudHJ5X2ZsYWdfZW1vamlfdW5pY29kZSI6IlUrMUYxRTkgVSsxRjFGMCIsImNhbGxpbmdfY29kZSI6IjQ1IiwiaXNfZXUiOnRydWV9fQ==
+  recorded_at: Tue, 10 Aug 2021 17:56:10 GMT
+- request:
+    method: get
+    uri: http://api.ipapi.com/123?access_key=<API_KEY>
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+      Host:
+      - api.ipapi.com
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Tue, 10 Aug 2021 17:56:10 GMT
+      Content-Type:
+      - application/json
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
+      X-Apilayer-Transaction-Id:
+      - 004b88c7-4f6c-40c5-a9c5-0080f29cb790
+      Access-Control-Allow-Origin:
+      - "*"
+      Access-Control-Allow-Methods:
+      - GET, POST, HEAD, OPTIONS
+      Access-Control-Allow-Headers:
+      - "*"
+      X-Quota-Limit:
+      - '1000'
+      X-Quota-Remaining:
+      - '887'
+      X-Increment-Usage:
+      - '1'
+      X-Request-Time:
+      - '0.024'
+      Cf-Cache-Status:
+      - DYNAMIC
+      Report-To:
+      - '{"endpoints":[{"url":"https:\/\/a.nel.cloudflare.com\/report\/v3?s=MyWlGVLL7Fj61mU1Bki9MEMey5SgmGutblKBqSZxZ4JIAhZju8xV6fQElPYHxoL7XCKKN6Ov59WlYj7RuEKP1kmkHY1UfMX4exxHkYZvHKjUj0CQEqoctgNsijEzHagz"}],"group":"cf-nel","max_age":604800}'
+      Nel:
+      - '{"success_fraction":0,"report_to":"cf-nel","max_age":604800}'
+      Server:
+      - cloudflare
+      Cf-Ray:
+      - 67cb196de850faa0-AMS
+      Alt-Svc:
+      - h3-27=":443"; ma=86400, h3-28=":443"; ma=86400, h3-29=":443"; ma=86400, h3=":443";
+        ma=86400
+    body:
+      encoding: ASCII-8BIT
+      string: '{"success":false,"error":{"code":106,"type":"invalid_ip_address","info":"The
+        IP Address supplied is invalid."}}'
+  recorded_at: Tue, 10 Aug 2021 17:56:10 GMT
+recorded_with: VCR 6.0.0

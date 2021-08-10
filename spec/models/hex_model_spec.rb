@@ -62,37 +62,30 @@ RSpec.describe Hex, :type => :model do
 
 	end
 
-	it "valid ip addresses are translated to country code on save", :vcr do
+	context "setup ip address hexes" do
 
-		england = Hex.create(ip_address: "185.192.69.232")
-		denmark = Hex.create(ip_address: "157.97.120.72")
+		let!(:hex_gb) { create(:hex, ip_address: "185.192.69.232")}
+		let!(:hex_dk) { create(:hex, ip_address: "157.97.120.72")}
+		let!(:hex_invalid) { create(:hex, ip_address: "123")}
+		let!(:hex_local) { create(:hex, ip_address: "::1")}
 
-		expect(england.country_code).to eql("GB")
-		expect(denmark.country_code).to eql("DK")
+		it "valid ip addresses are translated to country code on save", :vcr do
+			expect(hex_gb.country_code).to eql("GB")
+			expect(hex_dk.country_code).to eql("DK")
+		end
 
-	end
+		it "invalid ip address leaves country code blank", :vcr do
+			expect(hex_invalid.country_code).to be_nil
+		end
 
-	it "invalid ip address leaves country code blank", :vcr do
+		it "blank ip address leaves country code blank" do
+			hex_blank = Hex.create
+			expect(hex_blank.country_code).to be_nil
+		end
 
-		hex = Hex.create(ip_address: "123")
-
-		expect(hex.country_code).to be_nil
-
-	end
-
-	it "blank ip address leaves country code blank" do
-
-		hex = Hex.create
-
-		expect(hex.country_code).to be_nil
-
-	end
-
-	it "local ip address sets country code to GB for testing" do
-
-		hex = Hex.create(ip_address: "::1")
-
-		expect(hex.country_code).to eql("GB")
+		it "local ip address sets country code to GB for testing" do
+			expect(hex_local.country_code).to eql("GB")
+		end
 
 	end
 
