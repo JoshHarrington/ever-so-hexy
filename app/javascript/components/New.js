@@ -7,69 +7,15 @@ import HexWrapper from "./HexWapper"
 import { Back } from "./Icons"
 import { Badge, TextBadge } from "./Badge"
 import DraggyHex from "./DraggyHex"
-import { hexZoomLevel, maxZoomLevel, minZoomLevel, mobileBreakpoint, mobileHexZoomLevel } from "../constants"
+import { hexZoomLevel, maxZoomLevel, minZoomLevel, mobileBreakpoint, mobileHexZoomLevel, colours } from "../constants"
 import { Modal } from "./Modal"
 import Portal from "./Portal"
 import Tooltip from "./Tooltip"
 
 const New = ({allHexes, currentDraftHex, csrfToken}) => {
 
-	const colours = [{
-		name: "red-400",
-		hex: "#FB7185"
-	}, {
-		name: "red-500",
-		hex: "#F43F5E"
-	}, {
-		name: "red-600",
-		hex: "#E11D48"
-	}, {
-		name: "purple-400",
-		hex: "#C084FC"
-	}, {
-		name: "purple-500",
-		hex: "#A855F7"
-	}, {
-		name: "purple-600",
-		hex: "#9333EA"
-	}, {
-		name: "green-400",
-		hex: "#34D399"
-	},{
-		name: "green-500",
-		hex: "#10B981"
-	},{
-		name: "green-600",
-		hex: "#059669"
-	},{
-		name: "blueGray-400",
-		hex: "#94A3B8"
-	},{
-		name: "blueGray-500",
-		hex: "#64748B"
-	},{
-		name: "blueGray-600",
-		hex: "#475569"
-	},{
-		name: "white",
-		hex: "#fff"
-	},{
-		name: "coolGray-100",
-		hex: "#F3F4F6"
-	},{
-		name: "coolGray-200",
-		hex: "#E5E7EB"
-	}]
-
 	const [currentColour, updateCurrentColor] = useState(colours[0])
 	const hexes = [...allHexes]
-
-	const [zoomLevel, setZoomLevel] = useState(minZoomLevel)
-	const zoomLevelRef = useRef(zoomLevel)
-
-	useEffect(() => {
-		zoomLevelRef.current = zoomLevel
-	}, [zoomLevel])
 
 	const [pageReady, setPageReady] = useState(false)
 
@@ -148,8 +94,6 @@ const New = ({allHexes, currentDraftHex, csrfToken}) => {
           focusedHexOrder={focusedHexOrder}
           setFocusedHexOrder={setFocusedHexOrder}
 					focusedHex={focusedHex}
-					zoomLevel={zoomLevel}
-					setZoomLevel={setZoomLevel}
 				>
 					<DraggyHex
 						ref={currentDraftHex.order === focusedHexOrder ? focusedHex : undefined}
