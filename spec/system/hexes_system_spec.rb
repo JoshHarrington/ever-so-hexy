@@ -99,7 +99,11 @@ RSpec.describe 'New page view', type: :system do
 		find('button[data-testid="add-hex-button"]').click
 		expect(page.current_url).to include('/new')
 
-		expect(page.first('svg#id-4 path')[:fill]).to eql("#fff")
+		expect(page).to have_selector('[data-testid*="palette-button-"]', count: 21)
+
+		expect(page.first('[data-testid="palette-button--blue-400"]').style('background-color')["background-color"]).to eql('rgba(96, 165, 250, 1)')
+
+		expect(page.first('svg#id-4 path')[:fill]).to eql("#FFFFFF")
 		page.first('svg#id-4 path').click
 		expect(page.first('svg#id-4 path')[:fill]).to eql("#FB7185")
 
@@ -120,6 +124,17 @@ RSpec.describe 'New page view', type: :system do
 		path_f4 = page.first('svg#id-4 path[data-position="f4"]')
 
 		path_f5.drag_to(path_f4)
+
+		expect(page.first('svg#id-4 path[data-position="f5"]')[:fill]).to eql("#10B981")
+		expect(page.first('svg#id-4 path[data-position="f4"]')[:fill]).to eql("#10B981")
+
+		refresh
+		sleep 1
+
+		expect(page.first('svg#id-4 path')[:fill]).to eql("#FB7185")
+
+		expect(page.first('svg#id-4 path[data-position="e1"]')[:fill]).to eql("#C084FC")
+		expect(page.first('svg#id-4 path[data-position="e2"]')[:fill]).to eql("#C084FC")
 
 		expect(page.first('svg#id-4 path[data-position="f5"]')[:fill]).to eql("#10B981")
 		expect(page.first('svg#id-4 path[data-position="f4"]')[:fill]).to eql("#10B981")
