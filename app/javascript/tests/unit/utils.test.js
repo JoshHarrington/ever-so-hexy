@@ -1,5 +1,10 @@
 import { hexWrapperGutter } from "../../constants";
-import { marginsForFirst, splitIntoLayers, roundToNDecimalPlaces } from "../../utils";
+import {
+	marginsForFirst,
+	splitIntoLayers,
+	roundToNDecimalPlaces,
+	colourNameToTailwindVariable
+} from "../../utils";
 import { listOfHexes } from "./test-helpers";
 
 test("check listOfHexes fn", () => {
@@ -126,4 +131,18 @@ test("check roundToNDecimalPlaces", () => {
 	expect(roundToNDecimalPlaces({number:3.9872198798})).toEqual(4)
 
 	expect(roundToNDecimalPlaces(3.9872198798)).toEqual(null)
+})
+
+test("check colourNameToTailwindVariable fn", () => {
+
+	expect(colourNameToTailwindVariable('white')).toEqual(undefined)
+
+	expect(colourNameToTailwindVariable({colourName: 'white'})).toEqual('bg-white')
+	expect(colourNameToTailwindVariable({colourName: 'red-400'})).toEqual('bg-red-400')
+	expect(colourNameToTailwindVariable({colourName: 'yellow-400'})).toEqual('bg-yellow-400')
+	expect(colourNameToTailwindVariable({colourName: 'green-500'})).toEqual('bg-green-500')
+	expect(colourNameToTailwindVariable({colourName: 'blue-500'})).toEqual('bg-blue-500')
+	expect(colourNameToTailwindVariable({colourName: 'purple-400'})).toEqual('bg-purple-400')
+	expect(colourNameToTailwindVariable({colourName: 'blueGray-500'})).toEqual('bg-blueGray-500')
+	expect(colourNameToTailwindVariable({colourName: 'coolGray-200'})).toEqual('bg-coolGray-200')
 })
