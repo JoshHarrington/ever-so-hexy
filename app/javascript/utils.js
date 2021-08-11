@@ -197,6 +197,61 @@ const minPageHeight = (hexes) => {
 	return `${numberOfHexesInLargestLayer * 7.65 + 2.9}em`
 }
 
+const colourNameToTailwindVariable = ({colourName}) => {
+
+	switch(colourName) {
+		case 'red-400':
+			return 'bg-red-400'
+		case 'red-600':
+			return 'bg-red-600'
+		case 'red-700':
+			return 'bg-red-700'
+
+		case 'yellow-200':
+			return 'bg-yellow-200'
+		case 'yellow-300':
+			return 'bg-yellow-300'
+		case 'yellow-400':
+			return 'bg-yellow-400'
+
+		case 'green-400':
+			return 'bg-green-400'
+		case 'green-500':
+			return 'bg-green-500'
+		case 'green-600':
+			return 'bg-green-600'
+
+		case 'blue-400':
+			return 'bg-blue-400'
+		case 'blue-500':
+			return 'bg-blue-500'
+		case 'blue-600':
+			return 'bg-blue-600'
+
+		case 'purple-400':
+			return 'bg-purple-400'
+		case 'purple-500':
+			return 'bg-purple-500'
+		case 'purple-600':
+			return 'bg-purple-600'
+
+		case 'blueGray-400':
+			return 'bg-blueGray-400'
+		case 'blueGray-500':
+			return 'bg-blueGray-500'
+		case 'blueGray-600':
+			return 'bg-blueGray-600'
+
+		case 'white':
+			return 'bg-white'
+		case 'coolGray-100':
+			return 'bg-coolGray-100'
+		case 'coolGray-200':
+			return 'bg-coolGray-200'
+	}
+
+}
+
 export {
 	splitIntoLayers,
 	positionFromOrderNumber,
@@ -210,5 +265,6 @@ export {
 	minPageWidth,
 	minPageHeight,
 	roundToNDecimalPlaces,
-	panScrollAndZoom
+	panScrollAndZoom,
+	colourNameToTailwindVariable
 }

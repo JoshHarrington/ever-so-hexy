@@ -1,7 +1,7 @@
 import React, { useRef, useState, useEffect } from "react"
 import classNames from "classnames"
 import Panzoom from '@panzoom/panzoom'
-import { debounce, isPublishingEnabled, panScrollAndZoom, updateAllTrixelsFn } from "../utils"
+import { colourNameToTailwindVariable, debounce, isPublishingEnabled, panScrollAndZoom, updateAllTrixelsFn } from "../utils"
 import HexGrid from "./HexGrid"
 import HexWrapper from "./HexWapper"
 import { Back } from "./Icons"
@@ -81,6 +81,10 @@ const New = ({allHexes, currentDraftHex, csrfToken}) => {
 
 	const [draftModalOpen, setDraftModalOpen] = useState(false)
 
+  useEffect(() => {
+    window.document.body.classList.add('bg-gray-100')
+  }, [])
+
 	return (
 		<>
 			<HexWrapper
@@ -123,6 +127,7 @@ const New = ({allHexes, currentDraftHex, csrfToken}) => {
 				>
 					<div className="grid grid-cols-3 gap-2 pb-6 mb-6 border-0 border-b border-coolGray-200">
 						{colours.map((c, i) => <button
+							data-testid={`palette-button--${c.name}`}
 							key={i}
 							onClick={() => updateCurrentColor(c)}
 							className={classNames(
@@ -131,22 +136,7 @@ const New = ({allHexes, currentDraftHex, csrfToken}) => {
 								{
 									"ring-transparent hover:ring-blueGray-400": c.name !== currentColour.name,
 									"ring ring-2 ring-blueGray-600": c.name === currentColour.name,
-									"bg-red-400": c.name === "red-400",
-									"bg-red-500": c.name === "red-500",
-									"bg-red-600": c.name === "red-600",
-									"bg-purple-400": c.name === "purple-400",
-									"bg-purple-500": c.name === "purple-500",
-									"bg-purple-600": c.name === "purple-600",
-									"bg-green-400": c.name === "green-400",
-									"bg-green-500": c.name === "green-500",
-									"bg-green-600": c.name === "green-600",
-									"bg-blueGray-400": c.name === "blueGray-400",
-									"bg-blueGray-500": c.name === "blueGray-500",
-									"bg-blueGray-600": c.name === "blueGray-600",
-									"bg-white": c.name === "white",
-									"bg-coolGray-100": c.name === "coolGray-100",
-									"bg-coolGray-200": c.name === "coolGray-200",
-								})
+								}, colourNameToTailwindVariable({colourName: c.name}))
 							}
 						></button>)}
 					</div>
@@ -234,8 +224,8 @@ const New = ({allHexes, currentDraftHex, csrfToken}) => {
 				</Tooltip>
 				<form
 					className="mr-auto -ml-10"
-					action={publishAllowed.current && `/hexes/${currentDraftHex.order}/publish`}
-					method={publishAllowed.current && "get"}
+					action={publishAllowed.current ? `/hexes/${currentDraftHex.order}/publish` : undefined}
+					method={publishAllowed.current ? "get" : undefined}
 				>
 					{publishAllowed.current ?
 						<TextBadge testid="add-hex-button">Save and add to grid</TextBadge>

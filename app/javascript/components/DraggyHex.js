@@ -13,8 +13,8 @@ const DraggyPath = ({
 			data-position={position}
 			fill={fill}
 			d={d}
-			stroke={fill && fill !== "white" && fill !== "#fff" ? fill : "rgb(226,226,226)"}
-			strokeWidth={fill && fill !== "white" && fill !== "#fff" ? "0" : "1"}
+			stroke={fill && fill !== "white" && fill !== "#FFFFFF" ? fill : "rgb(226,226,226)"}
+			strokeWidth={fill && fill !== "white" && fill !== "#FFFFFF" ? "0" : "1"}
 		></path>
 	)
 }
