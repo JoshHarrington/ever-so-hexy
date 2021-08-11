@@ -13,9 +13,9 @@ RSpec.describe Hex, :type => :model do
 			expect(Hex.count).to eql(4)
 
 			expect(hex.draft).to eql(true)
-			expect(hex.trixel_colour_a1).to eql("#fff")
-			expect(hex.trixel_colour_b1).to eql("#fff")
-			expect(hex.trixel_colour_f7).to eql("#fff")
+			expect(hex.trixel_colour_a1).to eql("#FFFFFF")
+			expect(hex.trixel_colour_b1).to eql("#FFFFFF")
+			expect(hex.trixel_colour_f7).to eql("#FFFFFF")
 	  end
 
 		it "order of hexes increments as expected" do
