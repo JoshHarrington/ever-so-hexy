@@ -28,7 +28,7 @@ describe HexesHelper do
 
 			# published hexes data is sent down to page
 			expect(private_data_hidden_hexes[0][:draft]).to eql(false)
-			expect(private_data_hidden_hexes[0][:trixel_colour_a2]).to eql("#fff")
+			expect(private_data_hidden_hexes[0][:trixel_colour_a2]).to eql("#FFFFFF")
 
 			# draft hexes data is not sent down to page
 			expect(private_data_hidden_hexes[1][:draft]).to eql(true)
@@ -41,10 +41,10 @@ describe HexesHelper do
 			private_data_hidden_hexes = hide_private_hex_data(hexes: hexes, current_draft_hex_id: hexes.select{|h| h.order == 3}[0].id, is_in_editing_mode: true)
 
 			# draft hex data for the current draft that the user is editing is sent down to page
-			expect(private_data_hidden_hexes.filter{|h| h[:order] == 3}.first[:trixel_colour_a2]).to eql("#fff")
+			expect(private_data_hidden_hexes.filter{|h| h[:order] == 3}.first[:trixel_colour_a2]).to eql("#FFFFFF")
 
 			# public hex data is sent down to the page
-			expect(private_data_hidden_hexes.filter{|h| h[:order] == 1}.first[:trixel_colour_a2]).to eql("#fff")
+			expect(private_data_hidden_hexes.filter{|h| h[:order] == 1}.first[:trixel_colour_a2]).to eql("#FFFFFF")
 
 			# other draft hex data is not sent down to the page
 			expect(private_data_hidden_hexes.filter{|h| h[:order] == 2}.first[:trixel_colour_a2]).to eql(nil)
@@ -67,7 +67,7 @@ describe HexesHelper do
 
 			# if no current draft hex id is supplied then the draft data is still removed
 			expect(private_data_hidden_hexes.filter{|h| h[:order] == 3}.first[:trixel_colour_a2]).to eql(nil)
-			expect(private_data_hidden_hexes.filter{|h| h[:order] == 1}.first[:trixel_colour_a2]).to eql("#fff")
+			expect(private_data_hidden_hexes.filter{|h| h[:order] == 1}.first[:trixel_colour_a2]).to eql("#FFFFFF")
 			expect(private_data_hidden_hexes.filter{|h| h[:order] == 2}.first[:trixel_colour_a2]).to eql(nil)
 
 		end
@@ -105,7 +105,7 @@ describe HexesHelper do
 
 			# published hexes data is sent down to page
 			expect(hexes_in_layers[0][0][:draft]).to eql(false)
-			expect(hexes_in_layers[0][0][:trixel_colour_a2]).to eql("#fff")
+			expect(hexes_in_layers[0][0][:trixel_colour_a2]).to eql("#FFFFFF")
 
 			# draft hexes data is not sent down to page
 			expect(hexes_in_layers[1][0][:draft]).to eql(true)
@@ -168,7 +168,7 @@ describe HexesHelper do
 			draft_hex = flattened_hexes.select{|h| h[:draft]}.first
 
 			# # published hexes data is sent down to page
-			expect(public_hex[:trixel_colour_a2]).to eql("#fff")
+			expect(public_hex[:trixel_colour_a2]).to eql("#FFFFFF")
 
 			# # draft hexes data is not sent down to page
 			expect(draft_hex[:trixel_colour_a5]).to eql(nil)
