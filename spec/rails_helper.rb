@@ -18,6 +18,20 @@ def select_selenium_chrome_type
 	end
 end
 
+def keep_browser_open_locally
+  if not ENV["CI"]
+    Capybara::Selenium::Driver.class_eval do
+      def quit
+        puts "Press RETURN to quit the browser"
+        $stdin.gets
+        @browser.quit
+      rescue Errno::ECONNREFUSED
+        # Browser must have already gone
+      end
+    end
+  end
+end
+
 # Requires supporting ruby files with custom matchers and macros, etc, in
 # spec/support/ and its subdirectories. Files matching `spec/**/*_spec.rb` are
 # run as spec files by default. This means that files in spec/support that end
@@ -52,6 +66,7 @@ RSpec.configure do |config|
 
   config.before(:suite) do
     DatabaseCleaner.clean_with :transaction
+    keep_browser_open_locally
   end
 
   config.before(:each) do
@@ -63,6 +78,7 @@ RSpec.configure do |config|
   end
 
   config.before(:all, type: :system) do
+    Hex.destroy_all
     select_selenium_chrome_type
     Capybara.page.current_window.resize_to(1200, 800)
   end
