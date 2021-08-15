@@ -156,10 +156,13 @@ const panScrollAndZoom = ({panzoom, hex, setPageReady, desiredZoomLevel}) => {
 
 	if (hex) {
 		const bodyProps = hex.closest('body').getBoundingClientRect()
+		console.log('bodyProps', bodyProps)
 
 		setTimeout(() => {
 			const hexProps = hex.getBoundingClientRect()
+			console.log('hexProps', hexProps)
 			const wrapperProps = hex.parentElement.getBoundingClientRect()
+			console.log('wrapperProps', wrapperProps)
 
 			const centeringProps = {
 				x: bodyProps.width/2 - hexProps.width/2,
@@ -167,8 +170,8 @@ const panScrollAndZoom = ({panzoom, hex, setPageReady, desiredZoomLevel}) => {
 			}
 
 			const scrollProps = {
-				x: (-(-wrapperProps.x + hexProps.x) + centeringProps.x)/desiredZoomLevel,
-				y: (-(-wrapperProps.y + hexProps.y) + centeringProps.y)/desiredZoomLevel
+				x: (-(hexProps.x) + centeringProps.x)/desiredZoomLevel,
+				y: (-(hexProps.y + 128) + centeringProps.y)/desiredZoomLevel
 			}
 
 			panzoom.pan(scrollProps.x, scrollProps.y, { force: true })
