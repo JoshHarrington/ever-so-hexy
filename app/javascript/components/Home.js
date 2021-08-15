@@ -118,11 +118,6 @@ const Home = ({allHexes, lastHexOrderPosition}) => {
     return () => window.removeEventListener('resize', handleResize)
   }, [focusedHexOrder, panzoom, setFocusedHexOrder])
 
-
-  useEffect(() => {
-    window.document.body.classList.add('bg-gray-100')
-  }, [])
-
 	return (
     <>
       <HexWrapper
