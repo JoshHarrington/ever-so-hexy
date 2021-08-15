@@ -104,7 +104,7 @@ RSpec.describe 'New page view', type: :system do
 		expect(page.first('[data-testid="palette-button--blue-400"]').style('background-color')["background-color"]).to eql('rgba(96, 165, 250, 1)')
 
 		expect(page.first('svg#id-4 path')[:fill]).to eql("#FFFFFF")
-		page.first('svg#id-4 path').click
+		page.first('svg#id-4 path[data-position="a1"]').click
 		expect(page.first('svg#id-4 path')[:fill]).to eql("#FB7185")
 
 		page.first('[data-testid="palette-picker"] button.bg-purple-400').click
