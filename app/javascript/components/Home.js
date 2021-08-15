@@ -58,29 +58,6 @@ const Home = ({allHexes, lastHexOrderPosition}) => {
 
   const [panzoom, setPanzoom] = useState(null)
 
-	useEffect(() => {
-
-    const panzoom = Panzoom(hexWrapperRef.current, {
-      minScale: minZoomLevel,
-      maxScale: maxZoomLevel,
-      origin: '0 0'
-    })
-
-    hexWrapperRef.current.parentElement.addEventListener('wheel', panzoom.zoomWithWheel)
-
-    setPanzoom(panzoom)
-
-		if (document && window) {
-      if (!!focusedHexOrder && focusedHex.current) {
-        const desiredZoomLevel = window.innerWidth < mobileBreakpoint ? mobileHexZoomLevel : hexZoomLevel
-        panScrollAndZoom({panzoom, hex: focusedHex.current, desiredZoomLevel})
-      } else {
-        const desiredZoomLevel = window.innerWidth < mobileBreakpoint ? minZoomLevel : defaultZoomLevel
-        panzoom.zoom(desiredZoomLevel)
-      }
-		}
-	}, [focusedHexOrder])
-
   const [showResetBtn, updateShownResetBtn] = useState(false)
 
   useEffect(() => {
@@ -96,19 +73,31 @@ const Home = ({allHexes, lastHexOrderPosition}) => {
     }
     return hexWrapperRef.current.removeEventListener('panzoomzoom', panzoomZoomFn)
 
-  }, [hexWrapperRef, updateShownResetBtn])
+  }, [hexWrapperRef])
 
   useEffect(() => {
+
+    const panzoom = Panzoom(hexWrapperRef.current, {
+      minScale: minZoomLevel,
+      maxScale: maxZoomLevel,
+      origin: '0 0'
+    })
+
+    hexWrapperRef.current.parentElement.addEventListener('wheel', panzoom.zoomWithWheel)
+
+    setPanzoom(panzoom)
+
     const handleResize = debounce(
       () => {
         if (focusedHex.current) {
-          panScrollAndZoom({panzoom, hex: focusedHex.current})
+          const desiredZoomLevel = window.innerWidth < mobileBreakpoint ? mobileHexZoomLevel : hexZoomLevel
+          panScrollAndZoom({panzoom, hex: focusedHex.current, desiredZoomLevel})
         } else {
           resetZoomAndPan({panzoom, setFocusedHexOrder, window})
         }
       },
       400,
-      false
+      true
     )
     if (panzoom) {
       window.addEventListener('resize', handleResize)
@@ -116,7 +105,7 @@ const Home = ({allHexes, lastHexOrderPosition}) => {
     }
 
     return () => window.removeEventListener('resize', handleResize)
-  }, [focusedHexOrder, panzoom, setFocusedHexOrder])
+  }, [focusedHexOrder])
 
 
   useEffect(() => {
