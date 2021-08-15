@@ -2,7 +2,7 @@ import React from 'react'
 import SimpleTooltip from 'react-simple-tooltip'
 import classNames from 'classnames'
 
-const Tooltip = ({content, className, children}) => (
+const Tooltip = ({content, className, placement, children}) => (
 	<SimpleTooltip
 		className={classNames(className, "whitespace-nowrap")}
 		content={content}
@@ -10,6 +10,7 @@ const Tooltip = ({content, className, children}) => (
 		fontSize="14px"
 		padding={7}
 		radius={2}
+		placement={placement}
 		background="#2d2d2d"
 		aria-label={content}
 	>

@@ -39,11 +39,22 @@ const ZoomOut = ({className, size}) => (
 	</svg>
 )
 
+const HexCentre = ({className, size}) => (
+	<svg width={size} height={size} viewBox="0 0 36 38" className={className} fill="none" xmlns="http://www.w3.org/2000/svg">
+		<path d="M28 22.7009V14.2991C27.9996 13.9308 27.9071 13.569 27.7315 13.2501C27.556 12.9312 27.3037 12.6664 27 12.4823L20 8.2814C19.696 8.09705 19.3511 8 19 8C18.6489 8 18.304 8.09705 18 8.2814L11 12.4823C10.6963 12.6664 10.444 12.9312 10.2685 13.2501C10.0929 13.569 10.0004 13.9308 10 14.2991V22.7009C10.0004 23.0692 10.0929 23.431 10.2685 23.7499C10.444 24.0688 10.6963 24.3336 11 24.5177L18 28.7186C18.304 28.9029 18.6489 29 19 29C19.3511 29 19.696 28.9029 20 28.7186L27 24.5177C27.3037 24.3336 27.556 24.0688 27.7315 23.7499C27.9071 23.431 27.9996 23.0692 28 22.7009Z" stroke="currentColor" strokeWidth="2.66667" strokeLinecap="round" strokeLinejoin="round"/>
+		<path d="M2 27.4443V33.0554C2 33.6077 2.44772 34.0554 3 34.0554H8.61111" stroke="currentColor" strokeWidth="2.67" strokeLinecap="round"/>
+		<path d="M36 8.55566V2.94455C36 2.39227 35.5523 1.94455 35 1.94455H29.3889" stroke="currentColor" strokeWidth="2.67" strokeLinecap="round"/>
+		<path d="M2 8.55566V2.94455C2 2.39227 2.44772 1.94455 3 1.94455H8.61111" stroke="currentColor" strokeWidth="2.67" strokeLinecap="round"/>
+		<path d="M36 27.4443V33.0554C36 33.6077 35.5523 34.0554 35 34.0554H29.3889" stroke="currentColor" strokeWidth="2.67" strokeLinecap="round"/>
+	</svg>
+)
+
 
 export {
 	Back,
 	Cross,
 	Info,
 	Plus,
-	ZoomOut
+	ZoomOut,
+	HexCentre
 }

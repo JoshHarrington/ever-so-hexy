@@ -151,6 +151,17 @@ RSpec.describe 'New page view', type: :system do
 		expect((svg_props["width"] + (svg_props["left"] * 2)).to_f.round()).to eql(window_props["width"])
 		expect(svg_props["top"].round()).to eql((svg_props["bottom"] - svg_props["height"]).round())
 
+		page.evaluate_script('document.querySelector("[data-testid=hex-wrapper]").style.transform = ""')
+		expect(page).to have_selector('button[data-testid="recentre-hex"]', visible:true)
+
+		page.first('button[data-testid="recentre-hex"]').click
+		sleep 0.5
+		svg_props = page.evaluate_script('document.querySelector("svg#id-4").getBoundingClientRect()')
+		window_props = page.evaluate_script('document.body.getBoundingClientRect()')
+
+		## "is the svg centrally aligned?"
+		expect((svg_props["width"] + (svg_props["left"] * 2)).to_f.round()).to eql(window_props["width"])
+		expect(svg_props["top"].round()).to eql((svg_props["bottom"] - svg_props["height"]).round())
 
 		page.first('button[data-testid="add-hex-button"]').click
 

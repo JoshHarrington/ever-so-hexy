@@ -4,7 +4,7 @@ import Panzoom from '@panzoom/panzoom'
 import { colourNameToTailwindVariable, debounce, isPublishingEnabled, panScrollAndZoom, updateAllTrixelsFn } from "../utils"
 import HexGrid from "./HexGrid"
 import HexWrapper from "./HexWapper"
-import { Back } from "./Icons"
+import { Back, HexCentre } from "./Icons"
 import { Badge, TextBadge } from "./Badge"
 import DraggyHex from "./DraggyHex"
 import { hexZoomLevel, maxZoomLevel, minZoomLevel, mobileBreakpoint, mobileHexZoomLevel, colours } from "../constants"
@@ -12,6 +12,16 @@ import { Modal } from "./Modal"
 import Portal from "./Portal"
 import Tooltip from "./Tooltip"
 
+const setupPanzoom = ({hexWrapper}) => {
+	const panzoom = Panzoom(hexWrapper, {
+		minScale: minZoomLevel,
+		maxScale: maxZoomLevel,
+		origin: '0 0',
+		disablePan: true
+	})
+
+	return panzoom
+}
 const New = ({allHexes, currentDraftHex, csrfToken}) => {
 
 	const [currentColour, updateCurrentColor] = useState(colours[0])
@@ -43,12 +53,8 @@ const New = ({allHexes, currentDraftHex, csrfToken}) => {
 	useEffect(() => {
 
 		if (document && window && (!!focusedHex.current && !!focusedHexOrder)) {
-			const panzoom = Panzoom(hexWrapperRef.current, {
-				minScale: minZoomLevel,
-				maxScale: maxZoomLevel,
-				origin: '0 0',
-				disablePan: true
-			})
+
+			const panzoom = setupPanzoom({hexWrapper: hexWrapperRef.current})
 
 			const destroyPanzoom = () => {
 				setTimeout(() => {
@@ -204,6 +210,32 @@ const New = ({allHexes, currentDraftHex, csrfToken}) => {
 					</TextBadge>
 				</div>
 			</Modal></Portal>}
+			<div className="fixed top-0 left-0 pl-6 pt-8 z-10">
+				<Tooltip content="Recentre" placement="bottom">
+					<Badge
+						testid="recentre-hex"
+						onClick={() => {
+							const panzoom = setupPanzoom({hexWrapper: hexWrapperRef.current})
+
+							const destroyPanzoom = () => {
+								setTimeout(() => {
+									panzoom.destroy()
+									hexWrapperRef.current.style.cursor = 'default'
+								}, 50)
+							}
+							hexWrapperRef.current.addEventListener('panzoompan', destroyPanzoom)
+
+							if (focusedHex.current) {
+								const desiredZoomLevel = window.innerWidth < mobileBreakpoint ? mobileHexZoomLevel : hexZoomLevel
+								panScrollAndZoom({panzoom, hex: focusedHex.current, setPageReady, desiredZoomLevel})
+							}
+
+						}}
+					>
+						<HexCentre className="w-6 h-6" />
+					</Badge>
+				</Tooltip>
+			</div>
 			<div className="fixed bottom-0 flex justify-between px-6 pb-8 text-lg z-10 w-full pointer-events-none">
 				<Tooltip
 					content="Back"
