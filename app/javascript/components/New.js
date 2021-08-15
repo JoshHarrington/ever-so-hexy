@@ -81,10 +81,6 @@ const New = ({allHexes, currentDraftHex, csrfToken}) => {
 
 	const [draftModalOpen, setDraftModalOpen] = useState(false)
 
-  useEffect(() => {
-    window.document.body.classList.add('bg-gray-100')
-  }, [])
-
 	return (
 		<>
 			<HexWrapper
