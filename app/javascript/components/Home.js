@@ -109,9 +109,7 @@ const Home = ({allHexes, lastHexOrderPosition}) => {
 
 	return (
     <>
-      <HexWrapper
-        ref={hexWrapperRef}
-      >
+      <HexWrapper ref={hexWrapperRef}>
         <HexGrid
           lastHexOrderPosition={lastHexOrderPosition}
           hexes={hexes}
