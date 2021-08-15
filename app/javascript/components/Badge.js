@@ -1,11 +1,12 @@
 import React from 'react'
 import classNames from 'classnames'
 
-const Badge = ({href, onClick, className, children}) => {
+const Badge = ({href, onClick, className, testid, children}) => {
 	const Tag = href ? `a` : `button`
 	return (
 		<Tag
 			href={href}
+			data-testid={testid}
 			onClick={onClick}
 			className={classNames(
 				className,
