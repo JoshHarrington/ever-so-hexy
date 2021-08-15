@@ -8,9 +8,9 @@ const HexWrapper = forwardRef(({children}, ref) => {
 			ref={ref}
 			data-testid="hex-wrapper"
 			className={classNames(
-				"min-h-screen w-full",
+				"min-h-screen min-w-full",
 				"shadow bg-gray-100",
-				"flex",
+				"flex absolute",
 				"relative overflow-visible")}
 		>
 			{children}
