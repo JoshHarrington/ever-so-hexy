@@ -65,7 +65,7 @@ const New = ({allHexes, currentDraftHex, csrfToken}) => {
 						panScrollAndZoom({panzoom, hex: focusedHex.current, setPageReady, desiredZoomLevel})
 					}
 				},
-				400,
+				300,
 				false
 			)
 
