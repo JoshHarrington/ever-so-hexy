@@ -73,6 +73,8 @@ const Home = ({allHexes, lastHexOrderPosition}) => {
     true
   )
 
+  const setCurrentlyPanningFalse = () => updateCurrentlyPanning(false)
+
   useEffect(() => {
 
     const panzoom = Panzoom(hexWrapperRef.current, {
@@ -83,9 +85,8 @@ const Home = ({allHexes, lastHexOrderPosition}) => {
 
     hexWrapperRef.current.parentElement.addEventListener('wheel', panzoom.zoomWithWheel)
 
-    hexWrapperRef.current.addEventListener('panzoompan', () => setCurrentlyPanningTrue())
-
-    hexWrapperRef.current.addEventListener('panzoomend', () => updateCurrentlyPanning(false))
+    hexWrapperRef.current.addEventListener('panzoompan', setCurrentlyPanningTrue)
+    hexWrapperRef.current.addEventListener('panzoomend', setCurrentlyPanningFalse)
 
     setPanzoom(panzoom)
 
@@ -106,7 +107,14 @@ const Home = ({allHexes, lastHexOrderPosition}) => {
       handleResize()
     }
 
-    return () => window.removeEventListener('resize', handleResize)
+    return () => {
+      window.removeEventListener('resize', handleResize)
+
+      hexWrapperRef.current.parentElement.removeEventListener('wheel', panzoom.zoomWithWheel)
+
+      hexWrapperRef.current.removeEventListener('panzoompan', setCurrentlyPanningTrue)
+      hexWrapperRef.current.removeEventListener('panzoomend', setCurrentlyPanningFalse)
+    }
   }, [focusedHexOrder])
 
   useEffect(() => {
