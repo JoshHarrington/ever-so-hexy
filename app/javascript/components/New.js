@@ -96,7 +96,6 @@ const New = ({allHexes, currentDraftHex, csrfToken}) => {
 					hexes={hexes}
 					currentDraftHexOrder={currentDraftHex.order}
 					setPageReady={setPageReady}
-					hexWrapperRef={hexWrapperRef}
           focusedHexOrder={focusedHexOrder}
           setFocusedHexOrder={setFocusedHexOrder}
 					focusedHex={focusedHex}
