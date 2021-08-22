@@ -210,32 +210,6 @@ const New = ({allHexes, currentDraftHex, csrfToken}) => {
 					</TextBadge>
 				</div>
 			</Modal></Portal>}
-			<div className="fixed top-0 left-0 pl-6 pt-8 z-10">
-				<Tooltip content="Recentre" placement="bottom">
-					<Badge
-						testid="recentre-hex"
-						onClick={() => {
-							const panzoom = setupPanzoom({hexWrapper: hexWrapperRef.current})
-
-							const destroyPanzoom = () => {
-								setTimeout(() => {
-									panzoom.destroy()
-									hexWrapperRef.current.style.cursor = 'default'
-								}, 50)
-							}
-							hexWrapperRef.current.addEventListener('panzoompan', destroyPanzoom)
-
-							if (focusedHex.current) {
-								const desiredZoomLevel = window.innerWidth < mobileBreakpoint ? mobileHexZoomLevel : hexZoomLevel
-								panScrollAndZoom({panzoom, hex: focusedHex.current, setPageReady, desiredZoomLevel})
-							}
-
-						}}
-					>
-						<HexCentre className="w-6 h-6" />
-					</Badge>
-				</Tooltip>
-			</div>
 			<div className="fixed bottom-0 flex justify-between px-6 pb-8 text-lg z-10 w-full pointer-events-none">
 				<Tooltip
 					content="Back"
