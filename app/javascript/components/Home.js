@@ -139,7 +139,6 @@ const Home = ({allHexes, lastHexOrderPosition}) => {
       <HexWrapper ref={hexWrapperRef}>
         <HexGrid
           hexes={hexes}
-          hexWrapperRef={hexWrapperRef}
           focusedHex={focusedHex}
           focusedHexOrder={focusedHexOrder}
           setFocusedHexOrder={setFocusedHexOrder}
