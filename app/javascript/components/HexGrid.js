@@ -71,6 +71,7 @@ const HexGrid = ({
 	focusedHexOrder,
 	setFocusedHexOrder,
 	focusedHex,
+	currentlyPanning,
 	children
 }) => {
 
@@ -89,7 +90,7 @@ const HexGrid = ({
 					if (Object.keys(h).length !== 0 && h.order !== currentDraftHexOrder) {
 						return <HexOuter
 							onClick={
-								!currentDraftHexOrder ? (e) => {
+								 !currentlyPanning && !currentDraftHexOrder ? (e) => {
 									if (document && window) {
 										if (!focusedHexOrder || (focusedHexOrder && focusedHexOrder !== h.order)) {
 											setFocusedHexOrder(h.order)
@@ -107,7 +108,8 @@ const HexGrid = ({
 							newHexPage={!!currentDraftHexOrder}
 							key={`${li}-${ti}`}
 							className={classNames(
-								'transform'
+								'transform',
+								{'pointer-events-none': currentlyPanning}
 							)}
 							marginsForFirstHex={marginsForFirstHex}
 						>
