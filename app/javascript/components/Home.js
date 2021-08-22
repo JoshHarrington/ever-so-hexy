@@ -78,11 +78,7 @@ const Home = ({allHexes, lastHexOrderPosition}) => {
     const panzoom = Panzoom(hexWrapperRef.current, {
       minScale: minZoomLevel,
       maxScale: maxZoomLevel,
-      origin: '0 0',
-      handleStartEvent: (event) => {
-        event.preventDefault()
-        event.stopPropagation()
-      }
+      origin: '0 0'
     })
 
     hexWrapperRef.current.parentElement.addEventListener('wheel', panzoom.zoomWithWheel)
