@@ -63,15 +63,33 @@ const Home = ({allHexes, lastHexOrderPosition}) => {
 
   }, [hexWrapperRef])
 
+  const [currentlyPanning, updateCurrentlyPanning] = useState(false)
+
+  const setCurrentlyPanningTrue = debounce(
+    () => {
+      updateCurrentlyPanning(true)
+    },
+    200,
+    true
+  )
+
   useEffect(() => {
 
     const panzoom = Panzoom(hexWrapperRef.current, {
       minScale: minZoomLevel,
       maxScale: maxZoomLevel,
-      origin: '0 0'
+      origin: '0 0',
+      handleStartEvent: (event) => {
+        event.preventDefault()
+        event.stopPropagation()
+      }
     })
 
     hexWrapperRef.current.parentElement.addEventListener('wheel', panzoom.zoomWithWheel)
+
+    hexWrapperRef.current.addEventListener('panzoompan', () => setCurrentlyPanningTrue())
+
+    hexWrapperRef.current.addEventListener('panzoomend', () => updateCurrentlyPanning(false))
 
     setPanzoom(panzoom)
 
@@ -79,9 +97,9 @@ const Home = ({allHexes, lastHexOrderPosition}) => {
       () => {
         if (focusedHex.current) {
           const desiredZoomLevel = window.innerWidth < mobileBreakpoint ? mobileHexZoomLevel : hexZoomLevel
-          panScrollAndZoom({panzoom, hex: focusedHex.current, desiredZoomLevel})
+          panScrollAndZoom({panzoom, hex: focusedHex.current, desiredZoomLevel, updateCurrentlyPanning})
         } else {
-          resetZoomAndPan({panzoom, setFocusedHexOrder, window})
+          resetZoomAndPan({panzoom, setFocusedHexOrder, window, updateCurrentlyPanning})
         }
       },
       400,
@@ -142,6 +160,7 @@ const Home = ({allHexes, lastHexOrderPosition}) => {
           focusedHex={focusedHex}
           focusedHexOrder={focusedHexOrder}
           setFocusedHexOrder={setFocusedHexOrder}
+          currentlyPanning={currentlyPanning}
         />
       </HexWrapper>
       {infoBlockShown ?
