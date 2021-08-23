@@ -160,3 +160,70 @@ RSpec.describe 'New page view', type: :system do
 
   end
 end
+
+
+RSpec.describe 'Keypress on Homepage', type: :system do
+	let!(:hexes) { create_list(:hex, 3, draft: false)}
+
+  it 'zoom in/out and reset page zoom level' do
+		visit '/'
+
+		default_scale = 1.4
+
+		sleep 0.5
+		page.execute_script('window.dispatchEvent(new KeyboardEvent("keydown",{key:"=", ctrlKey: true}));')
+		expect(page.find('[data-testid="hex-wrapper"]').style('transform')["transform"]).not_to start_with("matrix(#{default_scale}, 0, 0, #{default_scale},")
+
+		sleep 0.2
+		page.send_keys :escape
+		expect(page.find('[data-testid="hex-wrapper"]').style('transform')["transform"]).to start_with("matrix(#{default_scale}, 0, 0, #{default_scale},")
+
+		sleep 0.2
+		page.execute_script('window.dispatchEvent(new KeyboardEvent("keydown",{key:"=", ctrlKey: true}));')
+		last_hex_wrapper_scale = page.find('[data-testid="hex-wrapper"]').style('transform')["transform"]
+		expect(last_hex_wrapper_scale).not_to start_with("matrix(#{default_scale}, 0, 0, #{default_scale},")
+
+		sleep 0.2
+		page.execute_script('window.dispatchEvent(new KeyboardEvent("keydown",{key:"-", ctrlKey: true}));')
+		expect(page.find('[data-testid="hex-wrapper"]').style('transform')["transform"]).not_to eql(last_hex_wrapper_scale)
+
+		next_hex_wrapper_scale = page.find('[data-testid="hex-wrapper"]').style('transform')["transform"]
+		sleep 0.2
+		page.execute_script('window.dispatchEvent(new KeyboardEvent("keydown",{key:"-", metaKey: true}));')
+		expect(page.find('[data-testid="hex-wrapper"]').style('transform')["transform"]).not_to eql(next_hex_wrapper_scale)
+
+		sleep 0.2
+		page.execute_script('window.dispatchEvent(new KeyboardEvent("keydown",{key:"0", metaKey: true}));')
+		expect(page.find('[data-testid="hex-wrapper"]').style('transform')["transform"]).to start_with("matrix(#{default_scale}, 0, 0, #{default_scale},")
+
+
+		page.first('svg').click
+		sleep 0.5
+		expect(page.find('[data-testid="hex-wrapper"]').style('transform')["transform"]).not_to start_with("matrix(#{default_scale}, 0, 0, #{default_scale},")
+		expect(page.current_url).to include('/#1')
+
+		sleep 0.2
+		page.send_keys :escape
+		expect(page.find('[data-testid="hex-wrapper"]').style('transform')["transform"]).to start_with("matrix(#{default_scale}, 0, 0, #{default_scale},")
+		expect(page.current_url).not_to include('/#1')
+
+	end
+end
+
+RSpec.describe 'Keypresses for zooming and reseting', type: :system do
+	it 'on the new page' do
+		visit '/new'
+
+		sleep 0.5
+
+		last_hex_wrapper_scale = page.find('[data-testid="hex-wrapper"]').style('transform')["transform"]
+
+		page.execute_script('window.dispatchEvent(new KeyboardEvent("keydown",{key:"=", ctrlKey: true}));')
+		expect(page.find('[data-testid="hex-wrapper"]').style('transform')["transform"]).to eql(last_hex_wrapper_scale)
+
+		sleep 0.2
+		page.execute_script('window.dispatchEvent(new KeyboardEvent("keydown",{key:"-", metaKey: true}));')
+		expect(page.find('[data-testid="hex-wrapper"]').style('transform')["transform"]).to eql(last_hex_wrapper_scale)
+
+	end
+end

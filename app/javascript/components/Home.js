@@ -3,7 +3,7 @@ import classNames from 'classnames'
 
 import Panzoom from '@panzoom/panzoom'
 
-import { debounce, panScrollAndZoom } from '../utils'
+import { debounce, panScrollAndZoom, resetZoomAndPan } from '../utils'
 
 import HexGrid from './HexGrid'
 import HexWrapper from './HexWapper'
@@ -12,18 +12,6 @@ import { Cross, Info, Plus, ZoomOut } from './Icons'
 import { Badge, TextBadge } from './Badge'
 import { minZoomLevel, defaultZoomLevel, maxZoomLevel, mobileBreakpoint, mobileHexZoomLevel, hexZoomLevel } from '../constants'
 import Tooltip from './Tooltip'
-
-const resetZoomAndPan = ({panzoom, setFocusedHexOrder, window}) => {
-
-  const desiredZoomLevel = window.innerWidth < mobileBreakpoint ? minZoomLevel : defaultZoomLevel
-  panzoom.zoom(desiredZoomLevel)
-  setTimeout(() => {
-    panzoom.pan(0,0)
-  })
-
-  setFocusedHexOrder(null)
-  window.history.pushState("", "", window.location.origin)
-}
 
 const Home = ({allHexes, lastHexOrderPosition}) => {
 
@@ -107,17 +95,54 @@ const Home = ({allHexes, lastHexOrderPosition}) => {
     return () => window.removeEventListener('resize', handleResize)
   }, [focusedHexOrder])
 
+  useEffect(() => {
+
+		const debouncedKeydownEventFn = debounce((e) => {
+			if (e.ctrlKey || e.metaKey) {
+				if (e.key === '-') {
+					// Ctrl / Cmd + '-' (zoom out)
+					panzoom.zoomOut()
+				}
+				if (e.key === '=') {
+					// Ctrl / Cmd + '=' (zoom in)
+					panzoom.zoomIn()
+				}
+				if (e.key === '0') {
+					// Ctrl / Cmd + '0' (reset zoom)
+					resetZoomAndPan({panzoom, setFocusedHexOrder, window})
+				}
+			} else if (e.key === "Escape") {
+				// Escape (reset zoom)
+				resetZoomAndPan({panzoom, setFocusedHexOrder, window})
+			}
+		},
+		100,
+		true)
+
+		let keydownFnName = () => {}
+		window.addEventListener('keydown', keydownFnName = (e) => {
+			if ((e.ctrlKey || e.metaKey) &&
+					(e.key === '-' || e.key === '=' || e.key === '0')) {
+				e.preventDefault()
+			}
+
+      console.log(e.key, e.ctrlKey)
+			debouncedKeydownEventFn(e)
+		})
+
+		return () => window.removeEventListener('keydown', keydownFnName)
+
+	}, [panzoom])
+
 	return (
     <>
       <HexWrapper ref={hexWrapperRef}>
         <HexGrid
-          lastHexOrderPosition={lastHexOrderPosition}
           hexes={hexes}
           hexWrapperRef={hexWrapperRef}
           focusedHex={focusedHex}
           focusedHexOrder={focusedHexOrder}
           setFocusedHexOrder={setFocusedHexOrder}
-          panzoom={panzoom}
         />
       </HexWrapper>
       {infoBlockShown ?

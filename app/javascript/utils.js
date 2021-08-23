@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react'
-import { hexWrapperGutter } from './constants'
+import { defaultZoomLevel, hexWrapperGutter, minZoomLevel, mobileBreakpoint } from './constants'
 
 const splitIntoLayers = (items) => {
 
@@ -185,6 +185,18 @@ const panScrollAndZoom = ({panzoom, hex, setPageReady, desiredZoomLevel}) => {
 	}
 }
 
+const resetZoomAndPan = ({panzoom, setFocusedHexOrder, window}) => {
+
+  const desiredZoomLevel = window.innerWidth < mobileBreakpoint ? minZoomLevel : defaultZoomLevel
+  panzoom.zoom(desiredZoomLevel)
+  setTimeout(() => {
+    panzoom.pan(0,0)
+  })
+
+  setFocusedHexOrder(null)
+  window.history.pushState("", "", window.location.origin)
+}
+
 const minPageWidth = (hexes) => {
 	return `${hexes.length * 6.6 + 7.2}em`
 }
@@ -266,5 +278,6 @@ export {
 	minPageHeight,
 	roundToNDecimalPlaces,
 	panScrollAndZoom,
+	resetZoomAndPan,
 	colourNameToTailwindVariable
 }

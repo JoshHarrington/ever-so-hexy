@@ -1,7 +1,7 @@
-import React, { useState, Fragment, useEffect, useRef } from 'react'
+import React, { Fragment, useEffect } from 'react'
 import classNames from 'classnames'
 
-import { debounce, marginsForFirst } from '../utils'
+import { marginsForFirst } from '../utils'
 
 import HexOuter from './HexOuter'
 
@@ -68,13 +68,9 @@ const Trixels = ({hex}) => {
 const HexGrid = ({
 	hexes,
 	currentDraftHexOrder,
-	lastHexOrderPosition,
-	setPageReady,
-	hexWrapperRef,
 	focusedHexOrder,
 	setFocusedHexOrder,
 	focusedHex,
-	panzoom,
 	children
 }) => {
 
@@ -83,43 +79,6 @@ const HexGrid = ({
 			window.history.scrollRestoration = "manual"
 		}
 	},[]);
-
-
-	useEffect(() => {
-
-		const debouncedKeydownEventFn = debounce((e) => {
-			if (e.ctrlKey || e.metaKey) {
-				if (e.key === '-') {
-					// Ctrl / Cmd + '-' (zoom out)
-					panzoom.zoomOut()
-				}
-				if (e.key === '=') {
-					// Ctrl / Cmd + '=' (zoom in)
-					panzoom.zoomIn()
-				}
-				if (e.key === '0') {
-					// Ctrl / Cmd + '0' (reset zoom)
-					panzoom.zoom(defaultZoomLevel)
-					setTimeout(() => {
-						panzoom.pan(0,0)
-					})
-					setFocusedHexOrder(null)
-					window.history.pushState("", "", window.location.origin)
-				}
-			}
-		}, 100, true)
-		let keydownFnName = () => {}
-		window.addEventListener('keydown', keydownFnName = (e) => {
-			if ((e.ctrlKey || e.metaKey) &&
-					(e.key === '-' || e.key === '=' || e.key === '0')) {
-				e.preventDefault()
-			}
-			debouncedKeydownEventFn(e)
-		})
-
-		return () => window.removeEventListener('keydown', keydownFnName)
-
-	}, [focusedHexOrder, lastHexOrderPosition, setPageReady])
 
 	const marginsForFirstHex = marginsForFirst({hexesInLayers: hexes})
 
