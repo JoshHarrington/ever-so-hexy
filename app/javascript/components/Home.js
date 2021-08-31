@@ -171,9 +171,9 @@ const Home = ({allHexes, lastHexOrderPosition}) => {
               <div>
                 <p className="mb-3">This project is designed to be a more pleasant way of spending that spare couple of minutes in your day. It's meant to be a palette-cleanser for your mind!</p>
 
-                <p className="mb-3">Create your own interesting shapes and patterns. Get inspired by other people creating fun hexagon designs. Find ways to link designs together in ways their creators didn't imagine.</p>
+                <p className="mb-3">Create your own interesting shapes and patterns. Get inspired by other people creating fun hexagon designs. Find ways to link designs together in ways the creators didn't imagine.</p>
 
-                <p>This is a calm and welcoming place to design whatever hexagon you want, bear in mind we'll be removing any hexagons which don't fit that mindset.</p>
+                <p>This is a calm and welcoming place to design whatever hexagon you want, bear in mind we'll be removing any hexagons which don't fit that chilled mindset!</p>
               </div>
                 :
               <button
