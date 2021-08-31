@@ -131,11 +131,11 @@ const Home = ({allHexes, lastHexOrderPosition}) => {
 				}
 				if (e.key === '0') {
 					// Ctrl / Cmd + '0' (reset zoom)
-					resetZoomAndPan({panzoom, setFocusedHexOrder, window})
+					resetZoomAndPan({panzoom, setFocusedHexOrder, window, updateCurrentlyPanning})
 				}
 			} else if (e.key === "Escape") {
 				// Escape (reset zoom)
-				resetZoomAndPan({panzoom, setFocusedHexOrder, window})
+				resetZoomAndPan({panzoom, setFocusedHexOrder, window, updateCurrentlyPanning})
 			}
 		},
 		100,
@@ -173,7 +173,7 @@ const Home = ({allHexes, lastHexOrderPosition}) => {
             <Tooltip content="Reset Zoom" className="!fixed bottom-0 left-0 ml-8 mb-8 !hidden !sm:inline-block">
               <Badge
                 className="mr-auto"
-                onClick={() => resetZoomAndPan({panzoom, setFocusedHexOrder, window})}
+                onClick={() => resetZoomAndPan({panzoom, setFocusedHexOrder, window, updateCurrentlyPanning})}
                 >
                 <ZoomOut className="w-6 w-6" />
               </Badge>
@@ -233,7 +233,7 @@ const Home = ({allHexes, lastHexOrderPosition}) => {
                 <Tooltip className="pointer-events-auto" content="Zoom out">
                   <Badge
                     className="mr-auto"
-                    onClick={() => resetZoomAndPan({panzoom, setFocusedHexOrder, window})}
+                    onClick={() => resetZoomAndPan({panzoom, setFocusedHexOrder, window, updateCurrentlyPanning})}
                   >
                     <ZoomOut className="w-6 w-6" />
                   </Badge>
