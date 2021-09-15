@@ -28,7 +28,7 @@
           </td>
           <td class="py-3 pr-8"><%= hex.draft ? 'Yes' : 'No' %></td>
           <td class="py-3">
-            <%= link_to 'View', "/##{hex.id}", class: 'border-2 border-blue-500 text-blue-500 font-bold px-3 py-1.5 mr-1 rounded-full' %>
+            <%= link_to 'View', "/##{hex.order}", class: 'border-2 border-blue-500 text-blue-500 font-bold px-3 py-1.5 mr-1 rounded-full' %>
             <%= link_to 'Destroy', admin_destroy_hex_path(hex), method: :delete, data: { confirm: 'Are you sure?' }, class: 'bg-red-600 text-white font-bold px-3 py-2 rounded-full' %>
           </td>
         </tr>
