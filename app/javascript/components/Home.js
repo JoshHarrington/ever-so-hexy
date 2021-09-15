@@ -148,7 +148,6 @@ const Home = ({allHexes, lastHexOrderPosition}) => {
 				e.preventDefault()
 			}
 
-      console.log(e.key, e.ctrlKey)
 			debouncedKeydownEventFn(e)
 		})
 
