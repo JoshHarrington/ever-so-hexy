@@ -5,4 +5,9 @@ Rails.application.routes.draw do
   post '/hexes/:order', to: 'hexes#update'
   get '/hexes/:order/publish', to: 'hexes#publish'
   delete '/hexes/:order', to: 'hexes#destroy'
+
+  scope '/admin' do
+    get '/', to: 'admin#index', as: 'admin_root'
+    delete '/hex/:id', to: 'admin#destroy_hex', as: 'admin_destroy_hex'
+  end
 end

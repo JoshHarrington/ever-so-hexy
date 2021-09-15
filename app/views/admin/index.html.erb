@@ -1,0 +1,38 @@
+
+<div class="p-5">
+  <h1 class="mb-5 text-2xl font-bold">All hexes</h1>
+  <table class="table-auto text-left">
+    <thead>
+      <tr>
+        <th class="py-3 pr-8">ID</th>
+        <th class="py-3 pr-8">Order</th>
+        <th class="py-3 pr-8">Date</th>
+        <th class="py-3 pr-8">Source</th>
+        <th class="py-3 pr-8">Draft</th>
+        <th class="py-3">Actions</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <% @hexes.each do |hex| %>
+        <tr class="border-t">
+          <td class="py-3 pr-8"><%= hex.id %></td>
+          <td class="py-3 pr-8"><%= hex.order %></td>
+          <td class="py-3 pr-8">
+            <%= hex.created_at.strftime("%m/%d/%Y at %H:%M") %>
+            <span class="block text-sm text-gray-500"><%= time_ago_in_words(hex.created_at) %></span>
+          </td>
+          <td class="py-3 pr-8">
+            <%= hex.country_code %>
+            <% if hex.ip_address.present? %><span class="block text-sm text-gray-500"><%= hex.ip_address %></span><% end %>
+          </td>
+          <td class="py-3 pr-8"><%= hex.draft ? 'Yes' : 'No' %></td>
+          <td class="py-3">
+            <%= link_to 'View', "/##{hex.id}", class: 'border-2 border-blue-500 text-blue-500 font-bold px-3 py-1.5 mr-1 rounded-full' %>
+            <%= link_to 'Destroy', admin_destroy_hex_path(hex), method: :delete, data: { confirm: 'Are you sure?' }, class: 'bg-red-600 text-white font-bold px-3 py-2 rounded-full' %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
