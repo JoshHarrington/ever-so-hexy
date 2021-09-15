@@ -3,7 +3,7 @@ class AdminController < ApplicationController
 
   # GET /admin
   def index
-    @hexes = Hex.all
+    @hexes = Hex.all.order(created_at: :desc)
   end
 
   # DELETE /admin/hex/1
