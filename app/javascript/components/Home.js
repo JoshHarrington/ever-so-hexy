@@ -15,11 +15,11 @@ import Tooltip from './Tooltip'
 
 const Home = ({allHexes, lastHexOrderPosition}) => {
 
-  useEffect(() => {
-		if (document && document.body) {
-			document.body.classList.add('overflow-auto')
-		}
-	}, [])
+  // useEffect(() => {
+	// 	if (document && document.body) {
+	// 		document.body.classList.add('overflow-auto')
+	// 	}
+	// }, [])
 
 	const hexes = [...allHexes]
 
@@ -38,114 +38,115 @@ const Home = ({allHexes, lastHexOrderPosition}) => {
   const [moreInfoShown, updateMoreInfoShown] = useState(false)
   const [infoBlockShown, setInfoBlockShown] = useState(!focusedHexOrder)
 
-  useEffect(() => {
-    if (!!focusedHexOrder) {
-      setInfoBlockShown(false)
-    }
-  }, [focusedHexOrder])
+  // useEffect(() => {
+  //   if (!!focusedHexOrder) {
+  //     setInfoBlockShown(false)
+  //   }
+  // }, [focusedHexOrder])
 
   const [panzoom, setPanzoom] = useState(null)
 
   const [showResetBtn, updateShownResetBtn] = useState(false)
 
-  useEffect(() => {
-    const panzoomZoomFn = (e) => {
-      if (e.detail.scale === defaultZoomLevel) {
-        updateShownResetBtn(false)
-      } else {
-        updateShownResetBtn(true)
-      }
-    }
-    if (hexWrapperRef && hexWrapperRef.current){
-      hexWrapperRef.current.addEventListener('panzoomzoom', (e) => panzoomZoomFn(e))
-    }
-    return hexWrapperRef.current.removeEventListener('panzoomzoom', panzoomZoomFn)
+  // useEffect(() => {
+  //   const panzoomZoomFn = (e) => {
+  //     if (e.detail.scale === defaultZoomLevel) {
+  //       updateShownResetBtn(false)
+  //     } else {
+  //       updateShownResetBtn(true)
+  //     }
+  //   }
+  //   if (hexWrapperRef && hexWrapperRef.current){
+  //     hexWrapperRef.current.addEventListener('panzoomzoom', (e) => panzoomZoomFn(e))
+  //   }
+  //   return hexWrapperRef.current.removeEventListener('panzoomzoom', panzoomZoomFn)
 
-  }, [hexWrapperRef])
+  // }, [hexWrapperRef])
 
-  useEffect(() => {
+  // useEffect(() => {
 
-    const panzoom = Panzoom(hexWrapperRef.current, {
-      minScale: minZoomLevel,
-      maxScale: maxZoomLevel,
-      origin: '0 0'
-    })
+  //   const panzoom = Panzoom(hexWrapperRef.current, {
+  //     minScale: minZoomLevel,
+  //     maxScale: maxZoomLevel,
+  //     origin: '0 0'
+  //   })
 
-    hexWrapperRef.current.parentElement.addEventListener('wheel', panzoom.zoomWithWheel)
+  //   hexWrapperRef.current.parentElement.addEventListener('wheel', panzoom.zoomWithWheel)
 
-    setPanzoom(panzoom)
+  //   setPanzoom(panzoom)
 
-    const handleResize = debounce(
-      () => {
-        if (focusedHex.current) {
-          const desiredZoomLevel = window.innerWidth < mobileBreakpoint ? mobileHexZoomLevel : hexZoomLevel
-          panScrollAndZoom({panzoom, hex: focusedHex.current, desiredZoomLevel})
-        } else {
-          resetZoomAndPan({panzoom, setFocusedHexOrder, window})
-        }
-      },
-      400,
-      true
-    )
-    if (panzoom) {
-      window.addEventListener('resize', handleResize)
-      handleResize()
-    }
+  //   const handleResize = debounce(
+  //     () => {
+  //       if (focusedHex.current) {
+  //         const desiredZoomLevel = window.innerWidth < mobileBreakpoint ? mobileHexZoomLevel : hexZoomLevel
+  //         panScrollAndZoom({panzoom, hex: focusedHex.current, desiredZoomLevel})
+  //       } else {
+  //         resetZoomAndPan({panzoom, setFocusedHexOrder, window})
+  //       }
+  //     },
+  //     400,
+  //     true
+  //   )
+  //   if (panzoom) {
+  //     window.addEventListener('resize', handleResize)
+  //     handleResize()
+  //   }
 
-    return () => window.removeEventListener('resize', handleResize)
-  }, [focusedHexOrder])
+  //   return () => window.removeEventListener('resize', handleResize)
+  // }, [focusedHexOrder])
 
-  useEffect(() => {
+  // useEffect(() => {
 
-		const debouncedKeydownEventFn = debounce((e) => {
-			if (e.ctrlKey || e.metaKey) {
-				if (e.key === '-') {
-					// Ctrl / Cmd + '-' (zoom out)
-					panzoom.zoomOut()
-				}
-				if (e.key === '=') {
-					// Ctrl / Cmd + '=' (zoom in)
-					panzoom.zoomIn()
-				}
-				if (e.key === '0') {
-					// Ctrl / Cmd + '0' (reset zoom)
-					resetZoomAndPan({panzoom, setFocusedHexOrder, window})
-				}
-			} else if (e.key === "Escape") {
-				// Escape (reset zoom)
-				resetZoomAndPan({panzoom, setFocusedHexOrder, window})
-			}
-		},
-		100,
-		true)
+	// 	const debouncedKeydownEventFn = debounce((e) => {
+	// 		if (e.ctrlKey || e.metaKey) {
+	// 			if (e.key === '-') {
+	// 				// Ctrl / Cmd + '-' (zoom out)
+	// 				panzoom.zoomOut()
+	// 			}
+	// 			if (e.key === '=') {
+	// 				// Ctrl / Cmd + '=' (zoom in)
+	// 				panzoom.zoomIn()
+	// 			}
+	// 			if (e.key === '0') {
+	// 				// Ctrl / Cmd + '0' (reset zoom)
+	// 				resetZoomAndPan({panzoom, setFocusedHexOrder, window})
+	// 			}
+	// 		} else if (e.key === "Escape") {
+	// 			// Escape (reset zoom)
+	// 			resetZoomAndPan({panzoom, setFocusedHexOrder, window})
+	// 		}
+	// 	},
+	// 	100,
+	// 	true)
 
-		let keydownFnName = () => {}
-		window.addEventListener('keydown', keydownFnName = (e) => {
-			if ((e.ctrlKey || e.metaKey) &&
-					(e.key === '-' || e.key === '=' || e.key === '0')) {
-				e.preventDefault()
-			}
+	// 	let keydownFnName = () => {}
+	// 	window.addEventListener('keydown', keydownFnName = (e) => {
+	// 		if ((e.ctrlKey || e.metaKey) &&
+	// 				(e.key === '-' || e.key === '=' || e.key === '0')) {
+	// 			e.preventDefault()
+	// 		}
 
-      console.log(e.key, e.ctrlKey)
-			debouncedKeydownEventFn(e)
-		})
+  //     console.log(e.key, e.ctrlKey)
+	// 		debouncedKeydownEventFn(e)
+	// 	})
 
-		return () => window.removeEventListener('keydown', keydownFnName)
+	// 	return () => window.removeEventListener('keydown', keydownFnName)
 
-	}, [panzoom])
+	// }, [panzoom])
 
 	return (
     <>
       <HexWrapper ref={hexWrapperRef}>
-        <HexGrid
+        <p>Hello</p>
+        {/* <HexGrid
           hexes={hexes}
           hexWrapperRef={hexWrapperRef}
           focusedHex={focusedHex}
           focusedHexOrder={focusedHexOrder}
           setFocusedHexOrder={setFocusedHexOrder}
-        />
+        /> */}
       </HexWrapper>
-      {infoBlockShown ?
+      {/* {infoBlockShown ?
         <>
           {showResetBtn &&
             <Tooltip content="Reset Zoom" className="!fixed bottom-0 left-0 ml-8 mb-8 !hidden !sm:inline-block">
@@ -238,7 +239,7 @@ const Home = ({allHexes, lastHexOrderPosition}) => {
             </Tooltip>
           </div>
         </div>
-      }
+      } */}
     </>
 	)
 }
