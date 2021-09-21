@@ -137,14 +137,13 @@ const Home = ({allHexes, lastHexOrderPosition}) => {
 	return (
     <>
       <HexWrapper ref={hexWrapperRef}>
-        <p>Hello</p>
-        {/* <HexGrid
+        <HexGrid
           hexes={hexes}
           hexWrapperRef={hexWrapperRef}
           focusedHex={focusedHex}
           focusedHexOrder={focusedHexOrder}
           setFocusedHexOrder={setFocusedHexOrder}
-        /> */}
+        />
       </HexWrapper>
       {/* {infoBlockShown ?
         <>
