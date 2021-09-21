@@ -209,4 +209,68 @@ describe HexesHelper do
 		end
 	end
 
+
+	context "setup 200 published hexes" do
+		let!(:hexes) {
+			create_list(:hex, 200) do |hex, i|
+				hex.order = i + 1
+
+				hex.trixel_colour_a2 = "#ccc"
+				hex.trixel_colour_a3 = "#000"
+
+				hex.draft = false
+			end
+		}
+
+		it "check helper to split hexes into layers - with many records" do
+
+
+			private_data_hidden_hexes = hide_private_hex_data(hexes: hexes)
+
+			expect(private_data_hidden_hexes.length).to eql(200)
+
+			hexes_in_layers = split_into_layers(hexes: private_data_hidden_hexes)
+
+			expect(hexes_in_layers.length).to eql(25)
+
+			expect(hexes_in_layers[0].length).to eql(1)
+			expect(hexes_in_layers[1].length).to eql(2)
+			expect(hexes_in_layers[2].length).to eql(3)
+			expect(hexes_in_layers[3].length).to eql(4)
+			expect(hexes_in_layers[4].length).to eql(5)
+			expect(hexes_in_layers[5].length).to eql(6)
+			expect(hexes_in_layers[6].length).to eql(7)
+			expect(hexes_in_layers[7].length).to eql(8)
+			expect(hexes_in_layers[8].length).to eql(9)
+			expect(hexes_in_layers[9].length).to eql(10)
+
+			14.times do |i|
+				expect(hexes_in_layers[i+9].length).to eql(10)
+			end
+
+			expect(hexes_in_layers[24].length).to eql(5)
+
+			flattened_hexes = hexes_in_layers.flatten
+
+			expect(flattened_hexes.length).to eql(200)
+
+			expect(hexes_in_layers[0][0][:order]).to eql(1)
+			expect(hexes_in_layers[1][0][:order]).to eql(2)
+			expect(hexes_in_layers[1][1][:order]).to eql(3)
+			expect(hexes_in_layers[2][0][:order]).to eql(4)
+
+			expect(hexes_in_layers[24][-1][:order]).to eql(200)
+
+			public_hex = flattened_hexes.select{|h| h[:draft] == false}.first
+			draft_hex = flattened_hexes.select{|h| h[:draft]}.first
+
+			# # published hexes data is sent down to page
+			expect(public_hex[:trixel_colour_a2]).to eql("#FFFFFF")
+
+			# # draft hexes data is not sent down to page
+			expect(draft_hex[:trixel_colour_a5]).to eql(nil)
+
+		end
+	end
+
 end
