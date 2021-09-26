@@ -7,7 +7,7 @@ import HexWrapper from "./HexWapper"
 import { Back, HexCentre } from "./Icons"
 import { Badge, TextBadge } from "./Badge"
 import DraggyHex from "./DraggyHex"
-import { hexZoomLevel, maxZoomLevel, minZoomLevel, mobileBreakpoint, mobileHexZoomLevel, colours } from "../constants"
+import { hexZoomLevel, maxZoomLevel, minZoomLevel, mobileBreakpoint, mobileHexZoomLevel, colours, hexWrapperGutter } from "../constants"
 import { Modal } from "./Modal"
 import Portal from "./Portal"
 import Tooltip from "./Tooltip"
@@ -87,6 +87,14 @@ const New = ({allHexes, currentDraftHex, csrfToken}) => {
 
 	const [draftModalOpen, setDraftModalOpen] = useState(false)
 
+	const basicMarginsForFirstHex = {
+		top: hexWrapperGutter,
+		right: hexWrapperGutter,
+		bottom: hexWrapperGutter,
+		left: hexWrapperGutter
+	}
+
+
 	return (
 		<>
 			<HexWrapper
@@ -112,6 +120,9 @@ const New = ({allHexes, currentDraftHex, csrfToken}) => {
 							`absolute transform`
 						)}
 						currentColour={currentColour}
+						marginsForFirstHex={currentDraftHex.order === 1 && basicMarginsForFirstHex}
+						leftTransform={currentDraftHex.order !== 1 && currentDraftHex.leftTransform}
+						topTransform={currentDraftHex.order !== 1 && currentDraftHex.topTransform}
 					/>
 
 				</HexGrid>

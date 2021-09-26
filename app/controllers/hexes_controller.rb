@@ -24,8 +24,12 @@ class HexesController < ApplicationController
 
     @hexes = split_into_layers(hexes: private_data_hidden_hexes)
 
-
-    @current_draft_hex = draft_hex
+    hex_transforms = hex_transforms_from_order(order: draft_hex.order)
+    @current_draft_hex = {
+      **draft_hex.as_json.symbolize_keys.except(:created_at, :updated_at, :id),
+			leftTransform: hex_transforms[:left],
+			topTransform: hex_transforms[:top]
+    }
 
   end
 

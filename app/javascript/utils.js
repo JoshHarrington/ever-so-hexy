@@ -1,26 +1,18 @@
 import { useEffect, useRef } from 'react'
 import { defaultZoomLevel, hexWrapperGutter, minZoomLevel, mobileBreakpoint } from './constants'
 
-const splitIntoLayers = (items) => {
-
-	let itemsCopy = [...items].sort((a,b) => a.order - b.order)
-
-	let itemsInLayers = []
-	let chunkSize = 1
-
-	while (itemsCopy.length) {
-		const layerSize = .5 * chunkSize * (chunkSize + 1)
-		const itemsToMoveToLayers = itemsCopy.filter(i => i.order <= layerSize)
-		itemsCopy = itemsCopy.filter(i => i.order > layerSize)
-
-		itemsInLayers.push(itemsToMoveToLayers);
-		if (chunkSize < 10){
-			chunkSize++
-		}
-	}
-
-	return itemsInLayers
-
+const splitIntoLayers = (hexes) => {
+  let hexesCopy = [...hexes]
+  let layerSize = 1
+  const layeredHexes = []
+  while(hexesCopy.length !== 0) {
+    layeredHexes.push(hexesCopy.slice(0, layerSize))
+    hexesCopy = hexesCopy.slice(layerSize)
+    if (layerSize < 10) {
+      layerSize = layerSize + 1
+    }
+  }
+  return layeredHexes
 }
 
 const positionFromOrderNumber = (currentOrderPosition) => {

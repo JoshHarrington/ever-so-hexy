@@ -128,3 +128,25 @@ RSpec.describe 'Keypress on Homepage', type: :system do
 
 	end
 end
+
+RSpec.describe 'Home page Hex zooming', type: :system do
+	let!(:hexes) { create_list(:hex, 56, draft: false)}
+
+  it 'can load the homepage and zoom to a hex' do
+    visit '/'
+
+		expect(page.find('[data-testid="hex-wrapper"]').style('transform')["transform"]).to start_with('matrix(1.4, 0, 0, 1.4,')
+		expect(page.find('[data-testid="hex-wrapper"]').style('transform')["transform"]).to end_with('0, 0)')
+
+    expect(page).to have_css('svg#id-1')
+
+		page_container = page.evaluate_script('document.querySelector("[data-react-class=Home]").getBoundingClientRect()')
+		page_container_width = page_container["width"]
+
+		page.evaluate_script("document.querySelector('[data-testid=hex-wrapper]').style.transform = 'scale(1.4) translate(-#{page_container_width/2}px, 0px)'")
+
+		sleep 0.5
+		expect(page).to have_css('svg#id-56')
+
+  end
+end

@@ -1,8 +1,6 @@
 import React, { forwardRef } from 'react'
 import classNames from 'classnames'
 
-import { positionFromOrderNumber } from '../utils'
-
 const HexOuter = forwardRef(({
   className,
   focusedHexOrder,
@@ -10,18 +8,20 @@ const HexOuter = forwardRef(({
   order,
   newHexPage,
   marginsForFirstHex,
+  leftTransform,
+  topTransform,
   children
 }, ref) => {
   const hexIsFocusedHex = focusedHexOrder && focusedHexOrder === order || !focusedHexOrder
-  const posiFromOrder = positionFromOrderNumber(order)
 
   const isFirstHex = order === 1
   const absoluteHex = !isFirstHex
 
   let hexTransform = null
   if (absoluteHex) {
-    hexTransform = `translate(${posiFromOrder.leftTransform}em, ${posiFromOrder.topTransform}em)`
+    hexTransform = `translate(${leftTransform}em, ${topTransform}em)`
   }
+
 
   return (
     <svg
@@ -34,7 +34,7 @@ const HexOuter = forwardRef(({
         "cursor-zoom-in": !newHexPage && (!focusedHexOrder || focusedHexOrder && !hexIsFocusedHex),
         "cursor-zoom-out": focusedHexOrder && hexIsFocusedHex,
         "relative flex-shrink-0": isFirstHex,
-        "absolute": absoluteHex,
+        "absolute": absoluteHex
       })}
       style={{
         transform: hexTransform,
