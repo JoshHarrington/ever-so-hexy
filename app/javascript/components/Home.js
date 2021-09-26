@@ -13,7 +13,7 @@ import { Badge, TextBadge } from './Badge'
 import { minZoomLevel, defaultZoomLevel, maxZoomLevel, mobileBreakpoint, mobileHexZoomLevel, hexZoomLevel } from '../constants'
 import Tooltip from './Tooltip'
 
-const Home = ({allHexes, lastHexOrderPosition}) => {
+const Home = ({allHexes}) => {
 
   useEffect(() => {
 		if (document && document.body) {

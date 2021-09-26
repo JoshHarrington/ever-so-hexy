@@ -2,6 +2,12 @@ require "rails_helper"
 
 describe HexesHelper do
 
+	it "test split_into_layers with basic array" do
+		basic_array = Array.new(60){|i| {order: i + 1}}
+
+		expect(split_into_layers(hexes: basic_array).length).to eql(11)
+	end
+
 	context "setup three hexes" do
 
 		let!(:hexes) {
@@ -70,6 +76,7 @@ describe HexesHelper do
 			expect(private_data_hidden_hexes.filter{|h| h[:order] == 1}.first[:trixel_colour_a2]).to eql("#FFFFFF")
 			expect(private_data_hidden_hexes.filter{|h| h[:order] == 2}.first[:trixel_colour_a2]).to eql(nil)
 
+
 		end
 	end
 
@@ -110,6 +117,10 @@ describe HexesHelper do
 			# draft hexes data is not sent down to page
 			expect(hexes_in_layers[1][0][:draft]).to eql(true)
 			expect(hexes_in_layers[1][0][:trixel_colour_a5]).to eql(nil)
+
+			# published hex - not the first - gets transform values added correctly
+			expect(hexes_in_layers[2][0][:leftTransform]).to eql(3.0)
+			expect(hexes_in_layers[2][0][:topTransform]).to eql(27)
 
 		end
 	end
@@ -164,14 +175,41 @@ describe HexesHelper do
 
 			expect(hexes_in_layers[24][-1][:order]).to eql(200)
 
-			public_hex = flattened_hexes.select{|h| h[:draft] == false}.first
+			public_hexes = flattened_hexes.select{|h| h[:draft] == false}
+			first_public_hex = public_hexes.first
 			draft_hex = flattened_hexes.select{|h| h[:draft]}.first
 
-			# # published hexes data is sent down to page
-			expect(public_hex[:trixel_colour_a2]).to eql("#FFFFFF")
+			# published hexes data is sent down to page
+			expect(first_public_hex[:trixel_colour_a2]).to eql("#FFFFFF")
 
-			# # draft hexes data is not sent down to page
+			# draft hexes data is not sent down to page
 			expect(draft_hex[:trixel_colour_a5]).to eql(nil)
+
+			# check transforms for hexes
+
+			expect(flattened_hexes[10][:leftTransform]).to eql(31.0)
+			expect(flattened_hexes[10][:topTransform]).to eql(3)
+
+			expect(flattened_hexes[33][:leftTransform]).to eql(34.5)
+			expect(flattened_hexes[33][:topTransform]).to eql(33)
+
+			expect(flattened_hexes[59][:leftTransform]).to eql(59.0)
+			expect(flattened_hexes[59][:topTransform]).to eql(27)
+
+			expect(flattened_hexes[101][:leftTransform]).to eql(80.0)
+			expect(flattened_hexes[101][:topTransform]).to eql(39)
+
+			expect(flattened_hexes[118][:leftTransform]).to eql(104.5)
+			expect(flattened_hexes[118][:topTransform]).to eql(21)
+
+			expect(flattened_hexes[127][:leftTransform]).to eql(115.0)
+			expect(flattened_hexes[127][:topTransform]).to eql(15)
+
+			expect(flattened_hexes[158][:leftTransform]).to eql(132.5)
+			expect(flattened_hexes[158][:topTransform]).to eql(21)
+
+			expect(flattened_hexes[199][:leftTransform]).to eql(157.0)
+			expect(flattened_hexes[199][:topTransform]).to eql(27)
 
 		end
 	end

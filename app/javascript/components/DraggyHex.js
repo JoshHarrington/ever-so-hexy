@@ -1,5 +1,5 @@
 import React, { forwardRef, useRef, useState } from 'react'
-import { positionFromOrderNumber, sendNewPaths, updatePathsFn } from '../utils'
+import { sendNewPaths, updatePathsFn } from '../utils'
 
 var classNames = require('classnames')
 
@@ -85,10 +85,14 @@ const DraggyHex = forwardRef(({
 	setNewHex,
 	currentColour,
 	csrfToken,
-	publishAllowed
+	publishAllowed,
+	marginsForFirstHex,
+	leftTransform,
+	topTransform
 }, ref) => {
+
 	const [currentPositionReference, updateCurrentPositionReference] = useState(null)
-	const posiFromOrder = positionFromOrderNumber(order)
+	const isFirstHex = order === 1
 
   return (
 		<>
@@ -98,9 +102,13 @@ const DraggyHex = forwardRef(({
 				width="300px"
 				className={classNames(className, "z-10 cursor-default", {"opacity-50": focusedHexOrder && focusedHexOrder !== order})}
 				style={{
-					transform: `translate(${posiFromOrder.leftTransform}em, ${posiFromOrder.topTransform}em)`,
+					transform: !isFirstHex && `translate(${leftTransform}em, ${topTransform}em)`,
 					width: '6.6em',
-					clipPath: 'polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%)'
+					clipPath: 'polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%)',
+					marginTop: isFirstHex && `${marginsForFirstHex.top}em`,
+					marginLeft: isFirstHex && `${marginsForFirstHex.left}em`,
+					marginRight: isFirstHex && `${marginsForFirstHex.right}em`,
+					marginBottom: isFirstHex && `${marginsForFirstHex.bottom}em`
 				}}
 				ref={ref}
 				onMouseLeave={() => {

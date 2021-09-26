@@ -87,7 +87,9 @@ const HexGrid = ({
 		<>
 			{hexes.map((l, li) => {
 				return <Fragment key={li}>{l.map((h, ti) => {
+
 					if (Object.keys(h).length !== 0 && h.order !== currentDraftHexOrder) {
+						console.log(h)
 						return <HexOuter
 							onClick={
 								 !currentlyPanning && !currentDraftHexOrder ? (e) => {
@@ -111,7 +113,9 @@ const HexGrid = ({
 								'transform',
 								{'pointer-events-none': currentlyPanning}
 							)}
-							marginsForFirstHex={marginsForFirstHex}
+							marginsForFirstHex={h.order === 1 && marginsForFirstHex}
+							leftTransform={h.order !== 1 && h.leftTransform}
+							topTransform={h.order !== 1 && h.topTransform}
 						>
 							{!h.draft ?
 								<Trixels hex={h} />
