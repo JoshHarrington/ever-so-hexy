@@ -184,7 +184,7 @@ const Home = ({allHexes}) => {
             "text-blueGray-800 w-screen",
             "bg-white shadow sm:rounded-tl-16xl",
             "p-8 sm:max-w-xs sm:top-auto sm:left-auto sm:right-0",
-            "max-h-screen"
+            "max-h-full"
           )}>
             <h1 className="text-2xl font-black mb-2">Ever So Hexy</h1>
             <p className="mb-3">An experimental collaborative art project by <a href="https://twitter.com/Josh_Harrington" className="font-bold">@Josh_Harrington</a> and <a href="https://twitter.com/samlester" className="font-bold">@samlester</a></p>
