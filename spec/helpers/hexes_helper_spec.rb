@@ -119,8 +119,8 @@ describe HexesHelper do
 			expect(hexes_in_layers[1][0][:trixel_colour_a5]).to eql(nil)
 
 			# published hex - not the first - gets transform values added correctly
-			expect(hexes_in_layers[2][0][:leftTransform]).to eql(3.0)
-			expect(hexes_in_layers[2][0][:topTransform]).to eql(27)
+			expect(hexes_in_layers[2][0][:leftTransform]).to eql(17.0)
+			expect(hexes_in_layers[2][0][:topTransform]).to eql(3)
 
 		end
 	end
