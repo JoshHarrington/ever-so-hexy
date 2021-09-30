@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect } from 'react'
+import React, { Fragment, useEffect, useState } from 'react'
 import classNames from 'classnames'
 
 import { marginsForFirst } from '../utils'
@@ -75,13 +75,15 @@ const HexGrid = ({
 	children
 }) => {
 
+	const [marginsForFirstHex, updateMarginsForFirstHex] = useState({})
+
 	useEffect(() =>  {
 		if ("scrollRestoration" in window.history) {
 			window.history.scrollRestoration = "manual"
 		}
+		updateMarginsForFirstHex(marginsForFirst({hexesInLayers: hexes}))
 	},[]);
 
-	const marginsForFirstHex = marginsForFirst({hexesInLayers: hexes})
 
 	return (
 		<>
@@ -89,7 +91,6 @@ const HexGrid = ({
 				return <Fragment key={li}>{l.map((h, ti) => {
 
 					if (Object.keys(h).length !== 0 && h.order !== currentDraftHexOrder) {
-						console.log(h)
 						return <HexOuter
 							onClick={
 								 !currentlyPanning && !currentDraftHexOrder ? (e) => {
