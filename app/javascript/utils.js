@@ -1,56 +1,6 @@
 import { useEffect, useRef } from 'react'
 import { defaultZoomLevel, hexWrapperGutter, minZoomLevel, mobileBreakpoint } from './constants'
 
-const splitIntoLayers = (hexes) => {
-  let hexesCopy = [...hexes]
-  let layerSize = 1
-  const layeredHexes = []
-  while(hexesCopy.length !== 0) {
-    layeredHexes.push(hexesCopy.slice(0, layerSize))
-    hexesCopy = hexesCopy.slice(layerSize)
-    if (layerSize < 10) {
-      layerSize = layerSize + 1
-    }
-  }
-  return layeredHexes
-}
-
-const positionFromOrderNumber = (currentOrderPosition) => {
-
-	const orderNumbers = Array.from({length: currentOrderPosition}, (x, i) => ({order: i + 1}))
-	const orderNumbersIntoLayers = splitIntoLayers(orderNumbers)
-
-	let currentOrderLayerIndex = 0
-	let currentOrderHexIndex = 0
-
-	orderNumbersIntoLayers.filter((layer, layerIndex) => {
-		if (layer.filter(t => t.order === currentOrderPosition).length > 0) {
-			currentOrderLayerIndex = layerIndex
-			currentOrderHexIndex = layer.findIndex(t => t.order === currentOrderPosition)
-			return true
-		} else {
-			return false
-		}
-	})
-
-	return {
-		leftTransform: (currentOrderLayerIndex * 7) - (currentOrderHexIndex * 3.5) + hexWrapperGutter,
-		topTransform: currentOrderHexIndex * 6 + hexWrapperGutter
-	}
-}
-
-const marginsForFirst = ({hexesInLayers}) => {
-
-	const numHexesInLargestLayer = hexesInLayers.length > 1 ? [...hexesInLayers].sort((a, b) => b.length - a.length)[0].length : 1
-
-	return {
-		top: hexWrapperGutter,
-		right: (hexesInLayers.length - 1) * 7 + hexWrapperGutter,
-		bottom: (numHexesInLargestLayer - 1) * 6 + hexWrapperGutter,
-		left: hexWrapperGutter
-	}
-}
-
 function debounce(func, wait, immediate) {
 	var timeout;
 	return function() {
@@ -266,9 +216,6 @@ const colourNameToTailwindVariable = ({colourName}) => {
 }
 
 export {
-	splitIntoLayers,
-	positionFromOrderNumber,
-	marginsForFirst,
 	debounce,
 	usePrevious,
 	sendNewPaths,

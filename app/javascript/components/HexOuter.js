@@ -7,21 +7,13 @@ const HexOuter = forwardRef(({
   onClick,
   order,
   newHexPage,
-  marginsForFirstHex,
-  leftTransform,
-  topTransform,
+  spacing,
   children
 }, ref) => {
   const hexIsFocusedHex = focusedHexOrder && focusedHexOrder === order || !focusedHexOrder
 
   const isFirstHex = order === 1
   const absoluteHex = !isFirstHex
-
-  let hexTransform = null
-  if (absoluteHex) {
-    hexTransform = `translate(${leftTransform}em, ${topTransform}em)`
-  }
-
 
   return (
     <svg
@@ -37,14 +29,14 @@ const HexOuter = forwardRef(({
         "absolute": absoluteHex
       })}
       style={{
-        transform: hexTransform,
+        transform: absoluteHex && `translate(${spacing.left}em, ${spacing.top}em)`,
         width: '6.6em',
         clipPath: 'polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%)',
         height: '7.7em',
-        marginTop: isFirstHex && `${marginsForFirstHex.top}em`,
-        marginLeft: isFirstHex && `${marginsForFirstHex.left}em`,
-        marginRight: isFirstHex && `${marginsForFirstHex.right}em`,
-        marginBottom: isFirstHex && `${marginsForFirstHex.bottom}em`
+        marginTop: isFirstHex && `${spacing.top}em`,
+        marginLeft: isFirstHex && `${spacing.left}em`,
+        marginRight: isFirstHex && `${spacing.right}em`,
+        marginBottom: isFirstHex && `${spacing.bottom}em`
       }}
       onClick={onClick}
       ref={ref}

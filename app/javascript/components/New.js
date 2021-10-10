@@ -87,14 +87,6 @@ const New = ({allHexes, currentDraftHex, csrfToken}) => {
 
 	const [draftModalOpen, setDraftModalOpen] = useState(false)
 
-	const basicMarginsForFirstHex = {
-		top: hexWrapperGutter,
-		right: hexWrapperGutter,
-		bottom: hexWrapperGutter,
-		left: hexWrapperGutter
-	}
-
-
 	return (
 		<>
 			<HexWrapper
@@ -120,9 +112,12 @@ const New = ({allHexes, currentDraftHex, csrfToken}) => {
 							`absolute transform`
 						)}
 						currentColour={currentColour}
-						marginsForFirstHex={currentDraftHex.order === 1 && basicMarginsForFirstHex}
-						leftTransform={currentDraftHex.order !== 1 && currentDraftHex.leftTransform}
-						topTransform={currentDraftHex.order !== 1 && currentDraftHex.topTransform}
+						spacing={{
+							top: currentDraftHex.top,
+							right: currentDraftHex.right,
+							bottom: currentDraftHex.bottom,
+							left: currentDraftHex.left
+						}}
 					/>
 
 				</HexGrid>
