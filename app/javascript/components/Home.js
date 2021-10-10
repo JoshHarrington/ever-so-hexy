@@ -83,10 +83,13 @@ const Home = ({allHexes}) => {
       origin: '0 0'
     })
 
-    hexWrapperRef.current.parentElement.addEventListener('wheel', panzoom.zoomWithWheel)
+    if (hexWrapperRef.current) {
 
-    hexWrapperRef.current.addEventListener('panzoompan', setCurrentlyPanningTrue)
-    hexWrapperRef.current.addEventListener('panzoomend', setCurrentlyPanningFalse)
+      hexWrapperRef.current.parentElement.addEventListener('wheel', panzoom.zoomWithWheel)
+
+      hexWrapperRef.current.addEventListener('panzoompan', setCurrentlyPanningTrue)
+      hexWrapperRef.current.addEventListener('panzoomend', setCurrentlyPanningFalse)
+    }
 
     setPanzoom(panzoom)
 
