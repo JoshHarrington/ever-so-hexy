@@ -86,9 +86,7 @@ const DraggyHex = forwardRef(({
 	currentColour,
 	csrfToken,
 	publishAllowed,
-	marginsForFirstHex,
-	leftTransform,
-	topTransform
+	spacing
 }, ref) => {
 
 	const [currentPositionReference, updateCurrentPositionReference] = useState(null)
@@ -102,13 +100,13 @@ const DraggyHex = forwardRef(({
 				width="300px"
 				className={classNames(className, "z-10 cursor-default", {"opacity-50": focusedHexOrder && focusedHexOrder !== order})}
 				style={{
-					transform: !isFirstHex && `translate(${leftTransform}em, ${topTransform}em)`,
+					transform: !isFirstHex && `translate(${spacing.left}em, ${spacing.top}em)`,
 					width: '6.6em',
 					clipPath: 'polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%)',
-					marginTop: isFirstHex && `${marginsForFirstHex.top}em`,
-					marginLeft: isFirstHex && `${marginsForFirstHex.left}em`,
-					marginRight: isFirstHex && `${marginsForFirstHex.right}em`,
-					marginBottom: isFirstHex && `${marginsForFirstHex.bottom}em`
+					marginTop: isFirstHex && `${spacing.top}em`,
+					marginLeft: isFirstHex && `${spacing.left}em`,
+					marginRight: isFirstHex && `${spacing.right}em`,
+					marginBottom: isFirstHex && `${spacing.bottom}em`
 				}}
 				ref={ref}
 				onMouseLeave={() => {

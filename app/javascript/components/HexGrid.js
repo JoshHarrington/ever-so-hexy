@@ -1,8 +1,6 @@
 import React, { Fragment, useEffect, useState } from 'react'
 import classNames from 'classnames'
 
-import { marginsForFirst } from '../utils'
-
 import HexOuter from './HexOuter'
 
 const Trixels = ({hex}) => {
@@ -75,13 +73,10 @@ const HexGrid = ({
 	children
 }) => {
 
-	const [marginsForFirstHex, updateMarginsForFirstHex] = useState({})
-
 	useEffect(() =>  {
 		if ("scrollRestoration" in window.history) {
 			window.history.scrollRestoration = "manual"
 		}
-		updateMarginsForFirstHex(marginsForFirst({hexesInLayers: hexes}))
 	},[]);
 
 
@@ -114,9 +109,12 @@ const HexGrid = ({
 								'transform',
 								{'pointer-events-none': currentlyPanning}
 							)}
-							marginsForFirstHex={h.order === 1 && marginsForFirstHex}
-							leftTransform={h.order !== 1 && h.leftTransform}
-							topTransform={h.order !== 1 && h.topTransform}
+							spacing={{
+								top: h.top,
+								right: h.right,
+								bottom: h.bottom,
+								left: h.left
+							}}
 						>
 							{!h.draft ?
 								<Trixels hex={h} />

@@ -1,10 +1,7 @@
 import { hexWrapperGutter } from "../../constants";
 import {
-	marginsForFirst,
-	splitIntoLayers,
 	roundToNDecimalPlaces,
-	colourNameToTailwindVariable,
-	positionFromOrderNumber
+	colourNameToTailwindVariable
 } from "../../utils";
 import { listOfHexes } from "./test-helpers";
 
@@ -19,151 +16,10 @@ test("check listOfHexes fn", () => {
 	expect(newListOfHexes[4].order).toBe(5)
 })
 
-
-test("check splitting into layers fn, with small number of hexes", () => {
-
-	const currentListOfHexes = listOfHexes(5)
-	const hexesSplitIntoLayers = splitIntoLayers(currentListOfHexes)
-
-	expect(hexesSplitIntoLayers[0].length).toBe(1);
-	expect(hexesSplitIntoLayers[1].length).toBe(2);
-	expect(hexesSplitIntoLayers[2].length).toBe(2);
-	expect(hexesSplitIntoLayers[3]).toBe(undefined);
-
-});
-
-
-test("check splitting into layers fn, with medium number of hexes", () => {
-
-	const currentListOfHexes = listOfHexes(12)
-	const hexesSplitIntoLayers = splitIntoLayers(currentListOfHexes)
-
-	expect(hexesSplitIntoLayers[0].length).toBe(1);
-	expect(hexesSplitIntoLayers[1].length).toBe(2);
-	expect(hexesSplitIntoLayers[2].length).toBe(3);
-	expect(hexesSplitIntoLayers[3].length).toBe(4);
-	expect(hexesSplitIntoLayers[4].length).toBe(2);
-
-	expect(hexesSplitIntoLayers[5]).toBe(undefined);
-
-});
-
-test("check splitting into layers fn, with large number of hexes", () => {
-
-	const currentListOfHexes = listOfHexes(100)
-	const hexesSplitIntoLayers = splitIntoLayers(currentListOfHexes)
-
-	expect(hexesSplitIntoLayers[0].length).toBe(1);
-	expect(hexesSplitIntoLayers[1].length).toBe(2);
-	expect(hexesSplitIntoLayers[2].length).toBe(3);
-	expect(hexesSplitIntoLayers[3].length).toBe(4);
-	expect(hexesSplitIntoLayers[4].length).toBe(5);
-	expect(hexesSplitIntoLayers[5].length).toBe(6);
-	expect(hexesSplitIntoLayers[6].length).toBe(7);
-	expect(hexesSplitIntoLayers[7].length).toBe(8);
-	expect(hexesSplitIntoLayers[8].length).toBe(9);
-	expect(hexesSplitIntoLayers[9].length).toBe(10);
-	expect(hexesSplitIntoLayers[10].length).toBe(10);
-	expect(hexesSplitIntoLayers[11].length).toBe(10);
-	expect(hexesSplitIntoLayers[12].length).toBe(10);
-	expect(hexesSplitIntoLayers[13].length).toBe(10);
-	expect(hexesSplitIntoLayers[14].length).toBe(5);
-
-	expect(hexesSplitIntoLayers[15]).toBe(undefined);
-
-});
-
 test("hexWrapperGutter is equal to 3", () => {
 	expect(hexWrapperGutter).toBe(3)
 })
 
-test("margins for first hex are set correctly - 1 hex", () => {
-
-	const lastOrder = 1
-
-	const currentListOfHexes = listOfHexes(lastOrder)
-	const hexesSplitIntoLayers = splitIntoLayers(currentListOfHexes)
-
-	expect(currentListOfHexes[0].order).toBe(lastOrder)
-
-	const marginsForFirstHex = marginsForFirst({hexesInLayers: hexesSplitIntoLayers})
-
-	expect(marginsForFirstHex.left).toBe(hexWrapperGutter)
-	expect(marginsForFirstHex.top).toBe(hexWrapperGutter)
-
-	expect(marginsForFirstHex.right).toBe(hexWrapperGutter)
-	expect(marginsForFirstHex.bottom).toBe(hexWrapperGutter)
-
-})
-
-test("margins for first hex are set correctly - 3 hexes", () => {
-
-	const lastOrder = 3
-
-	const currentListOfHexes = listOfHexes(lastOrder)
-	const hexesSplitIntoLayers = splitIntoLayers(currentListOfHexes)
-
-	const marginsForFirstHex = marginsForFirst({hexesInLayers: hexesSplitIntoLayers})
-
-	expect(marginsForFirstHex.left).toBe(hexWrapperGutter)
-	expect(marginsForFirstHex.top).toBe(hexWrapperGutter)
-
-	expect(marginsForFirstHex.right).toBe(10)
-	expect(marginsForFirstHex.bottom).toBe(9)
-
-})
-
-test("margins for first hex are set correctly - 9 hexes", () => {
-
-	const lastOrder = 9
-
-	const currentListOfHexes = listOfHexes(lastOrder)
-	const hexesSplitIntoLayers = splitIntoLayers(currentListOfHexes)
-
-	const marginsForFirstHex = marginsForFirst({hexesInLayers: hexesSplitIntoLayers})
-
-	expect(marginsForFirstHex.left).toBe(hexWrapperGutter)
-	expect(marginsForFirstHex.top).toBe(hexWrapperGutter)
-
-	expect(marginsForFirstHex.right).toBe(24)
-	expect(marginsForFirstHex.bottom).toBe(15)
-
-})
-
-test("margins for first hex are set correctly - 8 hexes, missing 6", () => {
-
-	const lastOrder = 8
-
-	const currentListOfHexes = listOfHexes(lastOrder).filter(h => h.order !== 6)
-
-	expect(currentListOfHexes.length).toBe(7)
-	const hexesSplitIntoLayers = splitIntoLayers(currentListOfHexes)
-
-	const marginsForFirstHex = marginsForFirst({hexesInLayers: hexesSplitIntoLayers})
-
-	expect(marginsForFirstHex.left).toBe(hexWrapperGutter)
-	expect(marginsForFirstHex.top).toBe(hexWrapperGutter)
-
-	expect(marginsForFirstHex.right).toBe(24)
-	expect(marginsForFirstHex.bottom).toBe(15)
-
-})
-
-test("positionFromOrderNumber test", () => {
-
-	expect(positionFromOrderNumber(1)).toStrictEqual({"leftTransform": 3, "topTransform": 3})
-
-	expect(positionFromOrderNumber(3)).toStrictEqual({"leftTransform": 6.5, "topTransform": 9})
-
-	expect(positionFromOrderNumber(15)).toStrictEqual({"leftTransform": 17, "topTransform": 27})
-
-	expect(positionFromOrderNumber(37)).toStrictEqual({"leftTransform": 59, "topTransform": 3})
-
-	expect(positionFromOrderNumber(54)).toStrictEqual({"leftTransform": 38, "topTransform": 51})
-
-	expect(positionFromOrderNumber(101)).toStrictEqual({"leftTransform": 83.5, "topTransform": 33})
-
-})
 
 test("check roundToNDecimalPlaces", () => {
 	expect(roundToNDecimalPlaces({number:3.9872198798, places:3})).toEqual(3.987)

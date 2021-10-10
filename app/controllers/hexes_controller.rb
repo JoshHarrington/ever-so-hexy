@@ -3,16 +3,18 @@ class HexesController < ApplicationController
   def home
     all_hexes = Hex.where.not(order: 0).order(:order)
 
-    private_data_hidden_hexes = hide_private_hex_data(hexes: all_hexes)
+    split_into_layers = split_into_layers(hexes: all_hexes)
 
-    @hexes = split_into_layers(hexes: private_data_hidden_hexes)
+    private_data_hidden_hexes = hide_private_hex_data(hexes_in_layers: split_into_layers)
+
+    @hexes = private_data_hidden_hexes
 
     @last_hex_order_position = all_hexes.where(draft: false).length > 0 ? all_hexes.where(draft: false).last.order : 1
 
   end
   def new
 
-    draft_hex = Hex.where(id: session[:current_draft_hex_id]).first_or_create do |hex|
+    draft_hex = Hex.where(id: session[:current_draft_hex_id], draft: true).first_or_create do |hex|
       hex.ip_address = request.remote_ip
     end
 
@@ -20,16 +22,13 @@ class HexesController < ApplicationController
 
     all_hexes = Hex.where.not(order: 0).order(:order)
 
-    private_data_hidden_hexes = hide_private_hex_data(hexes: all_hexes, is_in_editing_mode: true, current_draft_hex_id: draft_hex.id)
+    split_into_layers = split_into_layers(hexes: all_hexes)
 
-    @hexes = split_into_layers(hexes: private_data_hidden_hexes)
+    private_data_hidden_hexes = hide_private_hex_data(hexes_in_layers: split_into_layers, current_draft_hex_id: draft_hex.id)
 
-    hex_transforms = hex_transforms_from_order(order: draft_hex.order)
-    @current_draft_hex = {
-      **draft_hex.as_json.symbolize_keys.except(:created_at, :updated_at, :id),
-			leftTransform: hex_transforms[:left],
-			topTransform: hex_transforms[:top]
-    }
+    @hexes = private_data_hidden_hexes
+
+    @current_draft_hex = private_data_hidden_hexes.flatten.select{|h| h[:order] == draft_hex.order}.first
 
   end
 
