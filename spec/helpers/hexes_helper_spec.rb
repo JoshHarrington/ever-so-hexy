@@ -8,6 +8,22 @@ describe HexesHelper do
 		expect(split_into_layers(hexes: basic_array).length).to eql(11)
 	end
 
+	it "hide_private_hex_data returns an empty array if hexes_in_layer is nil" do
+		expect(hide_private_hex_data()).to eql([])
+		expect(hide_private_hex_data(hexes_in_layers: nil)).to eql([])
+	end
+
+	it "when no hexes - spliting and data hiding still works" do
+		all_hexes = Hex.where.not(order: 0).order(:order)
+
+    split_into_layers = split_into_layers(hexes: all_hexes)
+		expect(split_into_layers).to eql(nil)
+
+    private_data_hidden_hexes = hide_private_hex_data(hexes_in_layers: split_into_layers)
+		expect(private_data_hidden_hexes).to eql([])
+
+	end
+
 	context "setup 3 hexes" do
 		let!(:hexes) {create_list(:hex, 3)}
 		let!(:hexes_in_layers) {split_into_layers(hexes: hexes)}
