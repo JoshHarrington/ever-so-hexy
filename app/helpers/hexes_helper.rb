@@ -4,7 +4,10 @@ module HexesHelper
 		return 3
 	end
 
-	def split_into_layers(hexes:)
+	def split_into_layers(hexes:[])
+		if hexes == []
+			return nil
+		end
 
 		hexes_copy = hexes.clone
 		layer_size = 1
@@ -97,11 +100,13 @@ module HexesHelper
 	end
 
 	def hide_private_hex_data(
-		hexes_in_layers:,
+		hexes_in_layers: nil,
 		current_draft_hex_id: nil
 	)
 
-		if hexes_in_layers.first.class != Array
+		if hexes_in_layers == nil
+			return []
+		elsif hexes_in_layers.first.class != Array
 			raise Exception.new "hexes_in_layers need to split into layers"
 		end
 
