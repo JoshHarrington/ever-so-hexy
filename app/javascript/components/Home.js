@@ -113,10 +113,12 @@ const Home = ({allHexes}) => {
     return () => {
       window.removeEventListener('resize', handleResize)
 
-      hexWrapperRef.current.parentElement.removeEventListener('wheel', panzoom.zoomWithWheel)
+      if (hexWrapperRef.current) {
+        hexWrapperRef.current.parentElement.removeEventListener('wheel', panzoom.zoomWithWheel)
 
-      hexWrapperRef.current.removeEventListener('panzoompan', setCurrentlyPanningTrue)
-      hexWrapperRef.current.removeEventListener('panzoomend', setCurrentlyPanningFalse)
+        hexWrapperRef.current.removeEventListener('panzoompan', setCurrentlyPanningTrue)
+        hexWrapperRef.current.removeEventListener('panzoomend', setCurrentlyPanningFalse)
+      }
     }
   }, [focusedHexOrder])
 
