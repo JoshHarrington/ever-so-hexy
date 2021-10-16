@@ -9,21 +9,37 @@ module HexesHelper
 			return nil
 		end
 
-		hexes_copy = hexes.clone
+		hexes_copy = hexes.clone.sort_by{|h|h[:order]}
 		layer_size = 1
 		items_in_layers = []
 
 		layer_size_limit = 10
 
+		last_order_in_layer = 0
+
 		while hexes_copy.length > 0
 
-			last_order_in_layer = layer_size < layer_size_limit ? (layer_size / 2.to_f) * (layer_size + 1) : last_order_in_layer + layer_size_limit
+			last_order_in_layer = layer_size + last_order_in_layer
+
+			first_order_in_layer = last_order_in_layer - layer_size + 1
 
 			if layer_size < layer_size_limit
 				layer_size += 1
 			end
 
 			items_to_move_to_layers = hexes_copy.select{|h| h[:order] <= last_order_in_layer}
+
+			number_of_expected_hexes_in_layer = last_order_in_layer - first_order_in_layer + 1
+			array_of_expected_orders_in_layer = Array(first_order_in_layer..last_order_in_layer)
+
+			if array_of_expected_orders_in_layer != items_to_move_to_layers.map{|h| h[:order]}
+				array_of_expected_orders_in_layer.each_with_index do |o, i|
+					if items_to_move_to_layers[i] && items_to_move_to_layers[i][:order] != o
+						items_to_move_to_layers.insert(i, {})
+					end
+				end
+			end
+
 			hexes_copy = hexes_copy.reject{|h| h[:order] <= last_order_in_layer}
 
 			items_in_layers.push(items_to_move_to_layers)
@@ -51,7 +67,7 @@ module HexesHelper
 		{
 			top: hex_wrapper_gutter,
 			right: (number_of_layers - 1) * 7 + hex_wrapper_gutter,
-			bottom: (size_of_largest_rendered_layer - 1) * 6 + hex_wrapper_gutter * 3,
+			bottom: (size_of_largest_rendered_layer - 1) * 6 + hex_wrapper_gutter,
 			left: hex_wrapper_gutter
 		}
 	end
@@ -66,16 +82,7 @@ module HexesHelper
 	end
 
 	def size_of_largest_rendered_layer(hexes_in_layers:)
-		size_of_largest_rendered_layer = 1
-
-		if hexes_in_layers.length > 1
-			largest_layer_when_rendered = hexes_in_layers.sort_by{|l|
-				ordered_layer = l.sort_by{|h|h[:order]}
-				ordered_layer.last[:order] - ordered_layer.first[:order]
-			}.last
-
-			size_of_largest_rendered_layer = largest_layer_when_rendered.last[:order] - largest_layer_when_rendered.first[:order]
-		end
+		size_of_largest_rendered_layer = hexes_in_layers.length > 1 ? hexes_in_layers.sort_by{|l| l.length}.last.length : 1
 
 		return size_of_largest_rendered_layer
 	end
@@ -112,7 +119,9 @@ module HexesHelper
 
 		hexes_in_layers.map.with_index{|layer, l_i|
 
-			layer.sort_by{|h| h[:order]}.map.with_index{|hex, h_i|
+			layer.map.with_index{|hex, h_i|
+
+				next {} unless hex[:order]
 
 				hex_spacing = hex_spacing(
 					hexes_in_layers: hexes_in_layers,
@@ -122,15 +131,15 @@ module HexesHelper
 				)
 
 				hex_data = {
-					draft: hex.draft,
-					order: hex.order,
+					draft: hex[:draft],
+					order: hex[:order],
 					top: hex_spacing[:top],
 					right: hex_spacing[:right],
 					bottom: hex_spacing[:bottom],
 					left: hex_spacing[:left]
 				}
 
-				if hex.draft != true || (current_draft_hex_id != nil && hex[:id] == current_draft_hex_id)
+				if hex[:draft] != true || (current_draft_hex_id != nil && hex[:id] == current_draft_hex_id)
 
 					hex_data.merge!({
 						created_at: hex.created_at,

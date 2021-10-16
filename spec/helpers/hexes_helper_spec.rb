@@ -8,6 +8,18 @@ describe HexesHelper do
 		expect(split_into_layers(hexes: basic_array).length).to eql(11)
 	end
 
+	it "test split_into_layers with array missing object" do
+		basic_array = Array.new(6){|i| {order: i + 1}}
+
+		basic_array.delete({order: 2})
+		basic_array.delete({order: 5})
+		expect(basic_array.length).to eql(4)
+
+		hexes_in_layers = split_into_layers(hexes: basic_array)
+		expect(hexes_in_layers.flatten.length).to eql(6)
+		expect(hexes_in_layers.second.first).to eql({})
+	end
+
 	it "hide_private_hex_data returns an empty array if hexes_in_layer is nil" do
 		expect(hide_private_hex_data()).to eql([])
 		expect(hide_private_hex_data(hexes_in_layers: nil)).to eql([])
@@ -33,6 +45,26 @@ describe HexesHelper do
 			first_hex = hexes_with_data_hidden.first.first
 			expect(first_hex[:right]).to eql(10)
 			expect(first_hex[:bottom]).to eql(9)
+		end
+	end
+
+	context "setup 2 hexes" do
+		let!(:hexes) {
+			create_list(:hex, 2) do |hex, i|
+				if i == 0
+					hex.order = 1
+				elsif i == 1
+					hex.order = 3
+				end
+			end
+		}
+		let!(:hexes_in_layers) {split_into_layers(hexes: hexes)}
+		let!(:hexes_with_data_hidden) {hide_private_hex_data(hexes_in_layers: hexes_in_layers)}
+
+		it "correctly add spacing to hex #3" do
+			hex_3 = hexes_with_data_hidden.second.last
+			expect(hex_3[:top]).to eql(9)
+			expect(hex_3[:left]).to eql(6.5)
 		end
 	end
 
