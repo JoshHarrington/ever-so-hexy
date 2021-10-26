@@ -50,6 +50,8 @@ const New = ({allHexes, currentDraftHex, csrfToken}) => {
 	const [focusedHexOrder, setFocusedHexOrder] = useState(setupFocusedHexOrder)
 	const focusedHex = useRef(null)
 
+	const [showLoadingState, setLoadingState] = useState(true)
+
 	useEffect(() => {
 
 		if (document && window && (!!focusedHex.current && !!focusedHexOrder)) {
@@ -68,7 +70,7 @@ const New = ({allHexes, currentDraftHex, csrfToken}) => {
 				() => {
 					if (focusedHex.current) {
 						const desiredZoomLevel = window.innerWidth < mobileBreakpoint ? mobileHexZoomLevel : hexZoomLevel
-						panScrollAndZoom({panzoom, hex: focusedHex.current, setPageReady, desiredZoomLevel})
+						panScrollAndZoom({panzoom, hex: focusedHex.current, setPageReady, desiredZoomLevel, setLoadingState})
 					}
 				},
 				300,
@@ -89,9 +91,8 @@ const New = ({allHexes, currentDraftHex, csrfToken}) => {
 
 	return (
 		<>
-			<HexWrapper
-				ref={hexWrapperRef}
-			>
+			<HexWrapper ref={hexWrapperRef}>
+				{showLoadingState && <div className="fixed z-20 w-full h-full bg-gray-100"></div>}
 				<HexGrid
 					hexes={hexes}
 					currentDraftHexOrder={currentDraftHex.order}

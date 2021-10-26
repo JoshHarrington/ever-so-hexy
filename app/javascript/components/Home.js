@@ -73,6 +73,8 @@ const Home = ({allHexes}) => {
     true
   )
 
+  const [showLoadingState, setLoadingState] = useState(false)
+
   const setCurrentlyPanningFalse = () => updateCurrentlyPanning(false)
 
   useEffect(() => {
@@ -97,7 +99,7 @@ const Home = ({allHexes}) => {
       () => {
         if (focusedHex.current) {
           const desiredZoomLevel = window.innerWidth < mobileBreakpoint ? mobileHexZoomLevel : hexZoomLevel
-          panScrollAndZoom({panzoom, hex: focusedHex.current, desiredZoomLevel, updateCurrentlyPanning})
+          panScrollAndZoom({panzoom, hex: focusedHex.current, desiredZoomLevel, updateCurrentlyPanning, setLoadingState})
         } else {
           resetZoomAndPan({panzoom, setFocusedHexOrder, window, updateCurrentlyPanning})
         }
@@ -163,6 +165,7 @@ const Home = ({allHexes}) => {
 	return (
     <>
       <HexWrapper ref={hexWrapperRef}>
+        {showLoadingState && <div className="fixed z-20 w-full h-full bg-gray-100"></div>}
         <HexGrid
           hexes={hexes}
           focusedHex={focusedHex}
