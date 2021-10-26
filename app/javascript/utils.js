@@ -92,9 +92,10 @@ const roundToNDecimalPlaces = ({number, places = 0}) => {
 }
 
 
-const panScrollAndZoom = ({panzoom, hex, setPageReady, desiredZoomLevel, updateCurrentlyPanning}) => {
+const panScrollAndZoom = ({panzoom, hex, setPageReady, desiredZoomLevel, updateCurrentlyPanning, setLoadingState}) => {
 
 	panzoom.zoom(desiredZoomLevel)
+	setLoadingState(true)
 
 	if (hex) {
 		const bodyProps = hex.closest('body').getBoundingClientRect()
@@ -114,6 +115,9 @@ const panScrollAndZoom = ({panzoom, hex, setPageReady, desiredZoomLevel, updateC
 			}
 
 			panzoom.pan(scrollProps.x, scrollProps.y, { force: true })
+
+			setLoadingState(false)
+
 			if (updateCurrentlyPanning) {
 				updateCurrentlyPanning(false)
 			}
@@ -122,13 +126,14 @@ const panScrollAndZoom = ({panzoom, hex, setPageReady, desiredZoomLevel, updateC
 				setPageReady(true)
 			}
 
-		}, 50)
+		})
 	} else {
 		setTimeout(() => {
 			panzoom.pan(0,0)
 			if (updateCurrentlyPanning) {
 				updateCurrentlyPanning(false)
 			}
+			setLoadingState(false)
 		})
 	}
 }
