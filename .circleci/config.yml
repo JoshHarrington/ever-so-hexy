@@ -26,12 +26,23 @@ jobs:
     working_directory: ~/circleci-demo-workflows
     steps:
       - checkout
+      - node/install:
+          install-yarn: true
+          node-version: 14.18.0
+      - restore_cache:
+          key: hexy-cache-yarn-{{ checksum "yarn.lock" }}
+
+      - run:
+          name: Yarn Install
+          command: yarn install
+
+      - save_cache:
+          key: hexy-cache-yarn-{{ checksum "yarn.lock" }}
+          paths:
+            - ~/.yarn-cache
 
       - restore_cache:
           key: hexy-cache-bundle-{{ checksum "Gemfile.lock" }}
-
-      - restore_cache:
-          key: hexy-cache-yarn-{{ checksum "yarn.lock" }}
 
       - browser-tools/install-chrome
       - browser-tools/install-chromedriver
@@ -54,21 +65,10 @@ jobs:
             bundle config set --local path 'vendor/bundle'
             bundle install
 
-      - node/install:
-          install-yarn: true
-      - run:
-          name: Yarn Install
-          command: yarn install
-
       - save_cache:
           key: hexy-cache-bundle-{{ checksum "Gemfile.lock" }}
           paths:
             - vendor/bundle
-
-      - save_cache:
-          key: hexy-cache-yarn-{{ checksum "yarn.lock" }}
-          paths:
-            - ~/.yarn-cache
 
       # Database setup
       - run:
