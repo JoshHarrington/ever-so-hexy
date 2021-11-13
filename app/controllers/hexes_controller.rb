@@ -8,6 +8,7 @@ class HexesController < ApplicationController
     private_data_hidden_hexes = hide_private_hex_data(hexes_in_layers: split_into_layers)
 
     @hexes = private_data_hidden_hexes
+    @hex_wrapper_size = hex_wrapper_size(hexes_in_layers: split_into_layers)
 
     @last_hex_order_position = all_hexes.where(draft: false).length > 0 ? all_hexes.where(draft: false).last.order : 1
 
@@ -27,6 +28,7 @@ class HexesController < ApplicationController
     private_data_hidden_hexes = hide_private_hex_data(hexes_in_layers: split_into_layers, current_draft_hex_id: draft_hex.id)
 
     @hexes = private_data_hidden_hexes
+    @hex_wrapper_size = hex_wrapper_size(hexes_in_layers: split_into_layers)
 
     @current_draft_hex = private_data_hidden_hexes.flatten.select{|h| h[:order] == draft_hex.order}.first
 

@@ -22,7 +22,7 @@ const setupPanzoom = ({hexWrapper}) => {
 
 	return panzoom
 }
-const New = ({allHexes, currentDraftHex, csrfToken}) => {
+const New = ({allHexes, currentDraftHex, csrfToken, hexWrapperSize}) => {
 
 	const [currentColour, updateCurrentColor] = useState(colours[0])
 	const hexes = [...allHexes]
@@ -87,11 +87,27 @@ const New = ({allHexes, currentDraftHex, csrfToken}) => {
 		}
 	}, [focusedHexOrder, setPageReady])
 
+  useEffect(() => {
+		let blockKeydownFn = () => {}
+		window.addEventListener('keydown', blockKeydownFn = (e) => {
+			if ((e.ctrlKey || e.metaKey) &&
+					(e.key === '-' || e.key === '=' || e.key === '0')) {
+				e.preventDefault()
+			}
+		})
+
+		return () => window.removeEventListener('keydown', blockKeydownFn)
+	}, [])
+
 	const [draftModalOpen, setDraftModalOpen] = useState(false)
 
 	return (
 		<>
-			<HexWrapper ref={hexWrapperRef}>
+			<HexWrapper
+				ref={hexWrapperRef}
+        hexWrapperSize={hexWrapperSize}
+        windowSize={window && {width: window.innerWidth, height: window.innerHeight}}
+			>
 				{showLoadingState && <div className="fixed z-20 w-full h-full bg-gray-100"></div>}
 				<HexGrid
 					hexes={hexes}
