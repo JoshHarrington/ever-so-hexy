@@ -138,12 +138,21 @@ const panScrollAndZoom = ({panzoom, hex, setPageReady, desiredZoomLevel, updateC
 	}
 }
 
-const resetZoomAndPan = ({panzoom, setFocusedHexOrder, window, updateCurrentlyPanning}) => {
+const resetZoomAndPan = ({panzoom, setFocusedHexOrder, window, updateCurrentlyPanning, hexWrapperRef}) => {
 
   const desiredZoomLevel = window.innerWidth < mobileBreakpoint ? minZoomLevel : defaultZoomLevel
   panzoom.zoom(desiredZoomLevel)
   setTimeout(() => {
-    panzoom.pan(0,0)
+		const currentWrapperSize = hexWrapperRef.current.getBoundingClientRect()
+		const currentZoom = panzoom.getScale()
+
+		const panPosition = {
+			x: (window.innerWidth - currentWrapperSize.width) / currentZoom,
+			y: (window.innerHeight - currentWrapperSize.height) / currentZoom
+
+		}
+    panzoom.pan(panPosition.x, panPosition.y)
+
 		if (updateCurrentlyPanning) {
 			updateCurrentlyPanning(false)
 		}

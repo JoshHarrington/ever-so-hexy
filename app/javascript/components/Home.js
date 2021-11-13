@@ -101,7 +101,7 @@ const Home = ({allHexes}) => {
           const desiredZoomLevel = window.innerWidth < mobileBreakpoint ? mobileHexZoomLevel : hexZoomLevel
           panScrollAndZoom({panzoom, hex: focusedHex.current, desiredZoomLevel, updateCurrentlyPanning, setLoadingState})
         } else {
-          resetZoomAndPan({panzoom, setFocusedHexOrder, window, updateCurrentlyPanning})
+          resetZoomAndPan({panzoom, setFocusedHexOrder, window, updateCurrentlyPanning, hexWrapperRef})
         }
       },
       400,
@@ -138,11 +138,11 @@ const Home = ({allHexes}) => {
 				}
 				if (e.key === '0') {
 					// Ctrl / Cmd + '0' (reset zoom)
-					resetZoomAndPan({panzoom, setFocusedHexOrder, window, updateCurrentlyPanning})
+					resetZoomAndPan({panzoom, setFocusedHexOrder, window, updateCurrentlyPanning, hexWrapperRef})
 				}
 			} else if (e.key === "Escape") {
 				// Escape (reset zoom)
-				resetZoomAndPan({panzoom, setFocusedHexOrder, window, updateCurrentlyPanning})
+				resetZoomAndPan({panzoom, setFocusedHexOrder, window, updateCurrentlyPanning, hexWrapperRef})
 			}
 		},
 		100,
@@ -180,7 +180,7 @@ const Home = ({allHexes}) => {
             <Tooltip content="Reset Zoom" className="!fixed bottom-0 left-0 ml-8 mb-8 !hidden !sm:inline-block">
               <Badge
                 className="mr-auto"
-                onClick={() => resetZoomAndPan({panzoom, setFocusedHexOrder, window, updateCurrentlyPanning})}
+                onClick={() => resetZoomAndPan({panzoom, setFocusedHexOrder, window, updateCurrentlyPanning, hexWrapperRef})}
                 >
                 <ZoomOut className="w-6 w-6" />
               </Badge>
@@ -240,7 +240,7 @@ const Home = ({allHexes}) => {
                 <Tooltip className="pointer-events-auto" content="Zoom out">
                   <Badge
                     className="mr-auto"
-                    onClick={() => resetZoomAndPan({panzoom, setFocusedHexOrder, window, updateCurrentlyPanning})}
+                    onClick={() => resetZoomAndPan({panzoom, setFocusedHexOrder, window, updateCurrentlyPanning, hexWrapperRef})}
                   >
                     <ZoomOut className="w-6 w-6" />
                   </Badge>
