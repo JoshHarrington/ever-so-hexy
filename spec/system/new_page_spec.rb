@@ -6,10 +6,11 @@ RSpec.describe 'New page view', type: :system do
   it 'can load the new page and fill one trixel' do
     visit '/new'
 
-		sleep 1
+		wait_for { page.has_css?('[data-testid="hex-wrapper"]') }
+		wait_for { page.has_css?('[data-testid="palette-picker"]') }
 
 		expect(page.find('[data-testid="hex-wrapper"]').style('transform')["transform"]).to start_with('matrix(4, 0, 0, 4,')
-		expect(page.find('[data-testid="hex-wrapper"]').style('transform')["transform"]).not_to end_with('0, 0)')
+		# expect(page.find('[data-testid="hex-wrapper"]').style('transform')["transform"]).not_to end_with('0, 0)')
 
 		expect(page).to have_selector('svg#id-4', visible: true)
 
@@ -48,7 +49,8 @@ RSpec.describe 'New page view', type: :system do
 		expect(page.first('svg#id-4 path[data-position="f4"]')[:fill]).to eql("#10B981")
 
 		refresh
-		sleep 1
+		wait_for { page.has_css?('[data-testid="hex-wrapper"]') }
+		wait_for { page.has_css?('[data-testid="palette-picker"]') }
 
 		expect(page.first('svg#id-4 path')[:fill]).to eql("#FB7185")
 
@@ -61,8 +63,15 @@ RSpec.describe 'New page view', type: :system do
 		expect(page).to have_selector('button[data-testid="add-hex-button"]', visible:true)
 		expect(page).not_to have_content("Use at least three colours to enable saving")
 
+		wide_screen_svg_left = page.evaluate_script('document.querySelector("svg#id-4").getBoundingClientRect()')["left"].to_f.round()
+
 		Capybara.page.current_window.resize_to(800, 800)
-		sleep 0.5
+
+		wait_for {
+			slim_screen_svg_left = page.evaluate_script('document.querySelector("svg#id-4").getBoundingClientRect()')["left"].to_f.round()
+			slim_screen_svg_left < wide_screen_svg_left
+		}
+
 		svg_props = page.evaluate_script('document.querySelector("svg#id-4").getBoundingClientRect()')
 		window_props = page.evaluate_script('document.body.getBoundingClientRect()')
 
@@ -80,20 +89,31 @@ RSpec.describe 'New page view', type: :system do
   end
 end
 
-RSpec.describe 'Keypresses for zooming and reseting', type: :system do
+RSpec.describe 'Keypresses for zooming and resetting are blocked', type: :system do
 	it 'on the new page' do
 		visit '/new'
 
-		sleep 0.5
+		wait_for { page.has_css?('[data-testid="hex-wrapper"]') }
+		wait_for { page.has_css?('[data-testid="palette-picker"]') }
 
-		last_hex_wrapper_scale = page.find('[data-testid="hex-wrapper"]').style('transform')["transform"]
+		initial_hex_wrapper_transform = page.find('[data-testid="hex-wrapper"]').style('transform')["transform"]
 
 		page.execute_script('window.dispatchEvent(new KeyboardEvent("keydown",{key:"=", ctrlKey: true}));')
-		expect(page.find('[data-testid="hex-wrapper"]').style('transform')["transform"]).to eql(last_hex_wrapper_scale)
+		page.execute_script('window.dispatchEvent(new KeyboardEvent("keydown",{key:"=", ctrlKey: true}));')
+		sleep 3
+		expect(page.find('[data-testid="hex-wrapper"]').style('transform')["transform"]).to eql(initial_hex_wrapper_transform)
 
-		sleep 0.2
 		page.execute_script('window.dispatchEvent(new KeyboardEvent("keydown",{key:"-", metaKey: true}));')
-		expect(page.find('[data-testid="hex-wrapper"]').style('transform')["transform"]).to eql(last_hex_wrapper_scale)
+		page.execute_script('window.dispatchEvent(new KeyboardEvent("keydown",{key:"-", metaKey: true}));')
+		page.execute_script('window.dispatchEvent(new KeyboardEvent("keydown",{key:"-", metaKey: true}));')
+		sleep 3
+		expect(page.find('[data-testid="hex-wrapper"]').style('transform')["transform"]).to eql(initial_hex_wrapper_transform)
+
+		page.send_keys :escape
+		page.send_keys :escape
+		page.send_keys :escape
+		sleep 3
+		expect(page.find('[data-testid="hex-wrapper"]').style('transform')["transform"]).to eql(initial_hex_wrapper_transform)
 
 	end
 end

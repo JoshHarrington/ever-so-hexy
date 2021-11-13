@@ -4,6 +4,14 @@ module HexesHelper
 		return 3
 	end
 
+	def hex_width
+		return 6.6
+	end
+
+	def hex_height
+		return 7.7
+	end
+
 	def split_into_layers(hexes:[])
 		if hexes == []
 			return nil
@@ -66,8 +74,6 @@ module HexesHelper
 	def hex_spacing_for_first_hex(number_of_layers:,size_of_largest_rendered_layer:)
 		{
 			top: hex_wrapper_gutter,
-			right: (number_of_layers - 1) * 7 + hex_wrapper_gutter,
-			bottom: (size_of_largest_rendered_layer - 1) * 6 + hex_wrapper_gutter,
 			left: hex_wrapper_gutter
 		}
 	end
@@ -204,6 +210,23 @@ module HexesHelper
 				hex_data
 
 			}
+		}
+
+	end
+
+	def hex_wrapper_size(hexes_in_layers: nil)
+
+		hex_wrapper_width = hex_wrapper_gutter * 2 + hex_width
+		hex_wrapper_height = hex_wrapper_gutter * 2 + hex_height
+
+		if hexes_in_layers != nil
+			hex_wrapper_width = (hexes_in_layers.length - 1) * 7 + hex_wrapper_gutter * 2 + hex_width
+			hex_wrapper_height = (size_of_largest_rendered_layer(hexes_in_layers: hexes_in_layers) - 1) * 6 + hex_wrapper_gutter * 2 + hex_height
+		end
+
+		return {
+			width: hex_wrapper_width,
+			height: hex_wrapper_height
 		}
 
 	end
