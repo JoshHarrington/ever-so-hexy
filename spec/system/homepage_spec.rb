@@ -6,6 +6,8 @@ RSpec.describe 'Home page Hex zooming', type: :system do
   it 'can load the homepage and zoom to a hex' do
     visit '/'
 
+		wait_for { page.has_css?('[data-testid="hex-wrapper"]') }
+
 		expect(page.find('[data-testid="hex-wrapper"]').style('transform')["transform"]).to start_with('matrix(1.4, 0, 0, 1.4,')
 		expect(page.find('[data-testid="hex-wrapper"]').style('transform')["transform"]).to end_with('0, 0)')
 
@@ -14,10 +16,11 @@ RSpec.describe 'Home page Hex zooming', type: :system do
 
 		page.first('svg#id-2').click
 
+		wait_for { page.current_url.include?('/#') }
+
 		expect(page.current_url).to include('/#2')
 		expect(page.current_url).not_to include('/#1')
 
-		sleep 0.5
 		svg_props = page.evaluate_script('document.querySelector("svg#id-2").getBoundingClientRect()')
 		window_props = page.evaluate_script('document.body.getBoundingClientRect()')
 
@@ -36,6 +39,8 @@ RSpec.describe 'Home page Hex zooming', type: :system do
 		expect(page).to have_selector('[aria-label="Zoom out"]', visible: true)
 
 		page.find('[aria-label="Zoom out"] button').click
+
+		wait_for { page.current_url.exclude?('/#') }
 
 		expect(page).to have_selector('svg#id-1', visible: true)
 
@@ -89,40 +94,45 @@ RSpec.describe 'Keypress on Homepage', type: :system do
 
 		default_scale = 1.4
 
-		sleep 0.5
+		wait_for { page.has_css?('[data-testid="hex-wrapper"]') }
+
 		page.execute_script('window.dispatchEvent(new KeyboardEvent("keydown",{key:"=", ctrlKey: true}));')
+		wait_for { page.find('[data-testid="hex-wrapper"]').style('transform')["transform"].exclude?(default_scale.to_s) }
 		expect(page.find('[data-testid="hex-wrapper"]').style('transform')["transform"]).not_to start_with("matrix(#{default_scale}, 0, 0, #{default_scale},")
 
-		sleep 0.2
 		page.send_keys :escape
+		wait_for { page.find('[data-testid="hex-wrapper"]').style('transform')["transform"].include?(default_scale.to_s) }
 		expect(page.find('[data-testid="hex-wrapper"]').style('transform')["transform"]).to start_with("matrix(#{default_scale}, 0, 0, #{default_scale},")
 
 		sleep 0.2
 		page.execute_script('window.dispatchEvent(new KeyboardEvent("keydown",{key:"=", ctrlKey: true}));')
+
+		wait_for { page.find('[data-testid="hex-wrapper"]').style('transform')["transform"].exclude?(default_scale.to_s) }
 		last_hex_wrapper_scale = page.find('[data-testid="hex-wrapper"]').style('transform')["transform"]
 		expect(last_hex_wrapper_scale).not_to start_with("matrix(#{default_scale}, 0, 0, #{default_scale},")
 
-		sleep 0.2
 		page.execute_script('window.dispatchEvent(new KeyboardEvent("keydown",{key:"-", ctrlKey: true}));')
+		wait_for { page.find('[data-testid="hex-wrapper"]').style('transform')["transform"] != last_hex_wrapper_scale }
 		expect(page.find('[data-testid="hex-wrapper"]').style('transform')["transform"]).not_to eql(last_hex_wrapper_scale)
 
 		next_hex_wrapper_scale = page.find('[data-testid="hex-wrapper"]').style('transform')["transform"]
-		sleep 0.2
 		page.execute_script('window.dispatchEvent(new KeyboardEvent("keydown",{key:"-", metaKey: true}));')
+		wait_for { page.find('[data-testid="hex-wrapper"]').style('transform')["transform"] != next_hex_wrapper_scale }
 		expect(page.find('[data-testid="hex-wrapper"]').style('transform')["transform"]).not_to eql(next_hex_wrapper_scale)
 
 		sleep 0.2
 		page.execute_script('window.dispatchEvent(new KeyboardEvent("keydown",{key:"0", metaKey: true}));')
+		wait_for { page.find('[data-testid="hex-wrapper"]').style('transform')["transform"].include?(default_scale.to_s + ', 0, 0, ' + default_scale.to_s)}
 		expect(page.find('[data-testid="hex-wrapper"]').style('transform')["transform"]).to start_with("matrix(#{default_scale}, 0, 0, #{default_scale},")
 
-
 		page.first('svg').click
-		sleep 0.5
+		wait_for { page.find('[data-testid="hex-wrapper"]').style('transform')["transform"].exclude?(default_scale.to_s)}
 		expect(page.find('[data-testid="hex-wrapper"]').style('transform')["transform"]).not_to start_with("matrix(#{default_scale}, 0, 0, #{default_scale},")
 		expect(page.current_url).to include('/#1')
 
 		sleep 0.2
 		page.send_keys :escape
+		wait_for { page.find('[data-testid="hex-wrapper"]').style('transform')["transform"].include?(default_scale.to_s + ', 0, 0, ' + default_scale.to_s)}
 		expect(page.find('[data-testid="hex-wrapper"]').style('transform')["transform"]).to start_with("matrix(#{default_scale}, 0, 0, #{default_scale},")
 		expect(page.current_url).not_to include('/#1')
 
@@ -145,8 +155,7 @@ RSpec.describe 'Home page Hex zooming', type: :system do
 
 		page.evaluate_script("document.querySelector('[data-testid=hex-wrapper]').style.transform = 'scale(1.4) translate(-#{page_container_width/2}px, 0px)'")
 
-		sleep 0.5
-		expect(page).to have_css('svg#id-56')
+		wait_for { page.has_css?('svg#id-56') }
 
   end
 end

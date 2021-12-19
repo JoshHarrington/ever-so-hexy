@@ -32,6 +32,20 @@ def keep_browser_open_locally
   end
 end
 
+def wait_for timeout = 10, &block
+  Timeout.timeout(timeout) do
+    loop do
+      condition = yield
+      if (condition)
+        break true
+      end
+    end
+  end
+
+  rescue Timeout::Error
+    raise "Condition not true in #{timeout} seconds"
+end
+
 # Requires supporting ruby files with custom matchers and macros, etc, in
 # spec/support/ and its subdirectories. Files matching `spec/**/*_spec.rb` are
 # run as spec files by default. This means that files in spec/support that end
