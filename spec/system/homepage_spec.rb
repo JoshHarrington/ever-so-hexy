@@ -74,6 +74,7 @@ RSpec.describe 'Mobile view hex zooming', type: :system do
 		expect(page.find('[data-testid="hex-wrapper"]').style('transform')["transform"]).to start_with('matrix(3, 0, 0, 3,')
 		expect(page.find('[data-testid="hex-wrapper"]').style('transform')["transform"]).not_to end_with('0, 0)')
 
+		wait_for { page.has_css?('svg#id-2') }
 		expect(page).to have_selector('svg#id-2', visible: true)
 
 		expect(page).to have_selector('svg#id-6', visible: false)
