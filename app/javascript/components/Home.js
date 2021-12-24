@@ -13,7 +13,7 @@ import { Badge, TextBadge } from './Badge'
 import { minZoomLevel, defaultZoomLevel, maxZoomLevel, mobileBreakpoint, mobileHexZoomLevel, hexZoomLevel } from '../constants'
 import Tooltip from './Tooltip'
 
-const Home = ({allHexes}) => {
+const Home = ({allHexes, hexWrapperSize}) => {
 
   useEffect(() => {
 		if (document && document.body) {
@@ -164,7 +164,11 @@ const Home = ({allHexes}) => {
 
 	return (
     <>
-      <HexWrapper ref={hexWrapperRef}>
+      <HexWrapper
+        ref={hexWrapperRef}
+        hexWrapperSize={hexWrapperSize}
+        windowSize={window && {width: window.innerWidth, height: window.innerHeight}}
+      >
         {showLoadingState && <div className="fixed z-20 w-full h-full bg-gray-100"></div>}
         <HexGrid
           hexes={hexes}

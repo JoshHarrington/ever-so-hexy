@@ -34,9 +34,7 @@ const HexOuter = forwardRef(({
         clipPath: 'polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%)',
         height: '7.7em',
         marginTop: isFirstHex && `${spacing.top}em`,
-        marginLeft: isFirstHex && `${spacing.left}em`,
-        marginRight: isFirstHex && `${spacing.right}em`,
-        marginBottom: isFirstHex && `${spacing.bottom}em`
+        marginLeft: isFirstHex && `${spacing.left}em`
       }}
       onClick={onClick}
       ref={ref}

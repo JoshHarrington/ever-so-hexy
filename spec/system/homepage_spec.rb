@@ -9,7 +9,6 @@ RSpec.describe 'Home page Hex zooming', type: :system do
 		wait_for { page.has_css?('[data-testid="hex-wrapper"]') }
 
 		expect(page.find('[data-testid="hex-wrapper"]').style('transform')["transform"]).to start_with('matrix(1.4, 0, 0, 1.4,')
-		expect(page.find('[data-testid="hex-wrapper"]').style('transform')["transform"]).to end_with('0, 0)')
 
     expect(page).to have_css('svg#id-1')
 		expect(page).to have_css('svg#id-2')
@@ -45,7 +44,6 @@ RSpec.describe 'Home page Hex zooming', type: :system do
 		expect(page).to have_selector('svg#id-1', visible: true)
 
 		expect(page.find('[data-testid="hex-wrapper"]').style('transform')["transform"]).to start_with('matrix(1.4, 0, 0, 1.4,')
-		expect(page.find('[data-testid="hex-wrapper"]').style('transform')["transform"]).to end_with('0, 0)')
 
   end
 end
@@ -147,9 +145,9 @@ RSpec.describe 'Home page Hex zooming', type: :system do
     visit '/'
 
 		expect(page.find('[data-testid="hex-wrapper"]').style('transform')["transform"]).to start_with('matrix(1.4, 0, 0, 1.4,')
-		expect(page.find('[data-testid="hex-wrapper"]').style('transform')["transform"]).to end_with('0, 0)')
 
-    expect(page).to have_css('svg#id-1')
+		wait_for { page.has_css?('svg#id-55') }
+    expect(page).not_to have_css('svg#id-1')
 
 		page_container = page.evaluate_script('document.querySelector("[data-react-class=Home]").getBoundingClientRect()')
 		page_container_width = page_container["width"]

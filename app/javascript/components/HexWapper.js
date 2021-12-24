@@ -1,7 +1,11 @@
 import classNames from 'classnames'
 import React, { forwardRef } from 'react'
+import { defaultZoomLevel, mobileBreakpoint } from '../constants'
 
-const HexWrapper = forwardRef(({children}, ref) => {
+const HexWrapper = forwardRef(({hexWrapperSize, windowSize, children}, ref) => {
+
+	const wrapperMinWidth = windowSize.width < mobileBreakpoint ? windowSize.width : windowSize.width / defaultZoomLevel
+	const wrapperMinHeight = windowSize.width < mobileBreakpoint ? windowSize.height : windowSize.height / defaultZoomLevel
 
 	return (
 		<div className="relative w-full h-screen">
@@ -9,10 +13,17 @@ const HexWrapper = forwardRef(({children}, ref) => {
 				ref={ref}
 				data-testid="hex-wrapper"
 				className={classNames(
-					"min-h-screen min-w-full",
+					"w-full",
 					"shadow bg-gray-100",
 					"flex absolute",
-					"overflow-visible")}
+					"overflow-visible")
+				}
+				style={{
+					width: hexWrapperSize.width + 'em',
+					height: hexWrapperSize.height + 'em',
+					minWidth: wrapperMinWidth,
+					minHeight: wrapperMinHeight
+				}}
 			>
 				{children}
 			</div>
