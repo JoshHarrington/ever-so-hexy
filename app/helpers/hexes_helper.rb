@@ -215,10 +215,20 @@ module HexesHelper
 	end
 
 	def hex_wrapper_size(hexes_in_layers: nil)
+
+		hex_wrapper_width = hex_wrapper_gutter * 2 + hex_width
+		hex_wrapper_height = hex_wrapper_gutter * 2 + hex_height
+
+		if hexes_in_layers != nil
+			hex_wrapper_width = (hexes_in_layers.length - 1) * 7 + hex_wrapper_gutter * 2 + hex_width
+			hex_wrapper_height = (size_of_largest_rendered_layer(hexes_in_layers: hexes_in_layers) - 1) * 6 + hex_wrapper_gutter * 2 + hex_height
+		end
+
 		return {
-			width: (hexes_in_layers.length - 1) * 7 + hex_wrapper_gutter * 2 + hex_width,
-			height: (size_of_largest_rendered_layer(hexes_in_layers: hexes_in_layers) - 1) * 6 + hex_wrapper_gutter * 2 + hex_height
+			width: hex_wrapper_width,
+			height: hex_wrapper_height
 		}
+
 	end
 
 
