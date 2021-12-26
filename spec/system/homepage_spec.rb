@@ -59,7 +59,6 @@ RSpec.describe 'Mobile view hex zooming', type: :system do
 		visit '/'
 
 		expect(page.find('[data-testid="hex-wrapper"]').style('transform')["transform"]).to start_with('matrix(1, 0, 0, 1,')
-		expect(page.find('[data-testid="hex-wrapper"]').style('transform')["transform"]).to end_with('0, 0)')
 
     expect(page).to have_css('svg#id-1')
 		expect(page).to have_css('svg#id-2')
@@ -70,7 +69,6 @@ RSpec.describe 'Mobile view hex zooming', type: :system do
 		expect(page).to have_text('Brazil')
 
 		expect(page.find('[data-testid="hex-wrapper"]').style('transform')["transform"]).to start_with('matrix(3, 0, 0, 3,')
-		expect(page.find('[data-testid="hex-wrapper"]').style('transform')["transform"]).not_to end_with('0, 0)')
 
 		wait_for { page.has_css?('svg#id-2') }
 		expect(page).to have_selector('svg#id-2', visible: true)
@@ -80,7 +78,6 @@ RSpec.describe 'Mobile view hex zooming', type: :system do
 		page.find('[aria-label="Zoom out"] button').click
 
 		expect(page.find('[data-testid="hex-wrapper"]').style('transform')["transform"]).to start_with('matrix(1, 0, 0, 1,')
-		expect(page.find('[data-testid="hex-wrapper"]').style('transform')["transform"]).to end_with('0, 0)')
 
 	end
 end
