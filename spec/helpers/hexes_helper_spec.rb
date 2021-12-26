@@ -43,8 +43,10 @@ describe HexesHelper do
 
 		it "correctly add spacing to first hex" do
 			first_hex = hexes_with_data_hidden.first.first
-			expect(first_hex[:right]).to eql(10)
-			expect(first_hex[:bottom]).to eql(9)
+			expect(first_hex[:top]).to eql(3)
+			expect(first_hex[:right]).to eql(nil)
+			expect(first_hex[:bottom]).to eql(nil)
+			expect(first_hex[:left]).to eql(3)
 		end
 	end
 
@@ -76,8 +78,10 @@ describe HexesHelper do
 
 		it "correctly add spacing to first hex" do
 			first_hex = hexes_with_data_hidden.first.first
-			expect(first_hex[:right]).to eql(24)
-			expect(first_hex[:bottom]).to eql(15)
+			expect(first_hex[:top]).to eql(3)
+			expect(first_hex[:right]).to eql(nil)
+			expect(first_hex[:bottom]).to eql(nil)
+			expect(first_hex[:left]).to eql(3)
 		end
 	end
 
@@ -113,8 +117,8 @@ describe HexesHelper do
 			expect(last_layer.sort_by{|h|h[:order]}).to eql(last_layer)
 
 			expect(hexes_with_data_hidden.first.first[:top]).to eql(3)
-			expect(hexes_with_data_hidden.first.first[:right]).to eql(73)
-			expect(hexes_with_data_hidden.first.first[:bottom]).to eql(57)
+			expect(hexes_with_data_hidden.first.first[:right]).to eql(nil)
+			expect(hexes_with_data_hidden.first.first[:bottom]).to eql(nil)
 			expect(hexes_with_data_hidden.first.first[:left]).to eql(3)
 
 			expect(hexes_with_data_hidden.second.first[:top]).to eql(3)
@@ -182,12 +186,6 @@ describe HexesHelper do
 
 			expect(private_data_hidden_hexes.length).to eql(35)
 			expect(reduced_private_data_hidden_hexes.length).to eql(35)
-
-			expect(private_data_hidden_hexes.first.first[:right]).to eql(241)
-			expect(reduced_private_data_hidden_hexes.first.first[:right]).to eql(241)
-
-			expect(private_data_hidden_hexes.first.first[:bottom]).to eql(57)
-			expect(reduced_private_data_hidden_hexes.first.first[:bottom]).to eql(57)
 
 		end
 	end
