@@ -12,6 +12,7 @@ import { Cross, Info, Plus, ZoomOut } from './Icons'
 import { Badge, TextBadge } from './Badge'
 import { minZoomLevel, defaultZoomLevel, maxZoomLevel, mobileBreakpoint, mobileHexZoomLevel, hexZoomLevel } from '../constants'
 import Tooltip from './Tooltip'
+import LoadingHex from './LoadingHex'
 
 const Home = ({allHexes, hexWrapperSize}) => {
 
@@ -164,12 +165,16 @@ const Home = ({allHexes, hexWrapperSize}) => {
 
 	return (
     <>
+      {showLoadingState &&
+        <div className="fixed w-full h-full bg-gray-100 flex items-center justify-center top-0 left-0 z-10">
+          <LoadingHex />
+        </div>
+      }
       <HexWrapper
         ref={hexWrapperRef}
         hexWrapperSize={hexWrapperSize}
         windowSize={window && {width: window.innerWidth, height: window.innerHeight}}
       >
-        {showLoadingState && <div className="fixed z-20 w-full h-full bg-gray-100"></div>}
         <HexGrid
           hexes={hexes}
           focusedHex={focusedHex}
@@ -178,7 +183,7 @@ const Home = ({allHexes, hexWrapperSize}) => {
           currentlyPanning={currentlyPanning}
         />
       </HexWrapper>
-      {infoBlockShown ?
+      {!showLoadingState && infoBlockShown ?
         <>
           {showResetBtn &&
             <Tooltip content="Reset Zoom" className="!fixed bottom-0 left-0 ml-8 mb-8 !hidden !sm:inline-block">
@@ -192,7 +197,7 @@ const Home = ({allHexes, hexWrapperSize}) => {
           }
           <div className={classNames(
             "fixed bottom-0 left-0",
-            "overflow-scroll",
+            "overflow-scroll z-20",
             "text-blueGray-800 w-screen",
             "bg-white shadow sm:rounded-tl-16xl",
             "p-8 sm:max-w-xs sm:top-auto sm:left-auto sm:right-0",
@@ -233,8 +238,9 @@ const Home = ({allHexes, hexWrapperSize}) => {
           </div>
         </>
         :
+        !showLoadingState &&
         <div className={classNames(
-          "fixed top-0 p-8 w-full",
+          "fixed top-0 p-8 w-full z-20",
           "flex justify-end sm:justify-between",
           "sm:top-auto sm:bottom-0 sm:right-0",
           "pointer-events-none"

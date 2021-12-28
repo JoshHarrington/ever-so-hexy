@@ -50,10 +50,21 @@ module.exports = {
           ...colors.teal,
 
           // this approach assumes that tailwind is using 6 letter hex codes
-          // depends on tailwind no changing their colour implementation
+          // depends on tailwind not changing their colour implementation
           '500-a25': `${colors.teal[500]}40`,
           '500-a50': `${colors.teal[500]}80`
         }
+      },
+      keyframes: {
+        'stepped-spin': {
+          '0%': { transform: 'rotate(0deg)' },
+          '23.333%, 33.333%': {transform: 'rotate(120deg)'},
+          '56.666%, 66.666%': {transform: 'rotate(240deg)'},
+          '90, 100%': {transform: 'rotate(359deg)'}
+        }
+      },
+      animation: {
+        'stepped-spin': 'stepped-spin 6s ease-in-out infinite',
       }
     },
   },

@@ -20,7 +20,8 @@ const HexOuter = forwardRef(({
       id={`id-${order}`}
       viewBox="0 0 156 180"
       width="300px"
-      className={classNames(className, {
+      className={classNames(className,
+        "w-[6.6em] h-[7.7em]", {
         "opacity-100": hexIsFocusedHex,
         "hover:opacity-100 opacity-50": !hexIsFocusedHex,
         "cursor-zoom-in": !newHexPage && (!focusedHexOrder || focusedHexOrder && !hexIsFocusedHex),
@@ -30,9 +31,7 @@ const HexOuter = forwardRef(({
       })}
       style={{
         transform: absoluteHex && `translate(${spacing.left}em, ${spacing.top}em)`,
-        width: '6.6em',
         clipPath: 'polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%)',
-        height: '7.7em',
         marginTop: isFirstHex && `${spacing.top}em`,
         marginLeft: isFirstHex && `${spacing.left}em`
       }}
