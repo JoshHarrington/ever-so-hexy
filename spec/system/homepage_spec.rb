@@ -58,6 +58,9 @@ RSpec.describe 'Mobile view hex zooming', type: :system do
 	it 'loads the homepage' do
 		visit '/'
 
+		wait_for { page.has_css?('[data-testid="hex-wrapper"]') }
+
+		expect(page.find('[data-testid="hex-wrapper"]').style('transform')["transform"]).to start_with('matrix(1.4, 0, 0, 1.4,')
 		expect(page.find('[data-testid="hex-wrapper"]').style('transform')["transform"]).to start_with('matrix(1, 0, 0, 1,')
 
     expect(page).to have_css('svg#id-1')
@@ -141,10 +144,11 @@ RSpec.describe 'Home page Hex zooming', type: :system do
   it 'can load the homepage and zoom to a hex' do
     visit '/'
 
-		expect(page.find('[data-testid="hex-wrapper"]').style('transform')["transform"]).to start_with('matrix(1.4, 0, 0, 1.4,')
-
+		wait_for { page.has_css?('[data-testid="hex-wrapper"]') }
 		wait_for { page.has_css?('svg#id-55') }
     expect(page).not_to have_css('svg#id-1')
+
+		expect(page.find('[data-testid="hex-wrapper"]').style('transform')["transform"]).to start_with('matrix(1.4, 0, 0, 1.4,')
 
 		page_container = page.evaluate_script('document.querySelector("[data-react-class=Home]").getBoundingClientRect()')
 		page_container_width = page_container["width"]
@@ -152,6 +156,36 @@ RSpec.describe 'Home page Hex zooming', type: :system do
 		page.evaluate_script("document.querySelector('[data-testid=hex-wrapper]').style.transform = 'scale(1.4) translate(-#{page_container_width/2}px, 0px)'")
 
 		wait_for { page.has_css?('svg#id-56') }
+
+  end
+end
+
+RSpec.describe 'Home page Hex wrapper size', type: :system do
+	let!(:hexes) { create_list(:hex, 1, draft: false)}
+
+  it 'is at least as big as the viewport' do
+    visit '/'
+
+		wait_for { page.has_css?('svg#id-1') }
+		wait_for { page.has_css?('[data-testid="hex-wrapper"]') }
+		expect(page.find('[data-testid="hex-wrapper"]').style('transform')["transform"]).to start_with('matrix(1.4, 0, 0, 1.4,')
+		expect(page.find('[data-testid="hex-wrapper"]').style('transform')["transform"]).to match(/matrix\(1\.4, 0, 0, 1\.4, 0\.*\d*, 0\.*\d*\)/)
+
+		wrapper_width = page.evaluate_script("document.querySelector('[data-testid=hex-wrapper]').getBoundingClientRect().width").to_f.round()
+		window_width = page.evaluate_script("window.innerWidth").to_f.round()
+		expect(wrapper_width).to eql(window_width)
+
+		Capybara.page.current_window.resize_to(800, 800) # Smaller desktop window
+		wait_for { page.evaluate_script("window.innerWidth").to_f.round() == 800 }
+		expect(page.find('[data-testid="hex-wrapper"]').style('transform')["transform"]).to start_with('matrix(1.4, 0, 0, 1.4,')
+		expect(page.find('[data-testid="hex-wrapper"]').style('transform')["transform"]).to match(/matrix\(1\.4, 0, 0, 1\.4, 0\.*\d*, 0\.*\d*\)/)
+
+		Capybara.page.current_window.resize_to(411, 731) # Pixel 2 size window
+		refresh
+		wait_for { page.evaluate_script("document.querySelector('[data-testid=hex-wrapper]').style.transform").include?('scale(1)') }
+		expect(page.find('[data-testid="hex-wrapper"]').style('transform')["transform"]).to start_with('matrix(1, 0, 0, 1,')
+		expect(page.find('[data-testid="hex-wrapper"]').style('transform')["transform"]).to match(/matrix\(1, 0, 0, 1, 0\.*\d*, 0\.*\d*\)/)
+
 
   end
 end
