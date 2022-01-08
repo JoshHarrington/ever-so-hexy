@@ -60,7 +60,6 @@ RSpec.describe 'Mobile view hex zooming', type: :system do
 
 		wait_for { page.has_css?('[data-testid="hex-wrapper"]') }
 
-		expect(page.find('[data-testid="hex-wrapper"]').style('transform')["transform"]).to start_with('matrix(1.4, 0, 0, 1.4,')
 		expect(page.find('[data-testid="hex-wrapper"]').style('transform')["transform"]).to start_with('matrix(1, 0, 0, 1,')
 
     expect(page).to have_css('svg#id-1')
@@ -168,8 +167,7 @@ RSpec.describe 'Home page Hex wrapper size', type: :system do
 
 		wait_for { page.has_css?('svg#id-1') }
 		wait_for { page.has_css?('[data-testid="hex-wrapper"]') }
-		expect(page.find('[data-testid="hex-wrapper"]').style('transform')["transform"]).to start_with('matrix(1.4, 0, 0, 1.4,')
-		expect(page.find('[data-testid="hex-wrapper"]').style('transform')["transform"]).to match(/matrix\(1\.4, 0, 0, 1\.4, 0\.*\d*, 0\.*\d*\)/)
+		wait_for { page.find('[data-testid="hex-wrapper"]').style('transform')["transform"].match?(/matrix\(1\.4, 0, 0, 1\.4, 0\.*\d*, 0\.*\d*\)/)}
 
 		wrapper_width = page.evaluate_script("document.querySelector('[data-testid=hex-wrapper]').getBoundingClientRect().width").to_f.round()
 		window_width = page.evaluate_script("window.innerWidth").to_f.round()
