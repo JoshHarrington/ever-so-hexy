@@ -74,7 +74,6 @@ const updateAllTrixelsFn = ({newHex, setNewHex, order, colour, csrfToken}) => {
 	const hexColorKeys = Object.keys(hexCopy).filter(k => k.startsWith('trixel_colour'))
 
 	hexColorKeys.map(k => {
-		console.log(hexCopy[`${k}`])
 		hexCopy[`${k}`] = colour
 	})
 
@@ -97,53 +96,77 @@ const panScrollAndZoom = ({panzoom, hex, setPageReady, desiredZoomLevel, updateC
 	panzoom.zoom(desiredZoomLevel)
 	setLoadingState(true)
 
-	if (hex) {
+	let intervalId, panFnRun
+
+	const removeInterval = () => {
+		clearInterval(intervalId)
+		intervalId = null
+	}
+
+	const panFn = () => {
+		panFnRun = true
+
 		const bodyProps = hex.closest('body').getBoundingClientRect()
+		const hexProps = hex.getBoundingClientRect()
+		const wrapperProps = hex.parentElement.getBoundingClientRect()
 
-		setTimeout(() => {
-			const hexProps = hex.getBoundingClientRect()
-			const wrapperProps = hex.parentElement.getBoundingClientRect()
+		const centeringProps = {
+			x: bodyProps.width/2 - hexProps.width/2,
+			y: bodyProps.height/2 - hexProps.height/2
+		}
 
-			const centeringProps = {
-				x: bodyProps.width/2 - hexProps.width/2,
-				y: bodyProps.height/2 - hexProps.height/2
-			}
+		const scrollProps = {
+			x: (-(-wrapperProps.x + hexProps.x) + centeringProps.x)/desiredZoomLevel,
+			y: (-(-wrapperProps.y + hexProps.y) + centeringProps.y)/desiredZoomLevel
+		}
 
-			const scrollProps = {
-				x: (-(-wrapperProps.x + hexProps.x) + centeringProps.x)/desiredZoomLevel,
-				y: (-(-wrapperProps.y + hexProps.y) + centeringProps.y)/desiredZoomLevel
-			}
+		panzoom.pan(scrollProps.x, scrollProps.y, { force: true })
 
-			panzoom.pan(scrollProps.x, scrollProps.y, { force: true })
+		setLoadingState(false)
 
-			setLoadingState(false)
+		if (updateCurrentlyPanning) {
+			updateCurrentlyPanning(false)
+		}
 
-			if (updateCurrentlyPanning) {
-				updateCurrentlyPanning(false)
-			}
+		if (setPageReady) {
+			setPageReady(true)
+		}
 
-			if (setPageReady) {
-				setPageReady(true)
-			}
+		removeInterval()
+	}
 
-		})
-	} else {
-		setTimeout(() => {
-			panzoom.pan(0,0)
-			if (updateCurrentlyPanning) {
-				updateCurrentlyPanning(false)
-			}
-			setLoadingState(false)
-		})
+	const checkScaleForPan = () => {
+		if (panzoom.getScale() == desiredZoomLevel && !panFnRun){
+			panFn()
+		}
+	}
+
+	const createInterval = () => {
+		if (!intervalId) {
+			intervalId = setInterval(checkScaleForPan, 100)
+		}
+	}
+
+	if (hex) {
+		createInterval()
 	}
 }
 
-const resetZoomAndPan = ({panzoom, setFocusedHexOrder, window, updateCurrentlyPanning, hexWrapperRef, setLoadingState}) => {
+const resetZoomAndPan = ({panzoom, window, updateCurrentlyPanning, hexWrapperRef, setLoadingState}) => {
 
 	setLoadingState(true)
   const desiredZoomLevel = window.innerWidth < mobileBreakpoint ? minZoomLevel : defaultZoomLevel
   panzoom.zoom(desiredZoomLevel)
-  setTimeout(() => {
+
+	let intervalId, panFnRun
+
+	const removeInterval = () => {
+		clearInterval(intervalId)
+		intervalId = null
+	}
+
+	const panFn = () => {
+		panFnRun = true
 		const currentWrapperSize = hexWrapperRef.current.getBoundingClientRect()
 		const currentZoom = panzoom.getScale()
 
@@ -152,16 +175,36 @@ const resetZoomAndPan = ({panzoom, setFocusedHexOrder, window, updateCurrentlyPa
 			y: (window.innerHeight - currentWrapperSize.height) / currentZoom
 
 		}
-    panzoom.pan(panPosition.x, panPosition.y)
+
+		panzoom.pan(panPosition.x, panPosition.y)
 		setLoadingState(false)
 
 		if (updateCurrentlyPanning) {
 			updateCurrentlyPanning(false)
 		}
-  })
 
-  setFocusedHexOrder(null)
-  window.history.pushState("", "", window.location.origin)
+		removeInterval()
+	}
+
+	const checkScaleForPan = () => {
+		if (panzoom.getScale() == desiredZoomLevel && !panFnRun){
+			panFn()
+		}
+	}
+
+	const createInterval = () => {
+		if (!intervalId) {
+			intervalId = setInterval(checkScaleForPan, 100)
+		}
+	}
+
+	createInterval()
+
+}
+
+const resetFocusedHexOrder = ({setFocusedHexOrder, window}) => {
+	setFocusedHexOrder(null)
+	window.history.pushState("", "", window.location.origin)
 }
 
 const minPageWidth = (hexes) => {
@@ -243,5 +286,6 @@ export {
 	roundToNDecimalPlaces,
 	panScrollAndZoom,
 	resetZoomAndPan,
+	resetFocusedHexOrder,
 	colourNameToTailwindVariable
 }

@@ -1,5 +1,6 @@
 import React, { Fragment, useEffect, useState } from 'react'
 import classNames from 'classnames'
+import { resetFocusedHexOrder } from '../utils'
 
 import HexOuter from './HexOuter'
 import Trixels from './Trixels'
@@ -35,8 +36,7 @@ const HexGrid = ({
 											setFocusedHexOrder(h.order)
 											window.history.pushState("", "", window.location.origin + `#${h.order}`)
 										} else {
-											setFocusedHexOrder(null)
-											window.history.pushState("", "", window.location.origin)
+											resetFocusedHexOrder({setFocusedHexOrder, window})
 										}
 									}
 								} : undefined
