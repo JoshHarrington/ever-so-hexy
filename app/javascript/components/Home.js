@@ -3,7 +3,7 @@ import classNames from 'classnames'
 
 import Panzoom from '@panzoom/panzoom'
 
-import { debounce, panScrollAndZoom, resetZoomAndPan } from '../utils'
+import { debounce, panScrollAndZoom, resetZoomAndPan, resetFocusedHexOrder } from '../utils'
 
 import HexGrid from './HexGrid'
 import HexWrapper from './HexWapper'
@@ -62,7 +62,7 @@ const Home = ({allHexes, hexWrapperSize}) => {
     }
     return hexWrapperRef.current.removeEventListener('panzoomzoom', panzoomZoomFn)
 
-  }, [hexWrapperRef])
+  }, [])
 
   const [currentlyPanning, updateCurrentlyPanning] = useState(false)
 
@@ -102,10 +102,10 @@ const Home = ({allHexes, hexWrapperSize}) => {
           const desiredZoomLevel = window.innerWidth < mobileBreakpoint ? mobileHexZoomLevel : hexZoomLevel
           panScrollAndZoom({panzoom, hex: focusedHex.current, desiredZoomLevel, updateCurrentlyPanning, setLoadingState})
         } else {
-          resetZoomAndPan({panzoom, setFocusedHexOrder, window, updateCurrentlyPanning, hexWrapperRef, setLoadingState})
+          resetZoomAndPan({panzoom, window, updateCurrentlyPanning, hexWrapperRef, setLoadingState})
         }
       },
-      400,
+      100,
       true
     )
     if (panzoom) {
@@ -127,41 +127,45 @@ const Home = ({allHexes, hexWrapperSize}) => {
 
   useEffect(() => {
 
-		const debouncedKeydownEventFn = debounce((e) => {
-			if (e.ctrlKey || e.metaKey) {
-				if (e.key === '-') {
-					// Ctrl / Cmd + '-' (zoom out)
-					panzoom.zoomOut()
-				}
-				if (e.key === '=') {
-					// Ctrl / Cmd + '=' (zoom in)
-					panzoom.zoomIn()
-				}
-				if (e.key === '0') {
-					// Ctrl / Cmd + '0' (reset zoom)
-					resetZoomAndPan({panzoom, setFocusedHexOrder, window, updateCurrentlyPanning, hexWrapperRef, setLoadingState})
-				}
-			} else if (e.key === "Escape") {
-				// Escape (reset zoom)
-				resetZoomAndPan({panzoom, setFocusedHexOrder, window, updateCurrentlyPanning, hexWrapperRef, setLoadingState})
-			}
-		},
-		100,
-		true)
+    const debouncedKeydownEventFn = debounce((e) => {
+      if (e.ctrlKey || e.metaKey) {
+        if (e.key === '-') {
+          // Ctrl / Cmd + '-' (zoom out)
+          panzoom.zoomOut()
+        }
+        if (e.key === '=') {
+          // Ctrl / Cmd + '=' (zoom in)
+          panzoom.zoomIn()
+        }
+        if (e.key === '0') {
+          // Ctrl / Cmd + '0' (reset zoom)
+          resetFocusedHexOrder({setFocusedHexOrder, window})
+          if (!focusedHexOrder) {
+            resetZoomAndPan({panzoom, window, updateCurrentlyPanning, hexWrapperRef, setLoadingState})
+          }
+        }
+      } else if (e.key === "Escape") {
+        // Escape (reset zoom)
+        resetFocusedHexOrder({setFocusedHexOrder, window})
+        if (!focusedHexOrder) {
+          resetZoomAndPan({panzoom, window, updateCurrentlyPanning, hexWrapperRef, setLoadingState})
+        }
+      }
+    },
+    100,
+    true)
 
-		let keydownFnName = () => {}
-		window.addEventListener('keydown', keydownFnName = (e) => {
-			if ((e.ctrlKey || e.metaKey) &&
-					(e.key === '-' || e.key === '=' || e.key === '0')) {
-				e.preventDefault()
-			}
+    let keydownFnName = () => {}
+    window.addEventListener('keydown', keydownFnName = (e) => {
+      if ((e.ctrlKey || e.metaKey) &&
+          (e.key === '-' || e.key === '=' || e.key === '0')) {
+        e.preventDefault()
+      }
 
-			debouncedKeydownEventFn(e)
-		})
-
-		return () => window.removeEventListener('keydown', keydownFnName)
-
-	}, [panzoom])
+      debouncedKeydownEventFn(e)
+    })
+    return () => window.removeEventListener('keydown', keydownFnName)
+  }, [panzoom, focusedHexOrder])
 
 	return (
     <>
@@ -189,7 +193,10 @@ const Home = ({allHexes, hexWrapperSize}) => {
             <Tooltip content="Reset Zoom" className="!fixed bottom-0 left-0 ml-8 mb-8 !hidden !sm:inline-block">
               <Badge
                 className="mr-auto"
-                onClick={() => resetZoomAndPan({panzoom, setFocusedHexOrder, window, updateCurrentlyPanning, hexWrapperRef, setLoadingState})}
+                onClick={() => {
+                  resetFocusedHexOrder({setFocusedHexOrder, window})
+                  resetZoomAndPan({panzoom, window, updateCurrentlyPanning, hexWrapperRef, setLoadingState})
+                }}
                 >
                 <ZoomOut className="w-6 w-6" />
               </Badge>
@@ -250,7 +257,7 @@ const Home = ({allHexes, hexWrapperSize}) => {
                 <Tooltip className="pointer-events-auto" content="Zoom out">
                   <Badge
                     className="mr-auto"
-                    onClick={() => resetZoomAndPan({panzoom, setFocusedHexOrder, window, updateCurrentlyPanning, hexWrapperRef, setLoadingState})}
+                    onClick={() => resetFocusedHexOrder({setFocusedHexOrder, window})}
                   >
                     <ZoomOut className="w-6 w-6" />
                   </Badge>
