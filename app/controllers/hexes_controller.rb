@@ -116,7 +116,7 @@ class HexesController < ApplicationController
     if Hex.exists?(order: params["order"]) && Hex.find_by(order: params["order"]).id == session[:current_draft_hex_id]
       Hex.find_by(order: params["order"]).update(draft: false)
       session[:current_draft_hex_id] = nil
-      redirect_to root_path
+      redirect_to root_path(anchor: params["order"])
     else
       redirect_to new_path
     end

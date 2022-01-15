@@ -79,10 +79,18 @@ RSpec.describe 'New page view', type: :system do
 		expect((svg_props["width"] + (svg_props["left"] * 2)).to_f.round()).to eql(window_props["width"])
 		expect(svg_props["top"].round()).to eql((svg_props["bottom"] - svg_props["height"]).round())
 
+		sleep 0.2
+		Hex.find_by(order:4).update(updated_at: Time.now - 4.minutes)
 		page.first('button[data-testid="add-hex-button"]').click
 
+		expect(Hex.find_by(order:4).updated_at.utc.between?(Time.now.utc - 3.seconds, Time.now.utc)).to be true
+		expect(Hex.find_by(order:4).created_at.before?(Hex.find_by(order:4).updated_at)).to be true
+		expect(Hex.find_by(order:4).updated_at).not_to eq(Hex.find_by(order:4).created_at)
 		expect(page.current_url).not_to include('new')
+		expect(page.current_url).to include('#4')
+		expect(page).to have_content('a few seconds ago')
 
+		wait_for { page.find('[data-testid="hex-wrapper"]').style('transform')["transform"].start_with?('matrix(4, 0, 0, 4,')}
 		expect(page).to have_selector('svg#id-4', visible:true)
 		expect(page.first('svg#id-4 path')[:fill]).to eql("#FB7185")
 
