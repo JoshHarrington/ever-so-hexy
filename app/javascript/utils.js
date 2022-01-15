@@ -1,6 +1,8 @@
 import { useEffect, useRef } from 'react'
 import { defaultZoomLevel, hexWrapperGutter, minZoomLevel, mobileBreakpoint } from './constants'
 
+const intervalLength = 20
+
 function debounce(func, wait, immediate) {
 	var timeout;
 	return function() {
@@ -143,7 +145,7 @@ const panScrollAndZoom = ({panzoom, hex, setPageReady, desiredZoomLevel, updateC
 
 	const createInterval = () => {
 		if (!intervalId) {
-			intervalId = setInterval(checkScaleForPan, 100)
+			intervalId = setInterval(checkScaleForPan, intervalLength)
 		}
 	}
 
@@ -194,7 +196,7 @@ const resetZoomAndPan = ({panzoom, window, updateCurrentlyPanning, hexWrapperRef
 
 	const createInterval = () => {
 		if (!intervalId) {
-			intervalId = setInterval(checkScaleForPan, 100)
+			intervalId = setInterval(checkScaleForPan, intervalLength)
 		}
 	}
 
