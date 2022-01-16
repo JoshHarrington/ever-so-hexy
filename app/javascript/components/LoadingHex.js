@@ -76,7 +76,3 @@ const LoadingHex = () => {
 }
 
 export default LoadingHex
-
-colors.emerald[300]
-colors.emerald[400]
-colors.emerald[500]
