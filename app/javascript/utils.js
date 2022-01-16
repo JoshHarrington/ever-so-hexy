@@ -92,12 +92,7 @@ const roundToNDecimalPlaces = ({number, places = 0}) => {
 	return Math.round(number * roundShiftingNumber) / roundShiftingNumber
 }
 
-
-const panScrollAndZoom = ({panzoom, hex, setPageReady, desiredZoomLevel, updateCurrentlyPanning, setLoadingState}) => {
-
-	panzoom.zoom(desiredZoomLevel)
-	setLoadingState(true)
-
+const waitUntilTrueToRunFn = ({truthyCheckFn, fn}) => {
 	let intervalId, panFnRun
 
 	const removeInterval = () => {
@@ -105,9 +100,33 @@ const panScrollAndZoom = ({panzoom, hex, setPageReady, desiredZoomLevel, updateC
 		intervalId = null
 	}
 
-	const panFn = () => {
+	const runFn = () => {
 		panFnRun = true
+		fn()
+		removeInterval()
+	}
 
+	const checkScaleForPan = () => {
+		if (truthyCheckFn() && !panFnRun){
+			runFn()
+		}
+	}
+
+	const createInterval = () => {
+		if (!intervalId) {
+			intervalId = setInterval(checkScaleForPan, intervalLength)
+		}
+	}
+
+	createInterval()
+}
+
+const panScrollAndZoom = ({panzoom, hex, setPageReady, desiredZoomLevel, updateCurrentlyPanning, setLoadingState}) => {
+
+	panzoom.zoom(desiredZoomLevel)
+	setLoadingState(true)
+
+	const panFn = () => {
 		const bodyProps = hex.closest('body').getBoundingClientRect()
 		const hexProps = hex.getBoundingClientRect()
 		const wrapperProps = hex.parentElement.getBoundingClientRect()
@@ -133,24 +152,10 @@ const panScrollAndZoom = ({panzoom, hex, setPageReady, desiredZoomLevel, updateC
 		if (setPageReady) {
 			setPageReady(true)
 		}
-
-		removeInterval()
-	}
-
-	const checkScaleForPan = () => {
-		if (panzoom.getScale() == desiredZoomLevel && !panFnRun){
-			panFn()
-		}
-	}
-
-	const createInterval = () => {
-		if (!intervalId) {
-			intervalId = setInterval(checkScaleForPan, intervalLength)
-		}
 	}
 
 	if (hex) {
-		createInterval()
+		waitUntilTrueToRunFn({truthyCheckFn: () => panzoom.getScale() == desiredZoomLevel, fn: panFn})
 	}
 }
 
@@ -160,22 +165,13 @@ const resetZoomAndPan = ({panzoom, window, updateCurrentlyPanning, hexWrapperRef
   const desiredZoomLevel = window.innerWidth < mobileBreakpoint ? minZoomLevel : defaultZoomLevel
   panzoom.zoom(desiredZoomLevel)
 
-	let intervalId, panFnRun
-
-	const removeInterval = () => {
-		clearInterval(intervalId)
-		intervalId = null
-	}
-
 	const panFn = () => {
-		panFnRun = true
 		const currentWrapperSize = hexWrapperRef.current.getBoundingClientRect()
 		const currentZoom = panzoom.getScale()
 
 		const panPosition = {
 			x: (window.innerWidth - currentWrapperSize.width) / currentZoom,
 			y: (window.innerHeight - currentWrapperSize.height) / currentZoom
-
 		}
 
 		panzoom.pan(panPosition.x, panPosition.y)
@@ -184,23 +180,9 @@ const resetZoomAndPan = ({panzoom, window, updateCurrentlyPanning, hexWrapperRef
 		if (updateCurrentlyPanning) {
 			updateCurrentlyPanning(false)
 		}
-
-		removeInterval()
 	}
 
-	const checkScaleForPan = () => {
-		if (panzoom.getScale() == desiredZoomLevel && !panFnRun){
-			panFn()
-		}
-	}
-
-	const createInterval = () => {
-		if (!intervalId) {
-			intervalId = setInterval(checkScaleForPan, intervalLength)
-		}
-	}
-
-	createInterval()
+	waitUntilTrueToRunFn({truthyCheckFn: () => panzoom.getScale() == desiredZoomLevel, fn: panFn})
 
 }
 
