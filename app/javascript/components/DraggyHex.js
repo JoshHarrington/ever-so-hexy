@@ -86,11 +86,13 @@ const DraggyHex = forwardRef(({
 	currentColour,
 	csrfToken,
 	publishAllowed,
+	cursorAssetPath,
 	spacing
 }, ref) => {
 
 	const [currentPositionReference, updateCurrentPositionReference] = useState(null)
 	const isFirstHex = order === 1
+	console.log(cursorAssetPath)
 
   return (
 		<>
@@ -106,7 +108,8 @@ const DraggyHex = forwardRef(({
 					marginTop: isFirstHex && `${spacing.top}em`,
 					marginLeft: isFirstHex && `${spacing.left}em`,
 					marginRight: isFirstHex && `${spacing.right}em`,
-					marginBottom: isFirstHex && `${spacing.bottom}em`
+					marginBottom: isFirstHex && `${spacing.bottom}em`,
+					cursor: `url("data:image/svg+xml,%3Csvg viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E %3Ccircle cx='50' cy='50' r='50'/%3E %3C/svg%3E"), pointer`
 				}}
 				ref={ref}
 				onMouseLeave={() => {

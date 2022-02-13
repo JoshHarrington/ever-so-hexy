@@ -3,5 +3,6 @@
 <%= react_component("New", {
 	allHexes: @hexes,
 	currentDraftHex: @current_draft_hex,
-	csrfToken: form_authenticity_token
+	csrfToken: form_authenticity_token,
+	cursorAssetPath: asset_pack_path('media/images/cursor-test.svg')
 }) %>

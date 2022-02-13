@@ -22,7 +22,7 @@ const setupPanzoom = ({hexWrapper}) => {
 
 	return panzoom
 }
-const New = ({allHexes, currentDraftHex, csrfToken}) => {
+const New = ({allHexes, currentDraftHex, csrfToken, cursorAssetPath}) => {
 
 	const [currentColour, updateCurrentColor] = useState(colours[0])
 	const hexes = [...allHexes]
@@ -113,6 +113,7 @@ const New = ({allHexes, currentDraftHex, csrfToken}) => {
 							`absolute transform`
 						)}
 						currentColour={currentColour}
+						cursorAssetPath={cursorAssetPath}
 						spacing={{
 							top: currentDraftHex.top,
 							right: currentDraftHex.right,
