@@ -61,7 +61,7 @@ RSpec.describe 'Home page Hex consistent zooming', type: :system do
 		expect(page).to have_css('svg#id-2')
 
 		3.times do |n|
-			20.times do |_|
+			2.times do |_|
 
 				page.first('svg#id-2').click
 

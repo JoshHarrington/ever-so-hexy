@@ -15,9 +15,10 @@ class HexesController < ApplicationController
   end
   def new
 
-    draft_hex = Hex.where(id: session[:current_draft_hex_id], draft: true).first_or_create do |hex|
-      hex.ip_address = request.remote_ip
-    end
+    draft_hex = Hex.where(id: session[:current_draft_hex_id], draft: true).first_or_create
+    # do |hex|
+    #   hex.ip_address = request.remote_ip
+    # end
 
     session[:current_draft_hex_id] = draft_hex.id
 
